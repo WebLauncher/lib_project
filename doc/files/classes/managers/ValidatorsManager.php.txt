@@ -1,0 +1,482 @@
+<?php
+class ValidateMethods
+{
+	/**
+	 * Check required. rule='required|5' - required lenght 5
+	 * @return
+	 * @param object $i - key of the field
+	 * @param object $params[optional] - parameters
+	 */
+	function required($value,$params='')
+	{
+		if($value=='')
+			return false;
+		else
+		if((count($params)>1 && strlen($value)!=$params[1]))
+			return false;
+		return true;
+	}
+
+	/**
+	 * Check interval string length 'interval|2|5'
+	 * @return
+	 * @param object $i
+	 * @param object $params[optional]
+	 */
+	function interval($value,$params='')
+	{
+		return (strlen($value)>=$params[1] && strlen($value)<=$params[2]);
+	}
+
+	/**
+	 * Check interval string length 'rangelength|2|5'
+	 * @return
+	 * @param object $i
+	 * @param object $params[optional]
+	 */
+	function rangelength($value,$params='')
+	{
+		return (strlen($value)>=$params[1] && strlen($value)<=$params[2]);
+	}
+
+	/**
+	 * Check e-mail string
+	 * @return
+	 * @param object $i
+	 */
+	function email($value)
+	{
+		return ($value && preg_match("#^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})\$#i", $value));
+	}
+
+	/**
+	 * Check if its a number 'number'
+	 * @return
+	 * @param object $i
+	 */
+	function number($value)
+	{
+		return $value!='' && is_numeric($value);
+	}
+
+	/**
+	 * Check it contains only digits 'digits'
+	 * @return
+	 * @param object $i
+	 */
+	function digits($value)
+	{
+		return ($value && eregi('^[0-9]+$', $value));
+	}
+
+	/**
+	 * Check it contains only digits "digits"
+	 * @return
+	 * @param object $i
+	 */
+	function alpha($value)
+	{
+		return preg_match('#^[a-zA-Z -]+\$#i', $value);
+	}
+
+	/**
+	 * Check valid username "username"
+	 * @return
+	 * @param object $i
+	 */
+	function username($value)
+	{
+		return $value && preg_match('#^[a-z][\da-z_\.]{4,64}[a-z\d]\$#i', $value);
+	}
+
+    /**
+     * check valid firstname
+     * @return
+     * @param object $value
+     */
+    function firstname($value) {
+    	return preg_match('#^[A-Z][a-z -]{2,64}[a-z]\$#i',$value);
+    }
+
+    /**
+     *  check if contains only caracters
+     * @return
+     * @param object $i
+     */
+    function string($value) {
+    	return is_string($value);
+    }//end function string($i)
+
+	/**
+	 * Check interval numeric "intervalnr|0|100"
+	 * @return
+	 * @param object $i
+	 * @param object $params
+	 */
+	function intervalnr($value,$params)
+	{
+		return (is_numeric($value) && $value>=$params[1] && $value<=$params[2]);
+	}
+
+	/**
+	 * Check interval numeric "range|0|100"
+	 * @return
+	 * @param object $i
+	 * @param object $params
+	 */
+	function range($value,$params)
+	{
+		return (is_numeric($value) && $value>=$params[1] && $value<=$params[2]);
+	}
+
+	/**
+	 * Check if a valid percent (0-100)
+	 * @return
+	 * @param object $i
+	 */
+	function percent($value)
+	{
+		return ValidateMethods::intervalnr($i,array(0=>'',1=>'0',2=>'100'));
+	}
+
+	/**
+	 * Check if it is at least given min value 'min'
+	 * @return
+	 * @param object $i
+	 */
+	function min($value,$params)
+	{
+		return $value>=$params[1];
+	}
+
+	/**
+	 * Check if it is at most given max value 'max'
+	 * @return
+	 * @param object $i
+	 */
+	function max($value,$params)
+	{
+		return $value<=$params[1];
+	}
+
+	/**
+	 * Check if the length is at least given min value 'minlength'
+	 * @return
+	 * @param object $i
+	 */
+	function minlength($value,$params)
+	{
+		return strlen(trim($value))>=$params[1];
+	}
+
+	/**
+	 * Check if the length is at most given max value 'maxlength'
+	 * @return
+	 * @param object $i
+	 */
+	function maxlength($value,$params)
+	{
+		return strlen(trim($value))<=$params[1];
+	}
+
+	/**
+	 * Check valid url 'url'
+	 * @return
+	 * @param object $i
+	 */
+	function url($value)
+	{
+		return preg_match('#^(https?|ftp):\/\/(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&\'\(\)\*\+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(:\d*)?)(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&\'\(\)\*\+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&\'\(\)\*\+,;=]|:|@)*)*)?)?(\?((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&\'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(\#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&\'\(\)\*\+,;=]|:|@)|\/|\?)*)?$#i', $value);
+	}
+
+	/**
+	 * Compare with other field "compare|[<,=,>]|[other_field,str_value]"
+	 * @return
+	 * @param object $i
+	 * @param object $params
+	 */
+	function compare($value,$params)
+	{
+		$ok=1;
+		switch($params[1])
+		{
+			case '=':
+				if($this->data[$params[2]])
+				{
+					$ok=($value==$this->data[$params[2]]?1:0);
+				}
+				else
+				{
+					$ok=($value==$params[2]?1:0);
+				}
+			break;
+			case '>':
+				if($this->data[$params[2]])
+					$ok=($value>$this->data[$params[2]]?1:0);
+				else
+					$ok=($value>$params[2]?1:0);
+			break;
+			case '<':
+				if($this->data[$params[2]])
+					$ok=($value<$this->data[$params[2]]?1:0);
+				else
+					$ok=($value<$params[2]?1:0);
+			break;
+		}
+		return $ok;
+	}
+
+	/**
+	 * Compare with other field 'comparetxt|[<,=,>]|[str_value]'
+	 * @return
+	 * @param object $i
+	 * @param object $params
+	 */
+	function comparetxt($value,$params)
+	{
+		$ok=1;
+		switch($params[1])
+		{
+			case '=':
+				$ok=($value==$params[2]?1:0);
+			break;
+			case '>':
+				$ok=($value>$params[2]?1:0);
+			break;
+			case '<':
+				$ok=($value<$params[2]?1:0);
+			break;
+		}
+		return $ok;
+	}
+
+
+	function exists($value,$params)
+	{
+		global $dal;
+        global $page;
+        $dal->import($params[1]);
+		return !$dal->$params[1]->exists($params[2],$value);
+	}
+
+	function notexists($value,$params)
+	{
+		return !ValidateMethods::exists($value,$params);
+	}
+
+	function exists_different($value,$params)
+	{
+		return ($params[3]!=$value && ValidateMethods::exists($value,$params)) || $params[3]==$value;
+	}
+
+	function custom_dal($value,$params)
+	{
+		global $dal;
+		$dal->import($params[1]);
+		$model=$dal->$params[1];
+		return call_user_func_array(array($model,$params[2]),array_merge(array($value),array_slice($params,3)));
+	}
+    /**
+     *
+     * @return
+     * @param object $i
+     */
+    function date($value){
+    	return strtotime($value);
+    }//end function date
+
+    /**
+     *
+     * @return
+     * @param object $i
+     */
+    function dateISO($value)
+	{
+		return preg_match('#^\d{4}[\/-]\d{1,2}[\/-]\d{1,2}$#i', $value);
+	}
+
+    /**
+     *
+     * @return
+     * @param object $i
+     * @param object $params[optional]
+     */
+    function dateinterval($value,$params=''){
+    	return strtotime($value)>=strtotime($params[1]);
+    }//end function dateinterval($i)
+
+    /**
+     * check if the data is in past time
+     * @return
+     * @param object $i
+     */
+    function datenow($value){
+    	return strtotime($value) < time();
+    }//end function datenow
+
+	function nowhitespace($value)
+	{
+		return preg_match('#^\S+$#i', $value);
+	}
+
+	function signature($value)
+	{
+		global $page;
+		return isset_or($page->session['signature'])==$value;
+	}
+
+}
+
+/**
+ * Validation class
+ *
+ * pentru lastname se foloseste 'string'
+ *
+ * rules:
+ * 	'required|[length]'
+ *  'email'
+ *  'compare|[<,=,>]|[field]'
+ *  'comparetxt|[<,=,>]|[text]'
+ *  'interval|[start_length]|[end_length]'
+ *  	similar to 'rangelength|[start_legth]|[end_length]'
+ *  'intervalnr|[start_nr]|[end_nr]'
+ *  	similat to 'range|[start_nr]|[end_nr]'
+ *  'username'
+ *  'number'
+ *  'digits'
+ *  'alpha'
+ *  'percent'
+ *  'exists|dal_module|field'
+ *  'notexists|dal_module|field'
+ *  'firsname'
+ *  'string"
+ *  "date"
+ *  "dateinterval|date1|date2"
+ *  "min|[value]"
+ *  "max|[value]"
+ *  "minlength|[value]"
+ *  "maxlength|[value]"
+ *  "url"
+ * @package WebLauncher\Managers
+ * @deprecated This is replaced by FormsManager, please do not use anymore
+ */
+class ValidatorsManager
+{
+	var $data=array();// data to be processed
+	var $fields=array();// fields to be processed
+	var $errors=array();// errrors generated
+	var $rules=array();// validation rules
+	var $messages=array();// validation messages
+	var $forms=array();// forms to validate
+	var $checked_key=-1; // current checked form key
+	var $current_rule=''; // current checked rule
+
+	/**
+	 * Constructor
+	 * @return
+	 */
+	function __construct($data='')
+	{
+		if($data!='')
+			$this->data=$data;
+		else
+			$this->data=$_REQUEST;
+	}
+
+	/**
+	 * Checks the form given by id
+	 * @return
+	 * @param object $form_id
+	 */
+	function check($form_id)
+	{
+		if(count($this->forms))
+		{
+			foreach($this->forms as $k=>$v)
+				if($v==$form_id)
+					$this->checked_key=$k;
+
+			if($this->checked_key>=0)
+			foreach($this->fields[$this->checked_key] as $k=>$v)
+			{
+				foreach($this->rules[$this->checked_key][$k] as $r)
+				{
+
+					$vars=explode('|',$r);
+					$this->current_rule=$r;
+					if(!$this->validate($r,$this->field($k)))
+						$this->add_error($k);
+				}
+			}
+		}
+	}
+
+	/**
+	 * Add new rule for validation
+	 * @return
+	 * @param object $form_id -- id to the form to add rule
+	 * @param object $field -- field to validate
+	 * @param object $rule -- validation rule
+	 * @param object $message[optional] -- display message on error
+	 */
+	function add_rule($form_id,$field,$rule,$message='')
+	{
+		if(!in_array($form_id,$this->forms))
+			$this->forms[sha1(base64_encode(microtime()))]=$form_id;
+
+		$form_key=0;
+		foreach($this->forms as $k=>$v)
+			if($v==$form_id)
+				$form_key=$k;
+
+		if(!isset($this->fields[$form_key]))
+			$this->fields[$form_key]=array();
+
+		if(in_array($field,$this->fields[$form_key]))
+		{
+			$key=0;
+			foreach($this->fields[$form_key] as $k=>$v)
+				if($v==$field)
+					$key=$k;
+
+			$this->rules[$form_key][$key][]=$rule;
+			$this->messages[$form_key][$key][$rule]=$message;
+		}
+		else
+		{
+			$this->fields[$form_key][]=$field;
+			$this->rules[$form_key][]=array(0=>$rule);
+			$this->messages[$form_key][]=array($rule=>$message);
+		}
+	}
+
+	function field($i)
+	{
+		return $this->data[$this->field_name($i)];
+	}
+
+	function field_name($i)
+	{
+		return $this->fields[$this->checked_key][$i];
+	}
+
+	function message($i)
+	{
+		return $this->messages[$this->checked_key][$i][$this->current_rule];
+	}
+	
+	function add_error($i){
+		$this->errors[$this->field_name($i)]=$this->message($i);
+	}
+	
+	function validate($rule,$value)
+	{
+		$vars=explode('|',$rule);
+		if(count($vars)<=1)
+			return ValidateMethods::$rule($value);
+		else
+			return ValidateMethods::$vars[0]($value,$vars);
+	}
+}
+
+?>

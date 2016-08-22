@@ -1,0 +1,352 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * Files and Uplaods Manager Class
+ * @package WebLauncher\Managers
+ */
+class FilesManager
+{
+	var $folder;
+	var $last_filename='';
+	var $last_file='';
+	var $last_local_file='';
+	var $last_http_path='';
+	var $messages=array(
+		'upload'=&gt;array(
+			'extension_err'=&gt;'Wrong file extension!',
+			'upload_err'=&gt;'File upload not complete!'
+		)
+	);
+	var $http_root='';
+	var $local_root='';
+	var $valid=false;
+	var $errors=array();
+	
+	public function __construct($folder,$http_root='',$local_root='')
+	{
+		$this-&gt;folder=$folder;
+		$this-&gt;http_root=$http_root;
+		$this-&gt;local_root=$local_root;
+		/*
+		if(count($_FILES))
+			foreach($_FILES as $key=&gt;$file)
+			{
+				try{
+					$path=$this-&gt;upload($key,'',base64_encode(microtime(true)).'_'.$file['name']);
+					$path=$this-&gt;upload($key,'',base64_encode(microtime(true)).'_1_'.$file['name']);
+				}
+				catch(Exception $ex){
+					$_FILES[$key]['error']=$ex-&gt;getMessage();
+					$this-&gt;delete($_FILES[$key]['tmp_name']);
+					unset($_FILES[$key]['tmp_name']);
+				}
+				echopre($_FILES);				
+				die;
+			}*/	
+	}
+	
+	/**
+	 * Save upload to a given folder and newname
+	 * @param string $name Name parameter from $_FILES[$name] to look for the file details
+	 * @param string $folder[optional] Folder where to save file (relative to $this-&gt;folder)
+	 * @param string $newname[optional] New name for the file
+	 * @return array Details for the file uploaded (this will be also overwriten on $_FILES[$name])
+	 * @example From page: $this-&gt;uploads-&gt;save_upload('file','','');
+	 * @deprecated Will be replaced by $this-&gt;upload()
+	 */
+	function save_upload($name,$folder='',$newname=''){
+		return $this-&gt;upload($name,$folder,$newname);
+	}
+	
+	/**
+	 * Save upload to a given full path folder and newname
+	 * @param string $name Name parameter from $_FILES[$name] to look for the file details
+	 * @param string $folder[optional] Folder where to save file full path
+	 * @param string $newname[optional] New name for the file
+	 * @return array Details for the file uploaded (this will be also overwriten on $_FILES[$name])
+	 * @example From page: $this-&gt;uploads-&gt;save_upload_full('file','/home/uploads/','');
+	 * @deprecated Will be replaced by $this-&gt;upload()
+	 */
+	function save_upload_full($name,$folder='',$newname=''){
+		return $this-&gt;upload($name,$folder,$newname,false);
+	}
+	
+	/**
+	 * Cleans the file name for proper storring it in any file system
+	 * @param string $filename Name to clean
+	 * @return string File name cleaned
+	 */
+	function clean_filename($filename){
+		addslashes($filename);
+		str_replace('\'','_',$filename);
+		return $filename;
+	}
+	
+	/**
+	 * Get the local folder where the storring is done
+	 * @param string $folder[optional] Folder to append to $this-&gt;folder
+	 * @param bool $append_main_folder[optional] Flag if $this-&gt;folder should be appended
+	 * @return string Local folder where to strore files
+	 */
+	function get_local_folder($folder='',$append_main_folder=true){
+		if($append_main_folder)	
+			$folder=$this-&gt;local_root.$this-&gt;folder.$folder;
+		if(!$folder)
+			$folder=$this-&gt;folder;
+		return $folder;
+	}
+	
+	/**
+	 * Get the URL to the folder where the data is stored
+	 * @param string $folder[optional] Folder to append to $this-&gt;folder
+	 * @param bool $append_main_folder[optional] Flag if $this-&gt;folder should be appended
+	 * @return string Url to the local strorage area
+	 */
+	function get_http_path($folder='',$append_main_folder=true){
+		$http_path=$this-&gt;http_root.$folder;
+		if($append_main_folder)
+			$http_path=$this-&gt;http_root.$this-&gt;folder.$folder;	
+		return $http_path;				
+	}
+	
+	/**
+	 * Uplaod files to the local set storage folder
+	 * @param string $name Name parameter from $_FILES[$name] to look for the file details
+	 * @param string $folder[optional] Folder where to save file (relative to $this-&gt;folder)
+	 * @param string $newname[optional] New name for the file
+	 * @param bool $append_main_folder[optional][default=true] Flag if the $this-&gt;folder path should be appended 
+	 */
+	function upload($name,$folder='',$newname='',$append_main_folder=true)
+	{		
+		$this-&gt;_init();		
+		$file=$_FILES[$name];
+		$local_folder=$this-&gt;get_local_folder($folder,$append_main_folder);
+		$http_path=$this-&gt;get_http_path($folder,$append_main_folder);
+		if(isset($file['processed']) &amp;&amp; $file['processed']){
+			if($this-&gt;add_dir($local_folder)){
+				$filename=$file['name'];
+			  	if($newname!='')
+					$filename=$newname;
+				$filename=$this-&gt;clean_filename($filename);
+				if(rename($file['tmp_name'], $local_folder.$filename)){
+					$this-&gt;last_filename=$filename;
+					$this-&gt;last_local_file=$local_folder.$filename;
+					$this-&gt;last_http_path=$http_path.$filename;
+					$_FILES[$name]['tmp_name']=$local_folder.$filename;
+					$_FILES[$name]['http_path']=$http_path.$filename;
+					$_FILES[$name]['processed']=true;
+					$this-&gt;valid=true;				
+					return $folder.$filename;
+				}
+			}
+		}
+		else{			
+			if($file['error'] == UPLOAD_ERR_OK) {
+			  	if($this-&gt;isAllowed($file['name'])) {
+			  		$filename=$file['name'];
+			  		if($newname!='')
+						$filename=$newname;
+					$filename=$this-&gt;clean_filename($filename);					
+					if($this-&gt;add_dir($local_folder)){
+						if(move_uploaded_file($file['tmp_name'],$local_folder.$filename)){					
+							$this-&gt;last_filename=$filename;
+							$this-&gt;last_local_file=$local_folder.$filename;
+							$this-&gt;last_http_path=$http_path.$filename;
+							$_FILES[$name]['tmp_name']=$local_folder.$filename;
+							$_FILES[$name]['http_path']=$http_path.$filename;
+							$_FILES[$name]['processed']=true;
+							$this-&gt;valid=true;				
+							return $local_folder.$filename;
+						}
+					}
+			  	} else {
+			    	throw new Exception($this-&gt;messages['upload']['extension_err']);
+				}
+			} else throw new Exception($this-&gt;messages['upload']['upload_err']);
+		}
+		return false;
+	}
+	
+	/**
+	 * Init function
+	 */
+	function _init()
+	{
+		$this-&gt;valid=false;
+		$this-&gt;errors=array();
+	}
+	
+	/**
+	 * Get the content of the uploaded file
+	 * @param string $name Name from $_FILES[$name]
+	 * @return string Content of the uploaded file
+	 */
+	function get_upload_content($name)
+	{
+		if($path=$this-&gt;upload($name))
+			return file_get_contents($path);
+		return false;
+	}
+	
+	/**
+	 * Check if a filename is allowed to be uploaded (done by extension)
+	 * @param string $filename Name of the file
+	 * @return bool True if the file can be uploaded
+	 */
+	function isAllowed($fileName)
+	{
+		global $page;
+		return in_array($this-&gt;get_extension($fileName), $page-&gt;upload_allowed_extensions);
+	}
+	
+	/**
+	 * Returns the value of $this-&gt;valid
+	 */
+	function valid()
+	{
+		return $this-&gt;valid;
+	}
+
+	/**
+	 * Get the extension of a file
+	 * @param string $filename
+	 * @return string The extension
+	 */
+	function get_extension($fileName)
+	{
+		$ext='';
+		if(count($arr=explode('.', $fileName))&gt;1)		
+			$ext=strtolower(end($arr));
+		return $ext;		
+	}
+
+	/**
+	 * Creates a folder that has the permissions to be uplaoded in
+	 * @param string $dir
+	 * @return bool True if folder was created
+	 */
+	function add_dir($dir)
+	{
+		if(!is_dir($dir))
+			if(!mkdir($dir,0777,true))
+				return false;
+		chmod($dir,0777);
+		return true;
+	}
+
+	/**
+	 * Put content into a file
+	 * @param string $path 
+	 * @param string $content
+	 * @return True if file was written
+	 * @deprecated Please use file_put_contents
+	 */
+	function save_file($path,$content='')
+	{
+		if(file_put_contents($path,$content)===FALSE)
+			return false;
+		return true;
+	}
+	
+	/**
+	 * Deletes files and folders from a given path
+	 * @param string $dir File path or folder path to be removed
+	 * @param bool $files_only[optional][default=false] Flag if only files should be removed
+	 *
+	 */
+	function delete($dir,$files_only=false) {
+		if(is_file($dir))
+			return unlink($dir);
+		
+	    $files = glob( $dir . '*', GLOB_MARK );			   
+	    foreach( $files as $file )
+	       	$this-&gt;delete($file,$files_only);  
+	    if (!$files_only &amp;&amp; is_dir($dir)) rmdir( $dir );  
+	}
+	
+	/**
+	 * @deprecated Please use $this-&gt;delete
+	 */
+	function delete_tree($dir){
+		$this-&gt;delete($dir);
+	}
+	
+	/**
+	 * @deprecated Please use $this-&gt;delete($dir,true) 
+	 */
+	function empty_folder($dir)
+	{
+		$files=$this-&gt;file_array($dir);
+		foreach($files as $f)
+			unlink($dir.$f);
+	}
+	
+	/**
+	 * Returns the files at a given path 
+	 * @param string $path 
+	 * @param string $exclude[optional][default=&quot;.|..&quot;]
+	 * @param bool $recursive Flag if it should go through subfolders
+	 * @return array Files found at the given path
+	 */
+	function file_array($path, $exclude = &quot;.|..&quot;, $recursive = false) 
+	{
+        $path = rtrim($path, &quot;/&quot;) . &quot;/&quot;;
+        $folder_handle = opendir($path);
+        $exclude_array = explode(&quot;|&quot;, $exclude);
+        $result = array();
+        while(false !== ($filename = readdir($folder_handle))) {
+            if(!in_array(strtolower($filename), $exclude_array)) {
+                if(is_dir($path . $filename . &quot;/&quot;)) {
+                    if($recursive) $result[] = $this-&gt;file_array($path, $exclude, true);
+                } else {
+                    $result[] = $filename;
+                }
+            }
+        }
+        return $result;
+    }
+}
+?&gt;</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all()
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

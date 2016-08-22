@@ -1,0 +1,288 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+	/**
+	 * The manager class for authenticating users
+	 * @example In page: $this-&gt;system-&gt;authentication
+	 * @package WebLauncher\Managers
+	 */
+	class AuthenticationManager{
+		var $settings=array();
+		var $username_field='_username';
+		var $password_field='_password';
+		var $type_field='_type';
+		var $remmember_field='_remmember';
+		var $messages=array();
+		var $show_messages=true;
+		var $redirect_field='goto';
+		var $visits_logs_enabled=false;
+		var $module_user_type='';
+		
+		var $logged=0;
+		
+		/**
+		 * Login user in the system
+		 * @param string|int $user_id Id of the user to log in the system
+		 * @param string $type Type of the user that is configured in configuration file
+		 * This method will redirect to the proper url
+		 */
+		function login($user_id='',$type=''){
+			global $page;
+			
+			$username = isset_or($_REQUEST[$this-&gt;username_field]);
+			$password = isset_or($_REQUEST[$this-&gt;password_field]);
+			$type = isset_or($_REQUEST[$this-&gt;type_field],$type);
+	
+			$this-&gt;logged = 0;
+	
+			if (($username != '' &amp;&amp; $password != '' || $user_id!='') &amp;&amp; $type != '' &amp;&amp; (($this-&gt;module_user_type!='' &amp;&amp; $this-&gt;module_user_type==$type) || $this-&gt;module_user_type=='')) {
+				$row = '';
+				// get user
+				if($user_id!=''){
+					$query = 'SELECT * FROM ' . $this -&gt; settings[$type]['table'] . ' WHERE id='.$user_id.' LIMIT 1';
+					$row = $page -&gt; db_conn -&gt; getRow($query);
+				}
+				else{
+					if (is_array($this -&gt; settings[$type]['username'])) {
+						foreach ($this-&gt;settings[$type]['username'] as $user_field)
+							if (!$row) {
+								$query = 'SELECT * FROM ' . $this -&gt; settings[$type]['table'] . ' WHERE (lower(' . $user_field . ')=lower(&quot;' . $username . '&quot;)) LIMIT 1';
+								$row = $page -&gt; db_conn -&gt; getRow($query);
+							}
+					} else {
+						$query = 'SELECT * FROM ' . $this -&gt; settings[$type]['table'] . ' WHERE (lower(' . $this -&gt; settings[$type]['username'] . ')=lower(&quot;' . $username . '&quot;)) LIMIT 1';
+						$row = $page -&gt; db_conn -&gt; getRow($query);
+					}
+				}
+				if ($row) {
+					$this-&gt;logged = 1;
+					// check password
+					if ($row[$this -&gt; settings[$type]['password']] != (isset($this -&gt; settings[$type]['crypting']) ? $this -&gt; settings[$type]['crypting'](trim($password)) : trim($password))) {
+						$this-&gt;logged = 0;
+						if ($this -&gt; show_messages)
+							$page -&gt; add_message('error', $this -&gt; messages['no_pass']);
+					}
+	
+					// valid field if required
+					if (isset($this -&gt; settings[$type]['valid']) &amp;&amp; $this -&gt; settings[$type]['valid'] != '') {
+						if (!$row[$this -&gt; settings[$type]['valid']]) {
+							$this-&gt;logged = 0;
+							if ($this -&gt; show_messages)
+								$page -&gt; add_message('error', $this -&gt; messages['valid']);
+						}
+					}
+	
+					// active field if required
+					if (isset($this -&gt; settings[$type]['active']) &amp;&amp; $this -&gt; settings[$type]['active'] != '')
+						if (!$row[$this -&gt; settings[$type]['active']]) {
+							$this-&gt;logged = 0;
+							if ($this -&gt; show_messages)
+								$page -&gt; add_message('error', $this -&gt; messages['active']);
+						}
+	
+					// deleted field if required
+					if (isset($this -&gt; settings[$type]['deleted']) &amp;&amp; $this -&gt; settings[$type]['deleted'] != '') {
+						if ($row[$this -&gt; settings[$type]['deleted']]) {
+							$this-&gt;logged = 0;
+							$page -&gt; add_message('error', $this -&gt; messages['deleted']);
+						}
+					}
+	
+					if ($this-&gt;logged) {
+						$this-&gt;login_user($row['id'],$type,isset($_POST[$this-&gt;remmember_field]));						
+						$page -&gt; add_message('success', $this -&gt; messages['success']);
+					}
+				} else {
+					unset($page -&gt; session['user_id']);
+					unset($page -&gt; session['user_type']);
+					unset($page -&gt; session['remmember']);
+					$page -&gt; add_message('error', $this -&gt; messages['no_user']);
+				}
+			}
+	
+			$goto = isset($_POST[$this-&gt;redirect_field]) ? $_POST[$this-&gt;redirect_field] : '';
+			if ($this-&gt;logged == 1) {
+				if ($goto != '')
+					$page -&gt; redirect($goto);
+				else
+					$page -&gt; redirect($page -&gt; paths['current']);
+			} else {
+				$page -&gt; redirect($page -&gt; paths['current'] . '?e=login');
+			}
+		}
+		
+		/**
+		 * Login user in the system without processing request 
+		 * @param int|string $user_id Id of the user
+		 * @param string $type Type od user configured in configuration file
+		 * @param bool $remmember Flag if user should be remmembered for a longer period set in the remmember offset
+		 */
+		function login_user($user_id='',$type='',$remmember=0){
+			global $page;			
+			if(!$type)
+				$type=$page-&gt;module_user_type;
+			if ($this -&gt; settings[$type]['lastlogin']) {
+				$query = 'update ' . $this -&gt; settings[$type]['table'] . ' set `' . $this -&gt; settings[$type]['lastlogin'] . '`=NOW() where id=' . $user_id;
+				$page -&gt; db_conn -&gt; query($query);
+			}
+			$page -&gt; session['user_id'] = $user_id;
+			$page -&gt; session['user_type'] = $type;
+						
+			if (isset($page -&gt; session['user_logout']))
+				unset($page -&gt; session['user_logout']);
+			if ($this -&gt; visits_logs_enabled)
+				$this -&gt; start_visit_log($user_id);
+	
+			if ($remmember)
+				$page -&gt; session['remmember'] = 1;
+			else
+				unset($page -&gt; session['remmember']);
+			
+			$this-&gt;init_user();
+		}
+		
+		/**
+		 * Logout user
+		 */
+		function logout_user(){
+			global $page;
+			unset($page -&gt; session['user_id']);
+			unset($page -&gt; session['user_type']);
+			unset($page -&gt; session['remmember']);
+			unset($page -&gt; session['temp']);
+			$page -&gt; session['user_logout'] = 1;
+		}
+
+		/**
+		 * Start visit log
+		 * @param string $user_id
+		 */
+		function start_visit_log($user_id){
+			global $page;
+			if (isset($page -&gt; db_conn-&gt;tables['tbl_xvisits_logs'])) {
+
+				$params = array();
+				$params['user_id'] = $page -&gt; session['user_id'];
+				$params['user_type'] = $page -&gt; session['user_type'];
+				$params['login_datetime'] = date('Y-m-d H:i:s');
+				$params['refresh_datetime'] = date('Y-m-d H:i:s');
+				$params['duration'] = 0;
+	
+				$page -&gt; session['visit_log_id'] = $page -&gt; models -&gt; xvisits_logs -&gt; insert($params);
+				if(class_exists('LoginLoggerExtension'))
+					LoginLoggerExtension::start_visit_log($page-&gt;session['user_id'],$page -&gt; session['visit_log_id']);
+				return $page -&gt; session['visit_log_id'];
+			}
+			return '';
+		}
+		
+		/**
+		 * Update current visit log
+		 */
+		function update_visit_log() {
+			global $page;
+			if ($this -&gt; visits_logs_enabled &amp;&amp; isset($page -&gt; db_conn-&gt;tables['tbl_xvisits_logs']) &amp;&amp; $page -&gt; logged &amp;&amp; isset($page -&gt; session['visit_log_id'])) {
+				$obj = $page -&gt; models -&gt; xvisits_logs -&gt; get($page -&gt; session['visit_log_id']);
+				$params = array();
+	
+				$params['refresh_datetime'] = @date('Y-m-d H:i:s');
+				$params['duration'] = @strtotime($params['refresh_datetime']) - @strtotime($obj['login_datetime']);
+	
+				$page -&gt; models -&gt; xvisits_logs -&gt; update($params, 'id=' . $page -&gt; session['visit_log_id']);
+				if(class_exists('LoginLoggerExtension'))
+					LoginLoggerExtension::update_visit_log($page-&gt;session['user_id'],$page -&gt; session['visit_log_id']);
+				return $page -&gt; session['visit_log_id'];
+			}
+			return '';
+		}
+		
+		/**
+		 * Logout user by requst and redirect to the given url $goto
+		 */
+		function logout($goto = ''){
+			global $page;
+			$this-&gt;logout_user();
+			$page -&gt; redirect($goto ? $goto : $page -&gt; paths['current']);
+		}
+
+		/**
+		 * Init user data
+		 */
+		function init_user(){
+			global $page;
+			if(isset($page -&gt; session['user_id']) &amp;&amp; $page -&gt; session['user_id'] != '')
+			{
+				$page -&gt; logged = true;
+				$query = 'SELECT * FROM ' . $page -&gt; user_types_tables[$page -&gt; session['user_type']]['table'] . ' WHERE (id=' . $page -&gt; session['user_id'] . ') LIMIT 1';
+				$row = $page -&gt; db_conn -&gt; getRow($query);
+				$page -&gt; user = $row;
+			}
+			else
+				$page -&gt; user = '';
+		}
+		
+		/**
+		 * Get new password generated for the user
+		 * @param string $user_id[optional] Id of the user to generate password
+		 * @param int $length[optional] Length of the generated password
+		 * @param string $password[optional] Custom password you want to update the user 
+		 * @param string $algorithm[optional] The algorithm to use for hashing
+		 * @return string New password
+		 */
+		function new_password($user_id='',$length=6,$password='',$algorithm='md5'){
+			global $page;
+			if(!$password)
+				$password=substr($algorithm(encrypt(microtime())), 0,$length);
+			if(!$user_id)
+				$user_id=isset($page-&gt;session['user_id'])?$page-&gt;session['user_id']:'';
+			if($user_id)
+			{
+				$query='UPDATE ' . $page -&gt; user_types_tables[$page -&gt; session['user_type']]['table'] . ' SET `'.$this -&gt; settings[$page -&gt; session['user_type']]['password'].'`=('.sat($this -&gt; settings[$page -&gt; session['user_type']]['crypting']?$this -&gt; settings[$page -&gt; session['user_type']]['crypting']($password):$password).') WHERE (`id`=' . $page -&gt; session['user_id'] . ') LIMIT 1';
+				$page -&gt; db_conn -&gt; query($query);
+			}
+			return $password;
+		}
+	} 
+?&gt;</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all()
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

@@ -1,0 +1,908 @@
+<?php
+/**
+ * Form Manager Classes
+ */
+/**
+ * Class Form_Filters
+ * @package WebLauncher\Managers
+ */
+class Form_Filters{
+	/**
+	 * Just trim the value
+	 * @param string $value 
+	 * @param array $params
+	 */
+	public static function none($value,$params=''){
+		return is_array($value)?$value:trim($value);
+	}
+	
+	/**
+	 * Filter characters that are not good in url
+	 * @param string $value
+	 * @param array $params
+	 */
+	public static function url($value,$params=''){
+		return is_array($value)?$value:filter_var(self::none($value), FILTER_SANITIZE_URL);
+	}
+	
+	/**
+	 * Filter characters not good in an e-mail address 
+	 * @param string $value
+	 * @param array $params
+	 */
+	public static function email($value,$params=''){
+		return is_array($value)?$value:filter_var(self::none($value), FILTER_SANITIZE_EMAIL);
+	}
+	
+	/**
+	 * Leave only digits, plus and minus sign
+	 * @param string $value
+	 * @param array $params
+	 */
+	public static function int($value,$params=''){
+		return is_array($value)?$value:filter_var(self::none($value), FILTER_SANITIZE_NUMBER_INT);
+	}
+	
+	/**
+	 * Strip tags, optionally strip or encode special characters.
+	 * @param string $value
+	 * @param array $params
+	 */
+	public static function string($value,$params=''){
+		return is_array($value)?$value:filter_var(self::none($value), FILTER_SANITIZE_STRING,$params);
+	}
+	
+	/**
+	 * Remove all characters except digits, +- and optionally .,eE. 
+	 * @param string $value
+	 * @param array $params 
+	 */
+	public static function float($value,$params=FILTER_FLAG_ALLOW_THOUSAND){
+		return is_array($value)?$value:filter_var(self::none($value), FILTER_SANITIZE_NUMBER_FLOAT,$params);
+	}
+}
+
+/**
+ * Form Rules Class
+ * @package WebLauncher\Managers
+ */
+class Form_Rules {
+	/**
+	 * Check required. rule='required|5' - required lenght 5
+	 * @return
+	 * @param object $value - key of the field
+	 * @param object $params [optional] - parameters
+	 */
+	public static function required($value, $params = '') {		
+		if(is_array($value))
+			return count($value)>0;
+		if ($value == '')
+			return false;
+		else if ((count($params) > 1 && strlen($value) != $params[1]))
+			return false;
+		return true;
+	}
+
+	/**
+	 * Check interval string length 'interval|2|5'
+	 * @return
+	 * @param object $value
+	 * @param object $params [optional]
+	 */
+	public static function interval($value, $params = '') {
+		return (strlen($value) >= $params[1] && strlen($value) <= $params[2]);
+	}
+
+	/**
+	 * Check interval string length 'rangelength|2|5'
+	 * @return
+	 * @param object $value
+	 * @param object $params [optional]
+	 */
+	public static function rangelength($value, $params = '') {
+		return (strlen($value) >= $params[1] && strlen($value) <= $params[2]);
+	}
+
+	/**
+	 * Check e-mail string
+	 * @return
+	 * @param object $value
+	 */
+	public static function email($value) {
+		return (!$value || ($value && preg_match("#^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,5})\$#i", $value)));
+	}
+
+	/**
+	 * Check if its a number 'number'
+	 * @return
+	 * @param object $value
+	 */
+	public static function number($value) {
+		return $value != '' && is_numeric($value);
+	}
+
+	/**
+	 * Check it contains only digits 'digits'
+	 * @return
+	 * @param object $value
+	 */
+	public static function digits($value) {
+		return ($value && eregi('^[0-9]+$', $value));
+	}
+
+	/**
+	 * Check it contains only digits "digits"
+	 * @return
+	 * @param object $value
+	 */
+	public static function alpha($value) {
+		return preg_match('#^[a-zA-Z -]+\$#i', $value);
+	}
+
+	/**
+	 * Check valid username "username"
+	 * @return
+	 * @param object $value
+	 */
+	public static function username($value) {
+		return $value && preg_match('#^[a-z][\da-z_\.]{4,64}[a-z\d]\$#i', $value);
+	}
+	
+	/**
+	 * Check valid username_full "username"
+	 * @return
+	 * @param object $value
+	 */
+	public static function username_full($value) {
+		return $value && preg_match('#^[a-zA-Z\d][\da-zA-Z_\.\,\-]{4,64}[a-zA-Z\d]\$#i', $value);
+	}
+
+	/**
+	 * check valid firstname
+	 * @return
+	 * @param object $value
+	 */
+	public static function firstname($value) {
+		return preg_match('#^[A-Z][a-z -]{2,64}[a-z]\$#i', $value);
+	}
+
+	/**
+	 *  check if contains only caracters
+	 * @return
+	 * @param object $value
+	 */
+	public static function string($value) {
+		return is_string($value);
+	}//end function string($i)
+	
+	/**
+	 *  check if the mimetype is right
+	 * @return
+	 * @param object $value
+	 */
+	public static function accept($value) {
+		return true;
+	}//end function string($i)
+
+	/**
+	 * Check interval numeric "intervalnr|0|100"
+	 * @return
+	 * @param object $value
+	 * @param object $params
+	 */
+	public static function intervalnr($value, $params) {
+		return (is_numeric($value) && $value >= $params[1] && $value <= $params[2]);
+	}
+
+	/**
+	 * Check interval numeric "range|0|100"
+	 * @return
+	 * @param object $value
+	 * @param object $params
+	 */
+	public static function range($value, $params) {
+		return (is_numeric($value) && $value >= $params[1] && $value <= $params[2]);
+	}
+
+	/**
+	 * Check if a valid percent (0-100)
+	 * @return
+	 * @param object $value
+	 */
+	public static function percent($value) {
+		return Form_Rules::intervalnr($i, array(0 => '', 1 => '0', 2 => '100'));
+	}
+
+	/**
+	 * Check if it is at least given min value 'min'
+	 * @return
+	 * @param object $value
+	 * @param object $params
+	 */
+	public static function min($value, $params) {
+		return $value >= $params[1];
+	}
+
+	/**
+	 * Check if it is at most given max value 'max'
+	 * @return
+	 * @param object $value
+	 * @param object $params
+	 */
+	public static function max($value, $params) {
+		return $value <= $params[1];
+	}
+
+	/**
+	 * Check if the length is at least given min value 'minlength'
+	 * @return
+	 * @param object $value
+	 * @param object $params
+	 */
+	public static function minlength($value, $params) {
+		return strlen(trim($value)) >= $params[1];
+	}
+
+	/**
+	 * Check if the length is at most given max value 'maxlength'
+	 * @return
+	 * @param object $value
+	 * @param object $params
+	 */
+	public static function maxlength($value, $params) {
+		return strlen(trim($value)) <= $params[1];
+	}
+
+	/**
+	 * Check valid url 'url'
+	 * @return
+	 * @param object $value
+	 */
+	public static function url($value) {
+		return preg_match('#^(https?|ftp):\/\/(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&\'\(\)\*\+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(:\d*)?)(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&\'\(\)\*\+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&\'\(\)\*\+,;=]|:|@)*)*)?)?(\?((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&\'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(\#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&\'\(\)\*\+,;=]|:|@)|\/|\?)*)?$#i', $value);
+	}
+
+	/**
+	 * Compare with other field "compare|[<,=,>]|[other_field,str_value]"
+	 * @return
+	 * @param object $value
+	 * @param object $params
+	 */
+	public static function compare($value, $params) {
+		$ok = 1;
+		switch($params[1]) {
+			case '=' :				
+					$ok = ($value == $params[2] ? 1 : 0);				
+				break;
+			case '>' :				
+					$ok = ($value > $params[2] ? 1 : 0);				
+				break;
+			case '<' :				
+					$ok = ($value < $params[2] ? 1 : 0);
+				break;
+		}
+		return $ok;
+	}
+
+	/**
+	 * Compare with other field 'comparetxt|[<,=,>]|[str_value]'
+	 * @return
+	 * @param object $value
+	 * @param object $params
+	 */
+	public static function comparetxt($value, $params) {
+		$ok = 1;
+		switch($params[1]) {
+			case '=' :
+				$ok = ($value == $params[2] ? 1 : 0);
+				break;
+			case '>' :
+				$ok = ($value > $params[2] ? 1 : 0);
+				break;
+			case '<' :
+				$ok = ($value < $params[2] ? 1 : 0);
+				break;
+			case '!=' :
+				$ok = ($value != $params[2] ? 1 : 0);
+				break;
+		}
+		return $ok;
+	}
+	
+	/**
+	 * Exists in model check 'exists|{model}|{id}'
+	 * @param string $value
+	 * @param array $params
+	 */
+	public static function exists($value, $params) {
+		global $dal;
+		global $page;
+		$dal -> import($params[1]);
+		return !$dal -> $params[1] -> exists($params[2], $value);
+	}
+	
+	/**
+	 * Not exists in model check 'notexists|{model}|{id}'
+	 * @param string $value
+	 * @param array $params
+	 */
+	public static function notexists($value, $params) {
+		return !Form_Rules::exists($value, $params);
+	}
+	
+	/**
+	 * Exists different in model check 'exists_different|{model}|{id}|{different_from_id}'
+	 * @param string $value
+	 * @param array $params
+	 */
+	public static function exists_different($value, $params) {
+		return ($params[3] != $value && Form_Rules::exists($value, $params)) || $params[3] == $value;
+	}
+
+	/**
+	 * Custom validator on model 'custom_dal|{model}|{method}|{param_1}|..|{param_n}'
+	 * @param string $value
+	 * @param array $params
+	 */
+	public static function custom_dal($value, $params) {
+		global $dal;
+		$dal -> import($params[1]);
+		$model = $dal -> $params[1];
+		return call_user_func_array(array($model, $params[2]), array_merge(array($value), array_slice($params, 3)));
+	}
+
+	/**
+	 * Check if date 'date'
+	 * @return
+	 * @param object $value
+	 */
+	public static function date($value) {
+		return strtotime($value);
+	}//end function date
+
+	/**
+	 * Check if date ISO 'dateISO'
+	 * @return
+	 * @param object $value
+	 */
+	public static function dateISO($value) {
+		return preg_match('#^\d{4}[\/-]\d{1,2}[\/-]\d{1,2}$#i', $value);
+	}
+
+	/**
+	 * Check if date interval is ok 'dateinterval|{start_date}'
+	 * @return
+	 * @param object $value
+	 * @param object $params [optional]
+	 */
+	public static function dateinterval($value, $params = '') {
+		return strtotime($value) >= strtotime($params[1]);
+	}//end function dateinterval($i)
+
+	/**
+	 * check if the data is in past time 'datenow'
+	 * @return
+	 * @param object $value
+	 */
+	public static function datenow($value) {
+		return strtotime($value) < time();
+	}//end function datenow
+
+	/**
+	 * Check if no white spaces are in text
+	 * @param string $value
+	 */
+	public static function nowhitespace($value) {
+		return preg_match('#^\S+$#i', $value);
+	}
+	
+	/**
+	 * Check the signature
+	 * @param string $value
+	 */
+	public static function signature($value) {
+		global $page;		
+		return isset_or($page -> session['signature']) == $value;
+	}
+}
+
+/**
+ * Class Form Rule
+ * @package WebLauncher\Managers
+ */
+class Form_Rule {
+	/**
+	 * @var string $rule Rule to check
+	 */
+	private $rule = '';
+	/**
+	 * @var string $message Message to show
+	 */
+	private $message = '';
+	
+	/**
+	 * Constructor
+	 * @param string $rule
+	 * @param string $message
+	 */
+	function __construct($rule, $message = '') {
+		$this -> rule = $rule;
+		$this -> message = $message;
+	}
+	
+	/**
+	 * Check if value is ok
+	 * @param string $value
+	 */
+	public function check($value) {
+		return $this->_check($value);
+	}
+	
+	/**
+	 * Check if value is ok private
+	 * @param string $value
+	 */
+	private function _check($value){
+		$vars=explode('|',$this->rule);
+		if(count($vars)<=1)
+		{
+			$rule=$this->rule;
+			return Form_Rules::$rule($value);
+		}
+		else{
+			switch($vars[0]){
+				case 'compare':
+					$vars[2]=isset_or($_POST[$vars[2]]);				
+				break;
+			}
+			return Form_Rules::$vars[0]($value,$vars);
+		}
+	}
+	
+	/**
+	 * Return message of rule
+	 */
+	function get_message() {
+		return $this -> message;
+	}
+}
+
+/**
+ * Class Form Filter
+ * @package WebLauncher\Managers
+ */
+class Form_Filter {
+	/**
+	 * @var string $filter Filter name
+	 */
+	private $filter = '';
+	/**
+	 * @var array $params Filter parameters
+	 */
+	private $params = '';
+	
+	/**
+	 * Constructor
+	 * @param string $filter
+	 * @param array $params
+	 */
+	function __construct($filter, $params = '') {
+		$this -> filter = $filter;
+		$this -> params = $params;
+	}
+	
+	/**
+	 * Filter value
+	 * @param string $value
+	 * @param array $params
+	 */
+	function filter($value,$params='') {
+		$filt=$this->filter;
+		return Form_Filters::$filt($value,$params);
+	}
+}
+
+/**
+ * Class Form Field
+ * @package WebLauncher\Managers
+ */
+class Form_Field {
+	/**
+	 * @var string $field_name Name of the input field
+	 */
+	private $field_name = '';
+	/**
+	 * @var array $rules Rules to apply to field
+	 */
+	private $rules = array();
+	/**
+	 * @var array $filters Filters to apply to field
+	 */
+	private $filters = array();
+	/**
+	 * @var array $errors Error messages generated
+	 */
+	private $errors = array();
+	/**
+	 * @var string $value Current field value
+	 */
+	private $value='';
+	/**
+	 * @var bool $_valid Flag if valid
+	 */
+	private $_valid=true;
+	/**
+	 * @var bool $_validated Flag if validated
+	 */
+	private $_validated=false;
+	/**
+	 * @var bool $_filtered Flag if filtered
+	 */
+	private $_filtered=false;
+	
+	/**
+	 * Constructor
+	 * @param string $field
+	 */
+	public function __construct($field) {
+		$field=str_replace('[]', '', $field);
+		$this -> field_name = $field;				
+		if(isset($_POST[$field]))							
+			$this->value=$_POST[$field];		
+		if(isset($_FILES[$field]))
+			$this->value=$_FILES[$field]['tmp_name'];			
+	}
+	
+	/**
+	 * Add rule method
+	 * @param string $rule
+	 * @param string $message
+	 */
+	public function add_rule($rule, $message = '') {
+		$this -> rules[base64_encode($rule)] = new Form_Rule($rule, $message);
+	}
+
+	/**
+	 * Add filter method
+	 * @param string $filter
+	 * @param array $params
+	 */
+	public function add_filter($filter, $params = '') {
+		$this -> filters[base64_encode($filter)] = new Form_Filter($filter, $params);
+	}
+	
+	/**
+	 * Validate field
+	 * @return bool
+	 */
+	public function validate() {
+		foreach ($this->rules as $rule)
+			if (!$rule -> check($this->value))
+				$this -> errors[] = $rule -> get_message();
+		$this->_validated=true;
+		$this->_valid=count($this -> errors) == 0;
+		return $this->_valid;
+	}
+	
+	/**
+	 * Filter field
+	 */
+	public function filter() {
+		foreach ($this->filters as $filter)
+			$this -> value = $filter -> filter($this -> value);
+		$this->filtered=true;
+	}
+	
+	/**
+	 * Run filter
+	 * @param string $filter
+	 * @param array $params
+	 */
+	public function run_filter($filter,$params='')
+	{
+		return Form_Filters::$filter($this->value,$params);
+	}
+	
+	/**
+	 * Get errors
+	 * @return array
+	 */
+	public function get_errors(){
+		return $this->errors;
+	}
+	
+	/**
+	 * value return
+	 */
+	public function value(){
+		return $this->value;
+	}
+	
+	/**
+	 * Is valid return
+	 */
+	public function is_valid(){
+		return $this->_valid;
+	}
+}
+
+/**
+ * Class Form Object
+ * @package WebLauncher\Managers
+ */
+class Form_Object {
+	/**
+	 * @var string $_form_id Form id
+	 */
+	private $_form_id = 'new_form';
+	/**
+	 * @var string $_hash Form hash
+	 */
+	private $_hash = '';
+	/**
+	 * @var array $fields Fields in form data array
+	 */
+	private $_fields = array();
+	/**
+	 * @var bool $_valid If form is valid
+	 */
+	private $_valid=true;
+	/**
+	 * @var bool $_validated If form is validated
+	 */
+	private $_validated=false;
+	
+	/**
+	 * Constructor
+	 * @param string $form_id
+	 */
+	public function __construct($form_id) {
+		$this -> _form_id = $form_id;
+		$this -> _hash = sha1(base64_encode(microtime()));
+	}
+	
+	/**
+	 * Get magic method
+	 * @param stirng $field
+	 */
+	public function __get($field){
+		if(isset($this->_fields[$field]))
+			return $this->_fields[$field]->value();
+		elseif(isset($_REQUEST[$field]))
+			return $_REQUEST[$field];
+		else
+			trigger_error('No field "'.$field.'" registered in form "'.$this->_form_id.'"');
+	}
+    
+	/**
+	 * Add field to form
+	 * @param object $field
+	 */
+	public function add_field($field) {
+		if(!isset($this->_fields[$field]))$this->_fields[$field]=new Form_Field($field);
+	}
+	
+	/**
+	 * Add rule to field
+	 * @param string $field
+	 * @param string $rule
+	 * @param string $message
+	 */
+	public function add_rule($field,$rule,$message){
+		$this->add_field($field);
+		$this->_fields[$field]->add_rule($rule,$message);
+	}
+	
+	/**
+	 * Add filter to field
+	 * @param string $field
+	 * @param string $filter
+	 * @param array $params
+	 */
+	public function add_filter($field,$filter,$params){
+		$this->add_field($field);
+		$this->_fields[$field]->add_filter($filter,$params);
+	}
+	
+	/**
+	 * Get form hash
+	 * @return string
+	 */
+	public function get_hash(){
+		return $this->_hash;
+	}
+	
+	/**
+	 * Validate form
+	 * @return bool
+	 */
+	public function validate(){
+		if(!$this->_validated)
+		{		
+			foreach($this->_fields as $field)
+			{
+				$field->filter();
+				if(!$field->validate())
+					$this->_valid=false;
+			}
+			$this->_validated=true;
+		}
+		return $this->_valid;
+	}
+	
+	/**
+	 * Get form errors
+	 * @return array
+	 */
+	public function get_errors(){
+		$errors=array();
+		foreach($this->_fields as $k=>$field)
+		{
+			if(!$field->is_valid())
+			{
+				$f_errors=$field->get_errors();
+				$errors[$k]=$f_errors[0];
+			}
+		}
+		return $errors;
+	}
+}
+/**
+ * Form Requests Manager Class for filters and validators
+ * @package WebLauncher\Managers
+ */
+class FormsManager implements ArrayAccess {
+	/**
+	 * @var array $forms Forms data array
+	 */
+	private $forms = array();
+	/**
+	 * Constructor
+	 */
+	public function __construct() {
+
+	}
+	
+	/**
+	 * Add rule to form and field
+	 * @param string $form_id
+	 * @param string $field
+	 * @param string $rule
+	 * @param string $message
+	 */
+	public function add_rule($form_id, $field, $rule, $message = '') {
+		$this->_add_form($form_id);
+		$this -> _add_rule($form_id, $field, $rule, $message);
+	}
+	
+	/**
+	 * Add filter to form and field
+	 * @param string $form_id
+	 * @param string $field
+	 * @param string $filter
+	 * @param array $params
+	 */
+	public function add_filter($form_id, $field, $filter, $params = '') {		
+		$this->_add_form($form_id);
+		$this -> _add_filter($form_id, $field, $filter, $params);
+	}
+	
+	/**
+	 * Get form hash
+	 * @param string $form_id
+	 */
+	public function get_form_hash($form_id) {
+		$this -> _add_form($form_id);
+		return $this -> forms[$form_id]->get_hash();
+	}
+	
+	/**
+	 * Add form
+	 * @param string $form_id
+	 */
+	private function _add_form($form_id) {
+		if (!isset($this -> forms[$form_id]))
+			$this -> forms[$form_id] = new Form_Object($form_id);
+	}
+	
+	/**
+	 * Add rule
+	 * @param string $form_id
+	 * @param string $field
+	 * @param string $rule
+	 * @param string $message
+	 */
+	private function _add_rule($form_id, $field, $rule, $message){		
+		$this->forms[$form_id]->add_rule($field,$rule,$message);
+	}
+	
+	/**
+	 * Add filter
+	 * @param string $form_id
+	 * @param string $field
+	 * @param string $filter
+	 * @param array $params
+	 */
+	private function _add_filter($form_id, $field, $filter, $params){		
+		$this->forms[$form_id]->add_filter($field,$filter,$params);
+	}
+	
+	/**
+	 * ArrayAccess exists
+	 * @param string $offset
+	 */
+	public function offsetExists ($offset ){
+		return isset($this->forms[$offset]);
+	}
+	
+	/**
+	 * ArrayAccess get
+	 * @param string $offset
+	 */
+	public function offsetGet ($offset){
+		if(isset($this->forms[$offset]))
+			$this->forms[$offset]->validate();
+		return $this->forms[$offset];	
+	}
+	
+	/**
+	 * ArrayAccess set
+	 * @param string $offset
+	 * @param string $value
+	 */
+	public function offsetSet($offset,$value){
+		$this->forms[$offset]=$value;
+	}
+	
+	/**
+	 * ArrayAccess unset
+	 * @param string $offset
+	 */
+	public function offsetUnset($offset){
+		unset($this->forms[$offset]);
+	}
+	
+	/**
+	 * Validate rule using value
+	 * @param string $rule
+	 * @param string $value
+	 */
+	public function validate($rule,$value){
+		$vars=explode('|',$rule);
+		if(count($vars)<=1)
+		{
+			return Form_Rules::$rule($value);
+		}
+		else
+			return Form_Rules::$vars[0]($value,$vars);
+	}
+	
+	/**
+	 * Init Forms Manager
+	 */
+	public function init(){
+		global $page;
+		if ($page -> ispostback && !$page -> ajax) {
+			if (isset($page -> session['validation']) && isset($_POST['__hash']) && isset($page -> session['validation'][$_POST['__hash']])) {
+				foreach ($page->session['validation'][$_POST['__hash']]['fields'] as $field => $obj_field)
+				{
+					if(isset($obj_field['rules']))
+						foreach ($obj_field['rules'] as $rule => $message)
+							$page -> validate -> add_rule($page -> session['validation'][$_POST['__hash']]['form_id'], $field, $rule, $message);
+					if(isset($obj_field['filters']))
+						foreach ($obj_field['filters'] as $filter => $params)
+							$page -> validate -> add_filter($page -> session['validation'][$_POST['__hash']]['form_id'], $field, $filter, $params);
+				}
+				$page -> validate_form($page -> session['validation'][$_POST['__hash']]['form_id']);				
+				if (!$page -> valid)
+					$page -> redirect($_SERVER['HTTP_REFERER']);
+			} else
+			{
+				if(isset($_SERVER['HTTP_REFERER']) && strpos($_SERVER['HTTP_REFERER'],$page->paths['root'])!=0)
+					$page -> redirect($_SERVER['HTTP_REFERER']);
+			}
+		}
+		unset($page -> session['validation']);
+	}
+}
+?>

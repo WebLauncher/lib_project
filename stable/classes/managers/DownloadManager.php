@@ -1,0 +1,242 @@
+<?php
+/**
+ * Download Manager
+ */
+/**
+ * Download Request Manager Class
+ * @example In Page: $this->downloads
+ * @package WebLauncher\Managers
+ */
+class DownloadManager {
+	/**
+	 * @var array $download_allowed_extensions Extensions that can be downloaded
+	 */
+	var $download_allowed_extensions = array(
+	// archives
+		'zip' => 'application/zip',
+
+	// documents
+		'pdf' => 'application/pdf', 'doc' => 'application/msword', 'docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'xls' => 'application/vnd.ms-excel', 'ppt' => 'application/vnd.ms-powerpoint', 'pptx' => 'application/vnd.openxmlformats-officedocument.presentationml.presentation', 'xlsx' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+
+	// executables
+		'exe' => 'application/octet-stream',
+
+	// images
+		'gif' => 'image/gif', 'png' => 'image/png', 'jpg' => 'image/jpeg', 'jpeg' => 'image/jpeg',
+
+	// audio
+		'mp3' => 'audio/mpeg', 'wav' => 'audio/x-wav',
+
+	// video
+		'wmv' => 'video/x-ms-wmv', 'mpeg' => 'video/mpeg', 'mp4' => 'video/mp4', 'mpg' => 'video/mpeg', 'mpe' => 'video/mpeg', 'mov' => 'video/quicktime', 'avi' => 'video/x-msvideo', 'flv' => 'video/x-flv');
+	/**
+	 * Constructor
+	 */
+	function __construct(){
+		global $page;
+		$page->download_allowed_extensions=array_merge($page->download_allowed_extensions,$this->download_allowed_extensions);
+	}
+	
+	/**
+	 * Download file
+	 * @param string $file
+	 * @param string $newname
+	 * @param strng $dir
+	 */
+	function download($file,$newname='',$dir='')
+	{
+		ini_set('memory_limit','256M');
+		set_time_limit(0);
+
+		###############################################################
+		# File Download 1.3
+		###############################################################
+		# Visit http://www.zubrag.com/scripts/ for updates
+		###############################################################
+		# Sample call:
+		#    download.php?f=phptutorial.zip
+		#
+		# Sample call (browser will try to save with new file name):
+		#    download.php?f=phptutorial.zip&fc=php123tutorial.zip
+		###############################################################
+
+		// Allow direct file download (hotlinking)?
+		// Empty - allow hotlinking
+		// If set to nonempty value (Example: example.com) will only allow downloads when referrer contains this text
+		define('ALLOWED_REFERRER', '');
+
+		// Download folder, i.e. folder where you keep all files for download.
+		// MUST end with slash (i.e. '/' )
+		define('BASE_DIR',$dir);
+
+		// log downloads?  true/false
+		define('LOG_DOWNLOADS',false);
+
+		// log file name
+		define('LOG_FILE','downloads.log');
+
+		// Allowed extensions list in format 'extension' => 'mime type'
+		// If myme type is set to empty string then script will try to detect mime type
+		// itself, which would only work if you have Mimetype or Fileinfo extensions
+		// installed on server.
+		global $page;
+		####################################################################
+		###  DO NOT CHANGE BELOW
+		####################################################################
+
+		// If hotlinking not allowed then make hackers think there are some server problems
+		if (ALLOWED_REFERRER !== ''
+		&& (!isset($_SERVER['HTTP_REFERER']) || strpos(strtoupper($_SERVER['HTTP_REFERER']),strtoupper(ALLOWED_REFERRER)) === false)
+		) {
+			die('Internal server error. Please contact system administrator.');
+		}
+
+		// Make sure program execution doesn't time out
+		// Set maximum script execution time in seconds (0 means no limit)
+		set_time_limit(0);
+
+		if (!isset($file) || empty($file)) {
+			die('Please specify file name for download.');
+		}
+
+		// Get real file name.
+		// Remove any path info to avoid hacking by adding relative path, etc.
+		$fname = basename($file);
+
+
+
+		// get full file path (including subfolders)
+		$file_path = '';
+		DownloadManager::find_file(BASE_DIR, $fname, $file_path);
+
+		if (!is_file($file_path)) {
+			die('File does not exist. Make sure you specified correct file name.');
+		}
+
+		// file size in bytes
+		$fsize = filesize($file_path);
+
+		// file extension
+		$fext = strtolower(substr(strrchr($fname,'.'),1));
+
+		// check if allowed extension
+		if (!array_key_exists($fext, $page->download_allowed_extensions)) {
+			die('Not allowed file type.');
+		}
+
+		// get mime type
+		if ($page->download_allowed_extensions[$fext] == '') {
+			$mtype = '';
+			// mime type is not set, get from server settings
+			if (function_exists('mime_content_type')) {
+				$mtype = mime_content_type($file_path);
+			}
+			else if (function_exists('finfo_file')) {
+				$finfo = finfo_open(FILEINFO_MIME); // return mime type
+				$mtype = finfo_file($finfo, $file_path);
+				finfo_close($finfo);
+			}
+			if ($mtype == '') {
+				$mtype = 'application/force-download';
+			}
+		}
+		else {
+			// get mime type defined by admin
+			$mtype = $page->download_allowed_extensions[$fext];
+		}
+
+		// Browser will try to save file with this filename, regardless original filename.
+		// You can override it if needed.
+
+		if (!isset($newname) || empty($newname)) {
+			$asfname = $fname;
+		}
+		else {
+			// remove some bad chars
+			$asfname = str_replace(array('"',"'",'\\','/'), '', $newname);
+			if ($asfname === '') $asfname = 'NoName';
+		}
+
+		// set headers
+		header('Pragma: public');
+		header('Expires: 0');
+		header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+		header('Cache-Control: public');
+		header('Content-Description: File Transfer');
+		header('Content-Type: '.$mtype);
+		header("Content-Disposition: attachment; filename=\"$asfname\"");
+		header('Content-Transfer-Encoding: binary');
+		header('Content-Length: ' . $fsize);
+
+		$file_path=str_replace('//','/',$file_path);
+		@ob_end_flush();
+		// download
+		switch($page->download_function)
+		{
+			case 'readfile':
+				readfile($file_path);
+				break;
+			case 'xsendfile':
+				header('X-Sendfile: '.$file_path);
+				break;
+			case 'fpassthru':
+				$fp=fopen($file_path,'rb');
+				fpassthru($fp);
+				ob_flush();
+				fclose($fp);
+				break;
+			case 'stream':
+				$file = @fopen($file_path,'rb');
+				if ($file) {
+					while(!feof($file)) {
+						print(fread($file, 1024*8));
+						flush();
+						if (connection_status()!=0) {
+							@fclose($file);
+							die();
+						}
+					}
+					@fclose($file);
+				}
+				break;
+		}
+
+		// log downloads
+		if (!LOG_DOWNLOADS) die();
+
+		$f = @fopen(LOG_FILE, 'a+');
+		if ($f) {
+			@fputs($f, date('m.d.Y g:ia').'  '.$_SERVER['REMOTE_ADDR'].'  '.$fname.'\n');
+			@fclose($f);
+		}
+		die();
+	}
+	
+	/**
+	 * Check if file exists 
+	 * @param string $dirname
+	 * @param string $fname
+	 * @param string $file_path
+	 */
+	function find_file ($dirname, $fname, &$file_path) {
+
+		$dir = opendir($dirname);
+
+		while ($file = readdir($dir)) {
+			if (empty($file_path) && $file != '.' && $file != '..') {
+				if (is_dir($dirname.'/'.$file)) {
+					DownloadManager::find_file($dirname.'/'.$file, $fname, $file_path);
+				}
+				else {
+					if (is_file($dirname.'/'.$fname)) {
+						$file_path = $dirname.'/'.$fname;
+						return;
+					}
+				}
+			}
+		}
+
+	} // find_file
+}
+
+?>

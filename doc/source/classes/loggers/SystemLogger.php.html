@@ -1,0 +1,118 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * System Logger
+ */
+	/**
+	 * @package WebLauncher\Loggers
+	 */
+class SystemLogger {
+	/**
+	 * @var array $logger
+	 */
+	var $logger=array();
+	/**
+	 * @var bool $active
+	 */
+	var $active=true;
+	/**
+	 * @var int $no
+	 */
+	var $no=0;
+	
+	/**
+	 * Constructor
+	 * @param bool $active
+	 */
+	function __construct($active=true)
+	{
+		$this-&gt;active=$active;
+	}
+	
+	/**
+	 * Add to log
+	 * @param string $type
+	 * @param string $message
+	 */
+	function log($type,$message)
+	{
+		if($this-&gt;active)
+		{
+			$this-&gt;logger[]=array('type'=&gt;$type,'message'=&gt;$message);
+			$this-&gt;no++;
+		}
+	}
+	
+	/**
+	 * Get generated code for logger
+	 */
+	function get()
+	{
+		$types=array();
+			foreach($this-&gt;logger as $v)
+				if(!isset($types[$v['type']]))
+				{
+					$types[$v['type']]=array('list'=&gt;array($v['message']),'total'=&gt;1);
+				}
+				else
+				{
+					$types[$v['type']]['list'][]=$v['message'];
+					$types[$v['type']]['total']++;
+				}
+
+			$result='&lt;br/&gt;&lt;br/&gt;&lt;table class=&quot;logger&quot; width=&quot;100%&quot;&gt;';
+			foreach($types as $k=&gt;$v)
+			{
+				$result.='&lt;tr&gt;&lt;td&gt;'.$k.' ('.$v['total'].')&lt;/td&gt;&lt;td&gt;&lt;ul&gt;';
+				foreach($v['list'] as $m)
+					$result.='&lt;li&gt;'.$m.'&lt;/li&gt;';
+				$result.='&lt;/ul&gt;&lt;/td&gt;&lt;/tr&gt;';
+			}
+			$result.='&lt;/table&gt;';
+			return $result;
+	}
+}
+?&gt;</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all()
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

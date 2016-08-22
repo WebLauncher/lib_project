@@ -1,0 +1,201 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+	/**
+	 * E-mails Send Manager Class
+	 * @package WebLauncher\Managers
+	 * @example $this-&gt;system-&gt;mail
+	 */
+	class EmailManager{
+		public $mailer=null;
+		
+		function __construct(){
+			
+		}
+		
+		function compose($to, $subject, $message, $from, $fromname, $reply_to='', $reply_name='',$attachments=array(), $mail_in='to', $sender='', $others=array()){
+			global $page;
+			if(strtolower(isset($page-&gt;mail_type)?$page-&gt;mail_type:'')=='queue')
+				return $this-&gt;queue($to, $subject, $message, $from, $fromname, $reply_to, $reply_name,$attachments, $mail_in, $sender, $others);
+
+			$this -&gt; mailer = new PHPMailer();
+			$this -&gt; mailer -&gt; CharSet = 'UTF-8';
+			switch(strtolower(isset($page-&gt;mail_type)?$page-&gt;mail_type:''))
+			{
+				case &quot;qmail&quot;:
+					$this -&gt; mailer -&gt;IsQmail();
+				break;
+				case &quot;sendmail&quot;:
+					$this -&gt; mailer -&gt;IsSendmail();
+				break;
+				case &quot;smtp&quot;:
+					$this -&gt; mailer -&gt;IsSMTP();
+					$this -&gt; mailer -&gt;SMTPAuth=true;
+				break;
+				case &quot;mail&quot;:
+				default:
+					$this -&gt; mailer -&gt;IsMail();
+			}
+			
+			if(is_array($to)){
+				foreach($to as $value){
+					if ($mail_in == 'bcc')
+						$this -&gt; mailer -&gt;AddBCC(is_array($value)?$value['email']:$value,is_array($value)?isset_or($value['name']):'');
+					else
+						$this -&gt; mailer -&gt;AddAddress(is_array($value)?$value['email']:$value,is_array($value)?isset_or($value['name']):'');
+				}
+			}else{
+				if ($mail_in == 'bcc')
+					$this -&gt; mailer -&gt;AddBCC($to,isset_or($to));
+				else
+					$this -&gt; mailer -&gt;AddAddress($to,isset_or($to));
+			}
+			if(isset($others['headers']) &amp;&amp; is_array($others['headers']))
+				foreach($others['headers'] as $k=&gt;$v)
+					$this -&gt; mailer -&gt; addCustomHeader($k.': '.$v);
+			
+			$this -&gt; mailer -&gt;IsHTML(true);
+			$this -&gt; mailer -&gt;Subject = $subject;
+			$this -&gt; mailer -&gt;Body = $message;
+			$this -&gt; mailer -&gt;From  = $from;
+			$this -&gt; mailer -&gt;Sender = $from;
+			if($sender){
+				$this -&gt; mailer -&gt;Sender = $sender;
+				$this -&gt; mailer -&gt; addCustomHeader('Errors-To: '.$sender);
+			}
+			$this -&gt; mailer -&gt;FromName = $fromname;
+	
+			$this -&gt; mailer -&gt;Host=$page-&gt;mail_host;
+			$this -&gt; mailer -&gt;Username=$page-&gt;mail_user;
+			$this -&gt; mailer -&gt;Password=$page-&gt;mail_password;
+	
+			// add attachments
+			if(count($attachments)&gt;0)
+				foreach($attachments as $k=&gt;$v)
+					$this -&gt; mailer -&gt;AddAttachment($v,$k);				
+	
+			if ($reply_to != '')			
+				$this -&gt; mailer -&gt;AddReplyTo($reply_to, $reply_name);
+			
+			$message = str_replace(&quot;&lt;br&gt;&quot;, &quot;\n&quot;, $message);
+			$this -&gt; mailer -&gt;AltBody  =  $message;
+			
+			return $this;
+		}
+
+		function queue($to, $subject, $message, $from, $fromname, $reply_to='', $reply_name='',$attachments=array(), $mail_in='to', $sender='', $others=array()){
+			global $page;	
+			if(!is_array($to))
+				$to=ser(array($to=&gt;array('email'=&gt;$to)));
+			$query='insert into `x_conf_email_queue` (
+						`hostname`,
+						`to`,
+						`from`,
+						`from_name`,
+						`mail_in`,
+						`subject`,
+						`message`,
+						`reply`,
+						`reply_name`,
+						`sender`,
+						`others`,
+						`attachments`,
+						`add_datetime`				
+					) values (';
+					$query.=$page-&gt;db_conn-&gt;stringEscape(isset($_SERVER['HTTP_HOST'])?$_SERVER['HTTP_HOST']:'localhost').',';
+					$query.=$page-&gt;db_conn-&gt;stringEscape(ser($to)).',';
+					$query.=$page-&gt;db_conn-&gt;stringEscape($from).',';
+					$query.=$page-&gt;db_conn-&gt;stringEscape($fromname).',';
+					$query.=$page-&gt;db_conn-&gt;stringEscape($mail_in).',';
+					$query.=$page-&gt;db_conn-&gt;stringEscape($subject).',';
+					$query.=$page-&gt;db_conn-&gt;stringEscape($message).',';
+					$query.=$page-&gt;db_conn-&gt;stringEscape($reply_to).',';
+					$query.=$page-&gt;db_conn-&gt;stringEscape($reply_name).',';
+					$query.=$page-&gt;db_conn-&gt;stringEscape($sender).',';
+					$query.=$page-&gt;db_conn-&gt;stringEscape(ser($others)).',';
+					$query.=$page-&gt;db_conn-&gt;stringEscape(ser($attachments)).',';
+					$query.=$page-&gt;db_conn-&gt;stringEscape(nowfull()).'';
+					$query.=')';
+			$page-&gt;db_conn-&gt;query($query);
+			return $this;
+		}
+
+		function send(){
+			$send=true;
+			if(!is_null($this-&gt;mailer))
+			{
+				$send = $this -&gt; mailer -&gt;Send();	
+				unset($this -&gt; mailer);
+			}
+			return $send;
+		}
+		
+		function process_queue_obj($obj,$hosts){
+			$this-&gt;mailer=null;
+			$this-&gt;compose(unser($obj['to']), $obj['subject'], $obj['message'], $obj['from'], $obj['from_name'],$obj['reply_to'],$obj['reply_name'],unser($obj['attachments']),$obj['mail_in'],$obj['sender'],unser($obj['others']));			
+			switch(strtolower(isset($hosts[$obj['hostname']]['mail_type'])?$hosts[$obj['hostname']]['mail_type']:&quot;&quot;))
+			{
+				case &quot;qmail&quot;:
+					$this-&gt;mailer-&gt;IsQmail();
+				break;
+				case &quot;sendmail&quot;:
+					$this-&gt;mailer-&gt;IsSendmail();
+				break;
+				case &quot;smtp&quot;:
+					$this-&gt;mailer-&gt;IsSMTP();
+					$this-&gt;mailer-&gt;SMTPAuth=true;
+					$this-&gt;mailer-&gt;Host=isset_or($hosts[$obj['hostname']]['mail_host']);
+					$this-&gt;mailer-&gt;Username=isset_or($hosts[$obj['hostname']]['mail_user']);
+					$this-&gt;mailer-&gt;Password=isset_or($hosts[$obj['hostname']]['mail_password']);
+				break;			
+				case &quot;mail&quot;:
+				default:
+					$this-&gt;mailer-&gt;IsMail();
+			}		
+			$this -&gt; mailer -&gt; addCustomHeader('X-MessageID: '.$obj['id']); 
+			return $this-&gt;send();
+		}
+	}
+?&gt;</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all()
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

@@ -1,0 +1,309 @@
+2.6.10
+- added cache library Stash
+	- $this->cache->getItem('test')
+2.6.9
+- fixed: models count_all should work with join
+2.6.8
+- fixed: Page: on_no_action or index gets executes in parent components
+- fixed minify library cache location
+2.6.7
+- fixed: session Garbage Collector method deleteing valid sessions
+2.6.6
+- fix descrypt function was not handling url_decode
+2.6.5
+- fix ajax issue when view is changed on module index.php
+2.6.4
+- update PHP Mailer to 5.2.7
+2.6.3
+- $this->system->request_method returns get, post, put or delete
+- class Page changes:
+	- add action names by request type:
+		post_action_[name]()
+		get_action_[name]()
+		delete_action_[name]()
+		put_action_[name]()
+- if no skin folder present in components views folder look for view files in views folder directly.
+
+2.6.2
+- fixed session cookie timeout update issue
+- Smarty 3 updated to 3.1.6
+- Smarty 2 updated to 2.6.28
+- added $page->libraries_settings as array
+- you can set smarty version using $page->libraries_settings['smarty']['version']='v3' // or v2 for version 2
+
+2.6.1
+- Smarty: {image} added attribute get_path. If set {image get_path=true}{/image} will return the path to the image.
+
+2.6.0
+- added in Page $this->parent access to parrent component
+- Page now looks for method index() same functionality as on_no_action()
+- added console execution and cronjobs
+	- php index.php --cron will execute all cronjobs configured (in php config and in database) that meet the time specification
+	- php index.php /site/home/ will render the home page template as called from url
+- in Page class:
+	- $this->meta_tags now accesses $this->system->meta_tags (you should be able to configure meta tags like this $this->meta_tags['keywords']=array('name'=>'keywords','content'=>'key1,key2,...'))
+- email manager clean duplicate e-mails if sending to multiple e-mails the same message	
+	
+2.5.5
+- cleaned white lines from emails in text mode
+2.5.4
+- added $this->files to Page as link to $this->system->uploads (FilesManager)
+- added upload($name,$folder='',$newname='',$append_main_folder=true) method to FilesManager
+- added documentation in doc folder and started documenting classes
+2.5.3
+- added function array_column($input, $column_key, $index_key = null) to work as it works for PHP 5.5 (check PHP documentation)
+2.5.2
+- model improvements
+	- added $this->joins to model to define joins for a model (this will be active for any get_all,get_colls,get_cond,get ... methods)
+		- example ( $this->joins=array(array('table'=>'table1','on'=>'table.field=table1.field','type'=>'right'))
+	- added $this->join($table,$condition,$type) method that create a clone of the current model with the join added 
+		- exammple $this->models->model1->join('table2','model1.field=table2.field','left')->get_all();
+2.5.1
+- updated to latest Minify library 2.1.7
+2.5.0
+- Page: 
+	- if an action is called if the view with that name exists it sets that view to the page
+- improvement to model
+	- added $this->process (default true) to flag if process_row function should or not be executed
+- added {element path=$module.$component1.$component2.$view_file var1=$var1 ...} function to Smarty
+	- this allows to include templates from different components
+	- this tries to use the same skin, otherview default skin will be used 
+- added extensions to model
+	- using var extends=array('Tree','WebService') you can extend with several functionality the model
+	- new extensions Tree and WebService
+- improvements to model methods:
+	- update_field($id,$field,$value) if $id is array will update all rows field to value with the given ids
+	- delete_cond($cond) $cond cand be of type array('field'=>'value')
+	- exists_cond($cond) $cond cand be of type array('field'=>'value')
+	- get_cond($cond) $cond can be of type array('field'=>'value')
+	- count_all($cond) $cond can be of type array('field'=>'value')
+	- get($id) $id can be an array of ids and the method will return an array of rows from db
+	- delete($id) $id can be an array of ids and the method will delete each rows from the database
+	- exists($field,$value)
+		- $value is not required and is null by default
+		- if $value is null method will look if in the db a row with id field equal to $field parameter
+		- if $field and $value are arrays and have the same length method will look in the db for a row having those fields equal to those values
+- added 'mail' method to class Page mail($template,$params=array()) to send a template e-mail with the parameters given
+	- template will be search using email_templates model if it exists, otherwise it will look in module/objects for a file called mail_{$template}.tpl and use it as the template
+	- if model email_templates has the method send($template,$params) it will use that method
+	- parameters and their default values used for e-mail sending are:
+		'subject'=>'system new e-mail',
+		'from'=>'from@website.com',
+		'fromname'=>'system from name',
+		'reply_to'=>'no-reply@website.com',
+		'reply_name'=>'system reply name',
+		'attachments'=>array(),
+		'mail_in'=>'to',
+		'sender'=>'',
+		'others'=>array() // here you can set ['headers']=>array(name=>value)
+- added $page->mail_defaults array
+	- this configures an e-mail default parameters
+		'subject'=>'system new e-mail',
+		'from'=>'from@website.com',
+		'fromname'=>'system from name',
+		'reply_to'=>'no-reply@website.com',
+		'reply_name'=>'system reply name',
+		'attachments'=>array(),
+		'mail_in'=>'to',
+		'sender'=>'',
+		'others'=>array() // here you can set ['headers']=>array(name=>value)
+- added $page->session_timeout (default is 1800, 30 min) that sets the session expiration time
+- fixed more require commands with autoload
+- added $model->uses (an array that attaches models to the current model so they can be used as $this->model1 or $this->model2) ($this->uses=array('model1','model2') to link othe models to link the current model)
+- removed $page->load_functions (was not used)
+- removed $page->load_dal (load_model alias)
+- removed 'class.' from files name in classes
+- added autoload function to load classes
+- added to model $this->process_row_func (the function to process the row, default is 'process_row')
+- beautyfied error listing
+
+2.4.0
+- added method model->query($query,$args) (query can be a prepare PDO query and args will be the arguments that be prepared when executing) 
+- fixed $this->cache_enabled for class Page (to clear page cache user ?__clear_cache=1 in url, to view the page without cache use ?__nocache=1)
+- added javascript check template warning to load just after the <body> tag 
+	- for this to be functional index.tpl need to be edited to have this code <noscript>{eval var=$__noscript}</noscript>
+	- the script looks for the file /modules/{$module}/views/{$skin}/noscript.tpl
+- added cookies check script 
+	- $page->check_cookies() redirect the user and checks if it has the cookies enabled
+	- $page->check_cookies=false is the default so the crawlers can access a website properly without cookies
+	- if cookies not enabled will show a 500 Internal Server Error (template can be customized from /modules/{$module}/views/{$skin}/505.tpl and has $message varible if needed)
+- added system error call
+	- $page->system_error($code='500',$message='') will stop the execution of the script loading the template according to the system error code (ex. /modules/{$module}/views/{$skin}/{$code}.tpl)
+	- this also pushes the appropiate header (ex. 404 Not Found...)
+- added $page->authenticate->new_password($user_id='',$length=6,$password='',$algorithm='md5') to generate and save password for the current logged user or for the given one, returns the generated password
+- added display direct options to Page class where returning on action methods and on_init and on_load and on_no_action (array will be displayed as json_encode and string and numeric as itself, object will have to have __toString so they can pe echo-ed, die() is called if return is used)
+- added $page->authenticate->logout_user() and $page->authenticate->login_user($user_id,$user_type,$remmember) methods
+- added library bounce (Bounce processing library - phpmailer-bmh)
+- added library simplesaml (SAML processing)
+- added library onelogin (SAML processing)
+- remove library receive_mail (deprecated)
+- added e-mail manager ($page->mail) (methods: compose(...), send(), queue())
+- added ability to execute modules and components from console (php index.php site/home/?a=test:1 = will execute as calling the url [base_url]site/home/?a=test:1) For this a config variable ($page->console_baseurl) need to be set to the root of the website to be able to determine url paths.
+- moved index.tpl from root dir to lib/objects/system/ for security reasons 
+- added permissions to admin and admin types (menu handles permissions)
+- added method Form_Rules::accept (checks file types)
+- added smarty autodefined ssl variable to check if page is loaded using SSL or not
+
+2.3.1
+- fixed issue with saving trace html files in cache folder the editors builders load slow
+- added _Base->process_array (to process an array of objects) 
+
+2.3.0
+- added HocksManager ($page->hocks and $this->system->hocks for Page) 
+	- to add a hock use $page->add_hock($name,$function - callable ) -  $function can be callable type string, array, function
+	- added system default hocks
+		- before_init - no parameters passed
+		- after_init  - no parameters passed
+		- before_render - no parameters passed
+		- after_render - no parameters passed
+		- before_login - no parameters passed
+		- after_login - no parameters passed
+		- before_logout - no parameters passed
+		- after_logout - no parameters passed
+		- before_session_init - no parameters passed
+		- after_session_init - no parameters passed
+- mvc member removed now all stucture is MVC only
+- fixed utf8 issues with characters encode
+- added Base class for Admin section so the live section get cleaner
+	- added method to get admin form base on the model settings (get_admin_form) this generates a form for editing or adding values
+	- added method to insert data into the db table for model directly from admin generated form (insert_from_admin_form)
+	- added method to update data into the db table for model directly from admin generated form (update_from_admin_form)
+- changed method Base->update($fields,$cond) - condition is no longer required but you need to set the field id value for the row that needs update
+- added new library wbl_admin (with classes required for admin section) - this is automatically included if the module is set to admin 1
+	- class.Form.php - manages forms for the admin side (contains a form generator)
+	- class.AjaxTable.php - manages tables for admin side 
+	- other features
+- improved execution performance
+- added fatal error handling function, also e-mail report can be configured in $page->error_log_email this e-mails will receive the report.
+- changed models tables reference in configuration as not required(now if a table does not have alias in php.config.php when you assign the table name as $this->tbl_example it will assign the models the table 'example' in case it does not have an alias)  
+- fixed issue with smarty validator message with newline character
+- fixed issue when changing view to index page of the modules
+- added parameter for Smarty::bind block plugin called default. This will return the default value if no value found in database.
+- added parameter for Smarty::image block plugin called default. This will return the default value if no value found in database. It will also resize default image to what is required.
+- updated OpenInviter to 1.9.6 version
+- added function BrowserInfo::get_user_ip();
+- added member variable $page->browser_ip (The IP of the browser)
+- added geoip library (geoip - only one function for now geoCheckIP($ip) - get an array of information about IP)
+- added Smarty variable modifier add_param - adds/edits paramter in a given url
+- fixed PHPMailer charset to UTF-8
+- added member $this->system->maintain_ssl (default false) if set to true will redirect if needed to ssl
+- added Smarty variable modifier http and https (modifies url to be http or https)
+- added Smarty variable modifier mb_truncate (needs mbstring to be active)
+- updated PHPExcel to 1.7.8
+- updated Minify to 2.1.5
+- updated PHPIDS to 0.7
+- removed library phpcalendar (deprecated)
+- removed library replication (deprecated)
+- fixed smarty validator message location issue
+- added $page->seo_tracking_allowed which tracks in a database tbl_xpages_tracking which track crawlers access. $page->seo_tracking_type sets the type of tracking (all [default], browser, robot)
+- added SessionHandlerDb which stores the $_SESSION var in database as the old system works (Now $_SESSION can be used anywhere in the project)
+- added caching to image function in smarty when image is modified
+- fixed image generation to send proper headers so the file can be saved and used as image
+- added new fit options to image function in smarty (crop - centeres by cropping image, canvas - centeres image by modifying canvas)
+- added new watermark option to image function in smarty
+- added 404 page error when module/components do not exist (also 404.tpl file can be added to /module/{$module}/views/{$skin}/ folder)
+- added trace saving and loading in popup (decreased page size in dev mode)
+- added method to models called get_colls() it gets the same as get_all but you have as first parameter the array of colls you want selected
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+2.2.7
+- fixed php validator for compare with other field
+
+2.2.6
+- fixed php validation issue (when you filled in the last field in the form the form was marked as valid)
+
+2.2.5
+- fixed some optimization issues
+- added get_registrants method to GoToWebinar Api 
+
+2.2.4
+- added configuration $page->build_auto this automatically build components that are not existing when navigating on them
+- fixed redirect after build to the new component created
+- fixed captcha issue on IE 7
+
+2.2.3
+- removed ffmpeg_php usage added class for handling this
+- fixed some issues with the system
+
+2.2.2
+- added new callack methods on models (after_delete, after_update, after_insert, before_delete, before_update, before_insert)
+
+2.2.1
+- fixed some performance issues
+
+2.2.0
+- added smarty cache management 
+	- in class System added method clear_cache($url) to clear cache for a certain url
+	- in class System added member 'cache_enabled' (default=true)
+	- in class Page added member 'chache_enabled' (default=false) to be able to control cache for a certain component
+	- modified TemplateManger to activate and deactivate smarty cache system
+- added in smarty library the duration_format modifier ({$seconds|duration:"%H:%M:%S"} will display the duration provided in seconds in a formated way)
+- added none filter to FormsManager - method just trims the value of the imput
+- added url filter to FormsManager - method filters the not good characters from a URL
+- added email filter to FormsManager - method filters the not good characters from a e-mail address
+- added int filter to FormsManager - method filters the characters beside digits and plus or minus sign
+- added float filter to FormsManager - Remove all characters except digits, +- and optionally .,eE. 
+- added string filter to FormManager - Strip tags, optionally strip or encode special characters.
+- added SilverPop library for accessing SilverPop API
+- added FormsManager class to handle field validations and filters (for now it handles just validations in new versions will do more)
+- removed ValidatorsManager as it was integrated in FormsManager
+- automatic PHP field validations based on an hidden hash in the post
+- no POST is allowed from outside the current domain without having a hash saved in the session before
+- for better security validations should be also called manually before hanlding the data from the form 
+- added {filter} function on smarty for filtering certain posted input automatically (parameters: form (required) - id of the form, type (required) - filter type (none, url, email, int, string, float) filters are qexecuted when calling validate for the form
+- added $this->forms (Class Page - link to $page->validate) (now post variables can be accessed through  $this->forms['home_form']->firstname for the input field firstname (it will be filtered and validated))
+
+2.1.2
+- (Class Page) ingored $this->allowed_actions all actions are now by default allowed unless the action is blocked
+- (Class Page) added $this->blocked_actions array add action to this array in on_init if you want it block
+- (Class Page) added $this->block_actions method to be able to add blocked actions in on_init (you can either give a single action as string or an array of actions) 
+
+2.1.1
+- removes $page->application settings, now the paths are identified based on the index.php folder 
+
+2.1.0
+New version changes:
+- switch between smarty 2 or 3 as template engine (default is still v2)
+- pdo as database engine
+- automated calls to minify from library folder
+- added {banner}, {add_js} and {add_css} smarty functions
+- added $page->error_log_path can be relative to the root folder of the site or full path
+- save error.log.html at the error_log_path for view in html version as displayed in debug mode
+- added suport for php session handler (db still stays default for now)
+- added new event on_no_action on the Page class triggered when no action is called from the request before triggering on_load
+- added page that check the instalation requirements go to {website}/_check/ for viewing the check info this is activated only if trace and debug is true
+- {image} now accepts fit parameter which tells how to resize the image (accepted values: inside (default), outside, fill)
+- included Zend Full Framework as library
+- removed charts manager from structure now it can be used only as library from pchart
+- added setlocale based on the languages table if the system is on multi_language (new fields in db table languages locale_win, locale_linux)
+
+Updated libraries:
+WideImage, TcPDF
+
+Included libraries:
+Minify
+
+Removed functions as they we're not used in the structure:
+(Please verify your projects if they contain this functions add them as particular to the project)
+
+isFirstName(
+isLastName(
+isUserName(
+microtime_float()
+unlinkRecursive(
+uploadFileSize(
+checkMail(
+createDate(
+checkData(
+checkXSS(
+div(
+
+2.0.3
+- added cache for image resizing
+
+2.0.2
+- added new message for login when no password provided
+ 
+2.0.1
+- added hostname as a static memeber of System class also created static function get_hostname;
+- for tr updated to also save the hostname in table (need db update for x_conf_texts adding field hostname (varchar(250))) IMPORTANT;
+- added smarty modifier file_size to format file size;

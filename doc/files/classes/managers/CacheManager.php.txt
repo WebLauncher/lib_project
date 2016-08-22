@@ -1,0 +1,12 @@
+<?php
+	/**
+	 * Cache Manager Class
+	 */
+	/**
+	 * Cache manager class
+	 * @package WebLauncher\Managers
+	 */
+	class CacheManager{
+		
+	}
+?>

@@ -1,0 +1,166 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * Image processing
+ */
+ 
+/**
+ * Image Processing Manager Class
+ * @package WebLauncher\Managers
+ */
+class ImageManager
+{
+	/**
+	 * Save resized image proportionally to file
+	 * @param string $file_path
+	 * @param string $filetype
+	 * @param string $tofile
+	 * @param int $width
+	 * @param int $height
+	 */
+	function output_resized_image_proportional($file_path,$filetype,$tofile,$width,$height)
+	{
+		$img=WideImage::load($file_path,$filetype);
+		$img-&gt;resize($width,$height)-&gt;saveToFile($tofile);
+	}
+	
+	/**
+	 * Display resuze image proportionally
+	 * @param string $file_path
+	 * @param int $width
+	 * @param int $height
+	 * @param string $fit ['crop','canvas','inside','outside','fill']
+	 */
+	static function get_resized_image_proportional($file_path,$width,$height,$fit='',$cache_path='',$display=true)
+	{
+		// check cache
+		if(is_file($cache_path))
+		{
+			if($display)
+				self::output($cache_path);
+		}
+		try{
+			$img=WideImage::load($file_path);
+			if($fit=='crop'){
+				$img=$img-&gt;resize($width,$height,'outside')-&gt;crop('center','middle',$width,$height);
+			}
+			elseif($fit=='canvas'){
+				$img=$img-&gt;resize($width,$height,'inside')-&gt;resizeCanvas($width, $height, 'center', 'center');
+			}
+			else{
+				$img=$img-&gt;resize($width,$height,$fit);
+			}
+			if($cache_path){
+				$img-&gt;saveToFile($cache_path);
+			}
+			if($display)
+				$img-&gt;output('png');
+			$img-&gt;destroy();
+			
+		}
+		catch(Exception $ex)
+		{
+			echo $ex-&gt;getMessage();
+			echo $ex-&gt;getTrace();
+		}
+	}
+	
+	/**
+	 * Output image
+	 * @param string $file_path
+	 * @param string $format
+	 */
+	static function output($file_path,$format='png'){
+		try{
+			$img=WideImage::load($file_path);
+			$img-&gt;output($format);
+		}
+		catch(Exception $ex){
+			echo $ex-&gt;getMessage();
+			echo $ex-&gt;getTrace();
+		}
+	}
+	
+	/**
+	 * Get image handle 
+	 * @param string $file_path
+	 * @return object Image 
+	 */
+	static function get_handle($file_path){
+		$img=WideImage::load($file_path);
+		return $img-&gt;get_handle();
+	}
+	
+	/**
+	 * Apply watermark to file
+	 * @param string $file_path
+	 * @param string $watermark_file
+	 * @param string $pos_left
+	 * @param string $pos_top
+	 * @param int $opacity
+	 */
+	static function apply_watermarked($file_path,$watermark_path,$pos_left='left',$pos_top='top',$opacity=100){
+		$img = WideImage::load($file_path);
+		$watermark = WideImage::load($watermark_path);
+		$new = $img-&gt;merge($watermark, $pos_left, $pos_top, $opacity);
+		$new-&gt;saveToFile($file_path);
+		$img-&gt;destroy();
+		$new-&gt;destroy();
+		$watermark-&gt;destroy();
+	}
+	
+	/**
+	 * Import image from url
+	 * @param string $url
+	 * @param string $file
+	 */
+	function import_url($url,$file)
+	{
+		$img=WideImage::load($url);
+		$img-&gt;saveToFile($file);
+	}
+}
+?&gt;</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all()
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

@@ -1,0 +1,1703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+    <meta charset="utf-8"/>
+    <title>API Documentation</title>
+    <meta name="author" content=""/>
+    <meta name="description" content=""/>
+
+    <link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.no-icons.min.css" rel="stylesheet">
+    <link href="http://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet">
+    <link href="../css/prism.css" rel="stylesheet" media="all"/>
+    <link href="../css/template.css" rel="stylesheet" media="all"/>
+    
+    <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js" type="text/javascript"></script>
+    <![endif]-->
+    <script src="http://code.jquery.com/jquery-1.10.2.min.js" type="text/javascript"></script>
+    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.min.js" type="text/javascript"></script>
+    <script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+    <script src="../js/jquery.smooth-scroll.js"></script>
+    <script src="../js/prism.min.js"></script>
+    <!-- TODO: Add http://jscrollpane.kelvinluck.com/ to style the scrollbars for browsers not using webkit-->
+    <script type="text/javascript">
+    function loadExternalCodeSnippets() {
+        Array.prototype.slice.call(document.querySelectorAll('pre[data-src]')).forEach(function (pre) {
+            var src = pre.getAttribute('data-src');
+            var extension = (src.match(/\.(\w+)$/) || [, ''])[1];
+            var language = 'php';
+
+            var code = document.createElement('code');
+            code.className = 'language-' + language;
+
+            pre.textContent = '';
+
+            code.textContent = 'Loading…';
+
+            pre.appendChild(code);
+
+            var xhr = new XMLHttpRequest();
+
+            xhr.open('GET', src, true);
+
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4) {
+
+                    if (xhr.status < 400 && xhr.responseText) {
+                        code.textContent = xhr.responseText;
+
+                        Prism.highlightElement(code);
+                    }
+                    else if (xhr.status >= 400) {
+                        code.textContent = '✖ Error ' + xhr.status + ' while fetching file: ' + xhr.statusText;
+                    }
+                    else {
+                        code.textContent = '✖ Error: File does not exist or is empty';
+                    }
+                }
+            };
+
+            xhr.send(null);
+        });
+    }
+
+    $(document).ready(function(){
+        loadExternalCodeSnippets();
+    });
+    $('#source-view').on('shown', function () {
+        loadExternalCodeSnippets();
+    })
+</script>
+
+    <link rel="shortcut icon" href="../images/favicon.ico"/>
+    <link rel="apple-touch-icon" href="../images/apple-touch-icon.png"/>
+    <link rel="apple-touch-icon" sizes="72x72" href="../images/apple-touch-icon-72x72.png"/>
+    <link rel="apple-touch-icon" sizes="114x114" href="../images/apple-touch-icon-114x114.png"/>
+</head>
+<body>
+
+<div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+        <div class="container">
+            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                <i class="icon-ellipsis-vertical"></i>
+            </a>
+            <a class="brand" href="../index.html">API Documentation</a>
+
+            <div class="nav-collapse">
+                <ul class="nav pull-right">
+                    <li class="dropdown">
+                        <a href="../index.html" class="dropdown-toggle" data-toggle="dropdown">
+                            API Documentation <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                                                    </ul>
+                    </li>
+                    <li class="dropdown" id="charts-menu">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            Charts <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="../graphs/class.html">
+                                    <i class="icon-list-alt"></i>&#160;Class hierarchy diagram
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="dropdown" id="reports-menu">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            Reports <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="../reports/errors.html">
+                                    <i class="icon-list-alt"></i>&#160;Errors
+                                </a>
+                            </li>
+                            <li>
+                                <a href="../reports/markers.html">
+                                    <i class="icon-list-alt"></i>&#160;Markers
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!--<div class="go_to_top">-->
+    <!--<a href="#___" style="color: inherit">Back to top&#160;&#160;<i class="icon-upload icon-white"></i></a>-->
+    <!--</div>-->
+</div>
+
+<div id="___" class="container-fluid">
+        <section class="row-fluid">
+        <div class="span2 sidebar">
+                                <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle " data-toggle="collapse" data-target="#namespace-1954903982"></a>
+                                <a href="../namespaces/default.html" style="margin-left: 30px; padding-left: 0">\</a>
+            </div>
+            <div id="namespace-1954903982" class="accordion-body collapse in">
+                <div class="accordion-inner">
+
+                    
+                    <ul>
+                                                                                                    <li class="class"><a href="../classes/_Page.html">_Page</a></li>
+                                                    <li class="class"><a href="../classes/HocksManager.html">HocksManager</a></li>
+                                                    <li class="class"><a href="../classes/ScriptManager.html">ScriptManager</a></li>
+                                                    <li class="class"><a href="../classes/QueryBuilder.html">QueryBuilder</a></li>
+                                                    <li class="class"><a href="../classes/Base.html">Base</a></li>
+                                                    <li class="class"><a href="../classes/ImageManager.html">ImageManager</a></li>
+                                                    <li class="class"><a href="../classes/Page.html">Page</a></li>
+                                                    <li class="class"><a href="../classes/BuildManager.html">BuildManager</a></li>
+                                                    <li class="class"><a href="../classes/SystemLogger.html">SystemLogger</a></li>
+                                                    <li class="class"><a href="../classes/DownloadManager.html">DownloadManager</a></li>
+                                                    <li class="class"><a href="../classes/BaseTree.html">BaseTree</a></li>
+                                                    <li class="class"><a href="../classes/BaseExtender.html">BaseExtender</a></li>
+                                                    <li class="class"><a href="../classes/MemoryLogger.html">MemoryLogger</a></li>
+                                                    <li class="class"><a href="../classes/Base.html">Base</a></li>
+                                                    <li class="class"><a href="../classes/VideoManager.html">VideoManager</a></li>
+                                                    <li class="class"><a href="../classes/SessionManager.html">SessionManager</a></li>
+                                                    <li class="class"><a href="../classes/SessionHandlerDb.html">SessionHandlerDb</a></li>
+                                                    <li class="class"><a href="../classes/ErrorManager.html">ErrorManager</a></li>
+                                                    <li class="class"><a href="../classes/SignatureManager.html">SignatureManager</a></li>
+                                                    <li class="class"><a href="../classes/Page.html">Page</a></li>
+                                                    <li class="class"><a href="../classes/ModelsManager.html">ModelsManager</a></li>
+                                                    <li class="class"><a href="../classes/BrowserInfo.html">BrowserInfo</a></li>
+                                                    <li class="class"><a href="../classes/BaseWebService.html">BaseWebService</a></li>
+                                                    <li class="class"><a href="../classes/ConsoleManager.html">ConsoleManager</a></li>
+                                                    <li class="class"><a href="../classes/DbManager.html">DbManager</a></li>
+                                                    <li class="class"><a href="../classes/System.html">System</a></li>
+                                                    <li class="class"><a href="../classes/DbRowObject.html">DbRowObject</a></li>
+                                                    <li class="class"><a href="../classes/DbRowObjectList.html">DbRowObjectList</a></li>
+                                                    <li class="class"><a href="../classes/InstallInfo.html">InstallInfo</a></li>
+                                                    <li class="class"><a href="../classes/CacheManager.html">CacheManager</a></li>
+                                                    <li class="class"><a href="../classes/JsFormValidator.html">JsFormValidator</a></li>
+                                                    <li class="class"><a href="../classes/EmailManager.html">EmailManager</a></li>
+                                                    <li class="class"><a href="../classes/FilesManager.html">FilesManager</a></li>
+                                                    <li class="class"><a href="../classes/Form_Filters.html">Form_Filters</a></li>
+                                                    <li class="class"><a href="../classes/Form_Rules.html">Form_Rules</a></li>
+                                                    <li class="class"><a href="../classes/Form_Rule.html">Form_Rule</a></li>
+                                                    <li class="class"><a href="../classes/Form_Filter.html">Form_Filter</a></li>
+                                                    <li class="class"><a href="../classes/Form_Field.html">Form_Field</a></li>
+                                                    <li class="class"><a href="../classes/Form_Object.html">Form_Object</a></li>
+                                                    <li class="class"><a href="../classes/FormsManager.html">FormsManager</a></li>
+                                                    <li class="class"><a href="../classes/TimeLogger.html">TimeLogger</a></li>
+                                                    <li class="class"><a href="../classes/TraceManager.html">TraceManager</a></li>
+                                                    <li class="class"><a href="../classes/TablesManager.html">TablesManager</a></li>
+                                                    <li class="class"><a href="../classes/BaseExtenderList.html">BaseExtenderList</a></li>
+                                                    <li class="class"><a href="../classes/ServerInfo.html">ServerInfo</a></li>
+                                                    <li class="class"><a href="../classes/AuthenticationManager.html">AuthenticationManager</a></li>
+                                                    <li class="class"><a href="../classes/_Base.html">_Base</a></li>
+                                                    <li class="class"><a href="../classes/HistoryManager.html">HistoryManager</a></li>
+                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+        </div>
+    </section>
+    <section class="row-fluid">
+        <div class="span10 offset2">
+            <div class="row-fluid">
+                <div class="span8 content class">
+                    <nav>
+                                                <a href="../namespaces/default.html">\</a> <i class="icon-level-up"></i>
+                                            </nav>
+                    <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal"><i class="icon-code"></i></a>
+
+                    <h1><small>\</small>DbManager</h1>
+                    <p><em>PDO Database Manager Class</em></p>
+                    
+
+
+                    <section id="summary">
+                        <h2>Summary</h2>
+                        <section class="row-fluid heading">
+                            <section class="span4">
+                                <a href="#methods">Methods</a>
+                            </section>
+                            <section class="span4">
+                                <a href="#properties">Properties</a>
+                            </section>
+                            <section class="span4">
+                                <a href="#constants">Constants</a>
+                            </section>
+                        </section>
+                        <section class="row-fluid public">
+                            <section class="span4">
+                                                                    <a href="../classes/DbManager.html#method___construct" class="">__construct()</a><br />
+                                                                    <a href="../classes/DbManager.html#method_connect" class="">connect()</a><br />
+                                                                    <a href="../classes/DbManager.html#method___get" class="">__get()</a><br />
+                                                                    <a href="../classes/DbManager.html#method_get_dns" class="">get_dns()</a><br />
+                                                                    <a href="../classes/DbManager.html#method_query" class="">query()</a><br />
+                                                                    <a href="../classes/DbManager.html#method_BEGIN" class="">BEGIN()</a><br />
+                                                                    <a href="../classes/DbManager.html#method_ROLLBACK" class="">ROLLBACK()</a><br />
+                                                                    <a href="../classes/DbManager.html#method_COMMIT" class="">COMMIT()</a><br />
+                                                                    <a href="../classes/DbManager.html#method_getAll" class="">getAll()</a><br />
+                                                                    <a href="../classes/DbManager.html#method_getRow" class="">getRow()</a><br />
+                                                                    <a href="../classes/DbManager.html#method_getOne" class="">getOne()</a><br />
+                                                                    <a href="../classes/DbManager.html#method_nextId" class="">nextId()</a><br />
+                                                                    <a href="../classes/DbManager.html#method_last_id" class="">last_id()</a><br />
+                                                                    <a href="../classes/DbManager.html#method_numRows" class="">numRows()</a><br />
+                                                                    <a href="../classes/DbManager.html#method_countTotalRows" class="">countTotalRows()</a><br />
+                                                                    <a href="../classes/DbManager.html#method_affectedRows" class="">affectedRows()</a><br />
+                                                                    <a href="../classes/DbManager.html#method_stripMagicQuotes" class="">stripMagicQuotes()</a><br />
+                                                                    <a href="../classes/DbManager.html#method_escape" class="">escape()</a><br />
+                                                                    <a href="../classes/DbManager.html#method_mysql_escape_mimic" class="">mysql_escape_mimic()</a><br />
+                                                                    <a href="../classes/DbManager.html#method_stringEscape" class="">stringEscape()</a><br />
+                                                                    <a href="../classes/DbManager.html#method_total_execution_time" class="">total_execution_time()</a><br />
+                                                                    <a href="../classes/DbManager.html#method_nullOrString" class="">nullOrString()</a><br />
+                                                                    <a href="../classes/DbManager.html#method_nullOrDate" class="">nullOrDate()</a><br />
+                                                                    <a href="../classes/DbManager.html#method_nullOrInt" class="">nullOrInt()</a><br />
+                                                                    <a href="../classes/DbManager.html#method_nullOrDouble" class="">nullOrDouble()</a><br />
+                                                                    <a href="../classes/DbManager.html#method_stringOrDate" class="">stringOrDate()</a><br />
+                                                                    <a href="../classes/DbManager.html#method_get_slowest_query" class="">get_slowest_query()</a><br />
+                                                                    <a href="../classes/DbManager.html#method_disconnect" class="">disconnect()</a><br />
+                                                                    <a href="../classes/DbManager.html#method___destroy" class="">__destroy()</a><br />
+                                                            </section>
+                            <section class="span4">
+                                                                    <a href="../classes/DbManager.html#property_num_valid_queries" class="">$num_valid_queries</a><br />
+                                                                    <a href="../classes/DbManager.html#property_num_invalid_queries" class="">$num_invalid_queries</a><br />
+                                                                    <a href="../classes/DbManager.html#property_queries" class="">$queries</a><br />
+                                                                    <a href="../classes/DbManager.html#property_trace" class="">$trace</a><br />
+                                                            </section>
+                            <section class="span4">
+                                                                    <em>No constants found</em>
+                                                            </section>
+                        </section>
+                        <section class="row-fluid protected">
+                            <section class="span4">
+                                                                    <em>No protected methods found</em>
+                                                            </section>
+                            <section class="span4">
+                                                                    <em>No protected properties found</em>
+                                                            </section>
+                            <section class="span4">
+                                <em>N/A</em>
+                            </section>
+                        </section>
+                        <section class="row-fluid private">
+                            <section class="span4">
+                                                                    <em>No private methods found</em>
+                                                            </section>
+                            <section class="span4">
+                                                                    <a href="../classes/DbManager.html#property_db_connection" class="">$db_connection</a><br />
+                                                                    <a href="../classes/DbManager.html#property_db_resource" class="">$db_resource</a><br />
+                                                                    <a href="../classes/DbManager.html#property_db_type" class="">$db_type</a><br />
+                                                                    <a href="../classes/DbManager.html#property_db_name" class="">$db_name</a><br />
+                                                                    <a href="../classes/DbManager.html#property_db_server" class="">$db_server</a><br />
+                                                                    <a href="../classes/DbManager.html#property_db_user" class="">$db_user</a><br />
+                                                                    <a href="../classes/DbManager.html#property_db_password" class="">$db_password</a><br />
+                                                                    <a href="../classes/DbManager.html#property_tables_manager" class="">$tables_manager</a><br />
+                                                            </section>
+                            <section class="span4">
+                                <em>N/A</em>
+                            </section>
+                        </section>
+                    </section>
+                </div>
+                <aside class="span4 detailsbar">
+                                        
+                    
+                    <dl>
+                        <dt>File</dt>
+                            <dd><a href="../files/classes.managers.DbManager.php.html"><div class="path-wrapper">classes\managers\DbManager.php</div></a></dd>
+                                                <dt>Package</dt>
+                            <dd><div class="namespace-wrapper">\WebLauncher\Managers</div></dd>
+                                                <dt>Class hierarchy</dt>
+                            <dd class="hierarchy">
+                                                                                                                                                                    <div class="namespace-wrapper">\DbManager</div>
+                            </dd>
+
+                        
+                        
+                        
+                                                                        </dl>
+                    <h2>Tags</h2>
+                    <table class="table table-condensed">
+                                            <tr>
+                            <th>
+                                example
+                            </th>
+                            <td>
+                                                                    
+
+                                                            </td>
+                        </tr>
+                                        </table>
+                </aside>
+            </div>
+
+                        
+                                    <a id="properties" name="properties"></a>
+            <div class="row-fluid">
+                <div class="span8 content class">
+                    <h2>Properties</h2>
+                </div>
+                <aside class="span4 detailsbar"></aside>
+            </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_num_valid_queries" name="property_num_valid_queries" class="anchor"></a>
+            <article class="property">
+                <h3 class="public ">$num_valid_queries</h3>
+                <pre class="signature">$num_valid_queries : int</pre>
+                <p><em></em></p>
+                
+
+
+                                <h4>Type</h4>
+                int
+                &mdash; Number of valid queries                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_num_invalid_queries" name="property_num_invalid_queries" class="anchor"></a>
+            <article class="property">
+                <h3 class="public ">$num_invalid_queries</h3>
+                <pre class="signature">$num_invalid_queries : int</pre>
+                <p><em></em></p>
+                
+
+
+                                <h4>Type</h4>
+                int
+                &mdash; Number of invalid queries                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_queries" name="property_queries" class="anchor"></a>
+            <article class="property">
+                <h3 class="public ">$queries</h3>
+                <pre class="signature">$queries : array</pre>
+                <p><em></em></p>
+                
+
+
+                                <h4>Type</h4>
+                array
+                &mdash; Queries data array                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_trace" name="property_trace" class="anchor"></a>
+            <article class="property">
+                <h3 class="public ">$trace</h3>
+                <pre class="signature">$trace : bool</pre>
+                <p><em></em></p>
+                
+
+
+                                <h4>Type</h4>
+                bool
+                &mdash; Flag if trace is enabled                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_db_connection" name="property_db_connection" class="anchor"></a>
+            <article class="property">
+                <h3 class="private ">$db_connection</h3>
+                <pre class="signature">$db_connection : \/PDO</pre>
+                <p><em></em></p>
+                
+
+
+                                <h4>Type</h4>
+                \/PDO
+                &mdash; PDO Object                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_db_resource" name="property_db_resource" class="anchor"></a>
+            <article class="property">
+                <h3 class="private ">$db_resource</h3>
+                <pre class="signature">$db_resource : object</pre>
+                <p><em></em></p>
+                
+
+
+                                <h4>Type</h4>
+                object
+                &mdash; DB Resource var                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_db_type" name="property_db_type" class="anchor"></a>
+            <article class="property">
+                <h3 class="private ">$db_type</h3>
+                <pre class="signature">$db_type : string</pre>
+                <p><em></em></p>
+                
+
+
+                                <h4>Type</h4>
+                string
+                &mdash; Database engine type                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_db_name" name="property_db_name" class="anchor"></a>
+            <article class="property">
+                <h3 class="private ">$db_name</h3>
+                <pre class="signature">$db_name : string</pre>
+                <p><em></em></p>
+                
+
+
+                                <h4>Type</h4>
+                string
+                &mdash; Database name                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_db_server" name="property_db_server" class="anchor"></a>
+            <article class="property">
+                <h3 class="private ">$db_server</h3>
+                <pre class="signature">$db_server : string</pre>
+                <p><em></em></p>
+                
+
+
+                                <h4>Type</h4>
+                string
+                &mdash; Database server                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_db_user" name="property_db_user" class="anchor"></a>
+            <article class="property">
+                <h3 class="private ">$db_user</h3>
+                <pre class="signature">$db_user : string</pre>
+                <p><em></em></p>
+                
+
+
+                                <h4>Type</h4>
+                string
+                &mdash; Database user                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_db_password" name="property_db_password" class="anchor"></a>
+            <article class="property">
+                <h3 class="private ">$db_password</h3>
+                <pre class="signature">$db_password : string</pre>
+                <p><em></em></p>
+                
+
+
+                                <h4>Type</h4>
+                string
+                &mdash; Database password                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_tables_manager" name="property_tables_manager" class="anchor"></a>
+            <article class="property">
+                <h3 class="private ">$tables_manager</h3>
+                <pre class="signature">$tables_manager : \/TablesManager</pre>
+                <p><em></em></p>
+                
+
+
+                                <h4>Type</h4>
+                \/TablesManager
+                &mdash; Table manager object                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                            
+                                    <a id="methods" name="methods"></a>
+            <div class="row-fluid">
+                <div class="span8 content class"><h2>Methods</h2></div>
+                <aside class="span4 detailsbar"></aside>
+            </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method___construct" name="method___construct" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">__construct()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">__construct()</pre>
+                <p><em>Constructor</em></p>
+                
+
+
+                
+                
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_connect" name="method_connect" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">connect()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">connect(string <span class="argument">$host</span>, string <span class="argument">$user</span>, string <span class="argument">$pass</span>, string <span class="argument">$dbname</span>, string <span class="argument">$db_type</span>) : boolean</pre>
+                <p><em>Attempt to connect the resource based on supplied parameters.</em></p>
+                
+
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$host</td>
+                                <td><p>(optional) Host name (Server name)</p>
+</td>
+                            </tr>
+                                                    <tr>
+                                <td>string</td>
+                                <td>$user</td>
+                                <td><p>(optional) User Name</p>
+</td>
+                            </tr>
+                                                    <tr>
+                                <td>string</td>
+                                <td>$pass</td>
+                                <td><p>(optional) User Password</p>
+</td>
+                            </tr>
+                                                    <tr>
+                                <td>string</td>
+                                <td>$dbname</td>
+                                <td><p>(optional) Database Name</p>
+</td>
+                            </tr>
+                                                    <tr>
+                                <td>string</td>
+                                <td>$db_type</td>
+                                <td><p>(optional) Database engine</p>
+</td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    boolean
+                                                </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method___get" name="method___get" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">__get()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">__get(string <span class="argument">$key</span>) : string</pre>
+                <p><em>Get magic method</em></p>
+                
+
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$key</td>
+                                <td>
+</td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    string
+                                            &mdash; <p>Table name foudn using $key</p>
+
+                                                </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_get_dns" name="method_get_dns" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">get_dns()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">get_dns()</pre>
+                <p><em>Get DNS for PDO</em></p>
+                
+
+
+                
+                
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_query" name="method_query" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">query()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">query(string <span class="argument">$sql</span>, array <span class="argument">$args</span>)</pre>
+                <p><em>Execute a query</em></p>
+                
+
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$sql</td>
+                                <td><p>SQL query</p>
+</td>
+                            </tr>
+                                                    <tr>
+                                <td>array</td>
+                                <td>$args</td>
+                                <td><p>Prepare statement arguments</p>
+</td>
+                            </tr>
+                                            </table>
+                
+                
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_BEGIN" name="method_BEGIN" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">BEGIN()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">BEGIN() : void</pre>
+                <p><em>Starts a transaction in the current session.</em></p>
+                
+
+
+                
+                
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_ROLLBACK" name="method_ROLLBACK" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">ROLLBACK()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">ROLLBACK() : void</pre>
+                <p><em>Rolls back currently executing transaction</em></p>
+                
+
+
+                
+                
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_COMMIT" name="method_COMMIT" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">COMMIT()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">COMMIT() : void</pre>
+                <p><em>commits currently executing  transaction</em></p>
+                
+
+
+                
+                
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_getAll" name="method_getAll" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">getAll()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">getAll(string <span class="argument">$query</span>, array <span class="argument">$args</span>) : mixed</pre>
+                <p><em>Returns an array of records from the
+current result resource.</em></p>
+                <p>Returns empty array if no retrieval</p>
+
+<p>This method consumes more memory resources
+than ReadRecord() but is useful to
+get quick record sets for processing</p>
+
+<p>Optionally, you can supply a SQL
+string to short-cut a call to
+DB::query</p>
+
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$query</td>
+                                <td><p>(optional) SQL to execute</p>
+</td>
+                            </tr>
+                                                    <tr>
+                                <td>array</td>
+                                <td>$args</td>
+                                <td><p>(optional) Prepare statement arguments</p>
+</td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    mixed
+                                                </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_getRow" name="method_getRow" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">getRow()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">getRow(string <span class="argument">$query</span>, array <span class="argument">$args</span>) : mixed</pre>
+                <p><em>Returns an single record array from the
+current result resource.</em></p>
+                <p>Returns empty array if no retrieval</p>
+
+<p>Optionally, you can supply a SQL
+string to short-cut a call to
+DB::query</p>
+
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$query</td>
+                                <td><p>(optional) SQL to execute</p>
+</td>
+                            </tr>
+                                                    <tr>
+                                <td>array</td>
+                                <td>$args</td>
+                                <td><p>(optional) Prepare statement arguments</p>
+</td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    mixed
+                                                </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_getOne" name="method_getOne" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">getOne()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">getOne(string <span class="argument">$query</span>, string <span class="argument">$args</span>) : mixed</pre>
+                <p><em>Returns first data point from
+current result resource
+or null if no retrieval</em></p>
+                <p>Optionally, you can supply a SQL
+string to short-cut a call to
+DB::query</p>
+
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$query</td>
+                                <td><p>(optional) SQL to execute</p>
+</td>
+                            </tr>
+                                                    <tr>
+                                <td>string</td>
+                                <td>$args</td>
+                                <td><p>(optional) Prepare statement arguments</p>
+</td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    mixed
+                                                </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_nextId" name="method_nextId" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">nextId()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">nextId() : mixed</pre>
+                <p><em>Returns next incremented auto-id (for use on non MYSQL SGBD !!!)</em></p>
+                
+
+
+                
+                
+                                    <h4>Returns</h4>
+                    mixed
+                                                </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_last_id" name="method_last_id" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">last_id()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">last_id() : mixed</pre>
+                <p><em>Returns last inserted auto-id</em></p>
+                
+
+
+                
+                
+                                    <h4>Returns</h4>
+                    mixed
+                                                </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_numRows" name="method_numRows" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">numRows()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">numRows() : int</pre>
+                <p><em>Returns number of rows in resultset</em></p>
+                
+
+
+                
+                
+                                    <h4>Returns</h4>
+                    int
+                                                </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_countTotalRows" name="method_countTotalRows" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">countTotalRows()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">countTotalRows() : int</pre>
+                <p><em>Returns total number of rows in resultset</em></p>
+                
+
+
+                
+                
+                                    <h4>Returns</h4>
+                    int
+                                                </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_affectedRows" name="method_affectedRows" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">affectedRows()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">affectedRows() : int</pre>
+                <p><em>Returns number of rows affected by DML statement</em></p>
+                
+
+
+                
+                
+                                    <h4>Returns</h4>
+                    int
+                                                </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_stripMagicQuotes" name="method_stripMagicQuotes" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">stripMagicQuotes()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">stripMagicQuotes(string <span class="argument">$var</span>) : mixed</pre>
+                <p><em>Add slashes to provided string</em></p>
+                
+
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$var</td>
+                                <td><p>String to add slashes</p>
+</td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    mixed
+                                                </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_escape" name="method_escape" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">escape()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">escape(string <span class="argument">$value</span>) : mixed</pre>
+                <p><em>Escape strings scheduled for insert into DB</em></p>
+                
+
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$value</td>
+                                <td><p>String to escape</p>
+</td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    mixed
+                                                </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_mysql_escape_mimic" name="method_mysql_escape_mimic" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">mysql_escape_mimic()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">mysql_escape_mimic(string <span class="argument">$inp</span>)</pre>
+                <p><em>Mimic function for mysql_real_escape_string</em></p>
+                
+
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$inp</td>
+                                <td>
+</td>
+                            </tr>
+                                            </table>
+                
+                
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_stringEscape" name="method_stringEscape" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">stringEscape()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">stringEscape(string <span class="argument">$Value</span>) : mixed</pre>
+                <p><em>Escape strings provided and encapsulate those in &#039;&#039; signs</em></p>
+                
+
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$Value</td>
+                                <td><p>String to escape</p>
+</td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    mixed
+                                                </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_total_execution_time" name="method_total_execution_time" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">total_execution_time()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">total_execution_time()</pre>
+                <p><em>Return total execution time of the queries</em></p>
+                
+
+
+                
+                
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_nullOrString" name="method_nullOrString" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">nullOrString()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">nullOrString(string <span class="argument">$Value</span>) : mixed</pre>
+                <p><em>Returns either &#039;NULL&#039; or &#039;&#039;$string&#039;&#039; escaped for insert/update</em></p>
+                
+
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$Value</td>
+                                <td><p>String to evaluate</p>
+</td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    mixed
+                                                </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_nullOrDate" name="method_nullOrDate" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">nullOrDate()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">nullOrDate(string <span class="argument">$Value</span>) : mixed</pre>
+                <p><em>Returns either &#039;NULL&#039; or &#039;&#039;$date&#039;&#039; formatted for insert/update</em></p>
+                
+
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$Value</td>
+                                <td><p>String to evaluate</p>
+</td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    mixed
+                                                </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_nullOrInt" name="method_nullOrInt" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">nullOrInt()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">nullOrInt(string <span class="argument">$Value</span>) : mixed</pre>
+                <p><em>Returns either &#039;NULL&#039; or int cast of value</em></p>
+                
+
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$Value</td>
+                                <td><p>String to evaluate</p>
+</td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    mixed
+                                                </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_nullOrDouble" name="method_nullOrDouble" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">nullOrDouble()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">nullOrDouble(string <span class="argument">$Value</span>) : mixed</pre>
+                <p><em>Returns either &#039;NULL&#039; or double cast of value</em></p>
+                
+
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$Value</td>
+                                <td><p>String to evaluate</p>
+</td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    mixed
+                                                </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_stringOrDate" name="method_stringOrDate" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">stringOrDate()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">stringOrDate(string <span class="argument">$Value</span>) : mixed</pre>
+                <p><em>Returns either &#039;0000-00-00&#039; or &#039;&#039;$date&#039;&#039; formatted for insert/update</em></p>
+                
+
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$Value</td>
+                                <td><p>String to evaluate</p>
+</td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    mixed
+                                                </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_get_slowest_query" name="method_get_slowest_query" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">get_slowest_query()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">get_slowest_query()</pre>
+                <p><em>Get the slowest query</em></p>
+                
+
+
+                
+                
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_disconnect" name="method_disconnect" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">disconnect()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">disconnect()</pre>
+                <p><em>Disconnect from server</em></p>
+                
+
+
+                
+                
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method___destroy" name="method___destroy" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">__destroy()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">__destroy()</pre>
+                <p><em>Destroy magic method</em></p>
+                
+
+
+                
+                
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                                                    </div>
+    </section>
+
+    <div id="source-view" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="source-view-label" aria-hidden="true">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3 id="source-view-label">DbManager.php</h3>
+        </div>
+        <div class="modal-body">
+            <pre data-src="../files/classes\managers\DbManager.php.txt" class="language-php line-numbers"></pre>
+        </div>
+    </div>
+
+    <footer class="row-fluid">
+        <section class="span10 offset2">
+            <section class="row-fluid">
+                <section class="span10 offset1">
+                    <section class="row-fluid footer-sections">
+                        <section class="span4">
+                                                        <h1><i class="icon-code"></i></h1>
+                            <div>
+                                <ul>
+                                                                    </ul>
+                            </div>
+                        </section>
+                        <section class="span4">
+                                                        <h1><i class="icon-bar-chart"></i></h1>
+                            <div>
+                                <ul>
+                                    <li><a href="">Class Hierarchy Diagram</a></li>
+                                </ul>
+                            </div>
+                        </section>
+                        <section class="span4">
+                                                        <h1><i class="icon-pushpin"></i></h1>
+                            <div>
+                                <ul>
+                                    <li><a href="">Errors</a></li>
+                                    <li><a href="">Markers</a></li>
+                                </ul>
+                            </div>
+                        </section>
+                    </section>
+                </section>
+            </section>
+            <section class="row-fluid">
+                <section class="span10 offset1">
+                    <hr />
+                    Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor </a> and authored
+                    on March 12th, 2014 at 13:13.
+                </section>
+            </section>
+        </section>
+    </footer>
+</div>
+
+</body>
+</html>

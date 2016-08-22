@@ -1,0 +1,1432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+    <meta charset="utf-8"/>
+    <title>API Documentation</title>
+    <meta name="author" content=""/>
+    <meta name="description" content=""/>
+
+    <link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.no-icons.min.css" rel="stylesheet">
+    <link href="http://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet">
+    <link href="../css/prism.css" rel="stylesheet" media="all"/>
+    <link href="../css/template.css" rel="stylesheet" media="all"/>
+    
+    <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js" type="text/javascript"></script>
+    <![endif]-->
+    <script src="http://code.jquery.com/jquery-1.10.2.min.js" type="text/javascript"></script>
+    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.min.js" type="text/javascript"></script>
+    <script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+    <script src="../js/jquery.smooth-scroll.js"></script>
+    <script src="../js/prism.min.js"></script>
+    <!-- TODO: Add http://jscrollpane.kelvinluck.com/ to style the scrollbars for browsers not using webkit-->
+    <script type="text/javascript">
+    function loadExternalCodeSnippets() {
+        Array.prototype.slice.call(document.querySelectorAll('pre[data-src]')).forEach(function (pre) {
+            var src = pre.getAttribute('data-src');
+            var extension = (src.match(/\.(\w+)$/) || [, ''])[1];
+            var language = 'php';
+
+            var code = document.createElement('code');
+            code.className = 'language-' + language;
+
+            pre.textContent = '';
+
+            code.textContent = 'Loading…';
+
+            pre.appendChild(code);
+
+            var xhr = new XMLHttpRequest();
+
+            xhr.open('GET', src, true);
+
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4) {
+
+                    if (xhr.status < 400 && xhr.responseText) {
+                        code.textContent = xhr.responseText;
+
+                        Prism.highlightElement(code);
+                    }
+                    else if (xhr.status >= 400) {
+                        code.textContent = '✖ Error ' + xhr.status + ' while fetching file: ' + xhr.statusText;
+                    }
+                    else {
+                        code.textContent = '✖ Error: File does not exist or is empty';
+                    }
+                }
+            };
+
+            xhr.send(null);
+        });
+    }
+
+    $(document).ready(function(){
+        loadExternalCodeSnippets();
+    });
+    $('#source-view').on('shown', function () {
+        loadExternalCodeSnippets();
+    })
+</script>
+
+    <link rel="shortcut icon" href="../images/favicon.ico"/>
+    <link rel="apple-touch-icon" href="../images/apple-touch-icon.png"/>
+    <link rel="apple-touch-icon" sizes="72x72" href="../images/apple-touch-icon-72x72.png"/>
+    <link rel="apple-touch-icon" sizes="114x114" href="../images/apple-touch-icon-114x114.png"/>
+</head>
+<body>
+
+<div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+        <div class="container">
+            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                <i class="icon-ellipsis-vertical"></i>
+            </a>
+            <a class="brand" href="../index.html">API Documentation</a>
+
+            <div class="nav-collapse">
+                <ul class="nav pull-right">
+                    <li class="dropdown">
+                        <a href="../index.html" class="dropdown-toggle" data-toggle="dropdown">
+                            API Documentation <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                                                    </ul>
+                    </li>
+                    <li class="dropdown" id="charts-menu">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            Charts <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="../graphs/class.html">
+                                    <i class="icon-list-alt"></i>&#160;Class hierarchy diagram
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="dropdown" id="reports-menu">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            Reports <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="../reports/errors.html">
+                                    <i class="icon-list-alt"></i>&#160;Errors
+                                </a>
+                            </li>
+                            <li>
+                                <a href="../reports/markers.html">
+                                    <i class="icon-list-alt"></i>&#160;Markers
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!--<div class="go_to_top">-->
+    <!--<a href="#___" style="color: inherit">Back to top&#160;&#160;<i class="icon-upload icon-white"></i></a>-->
+    <!--</div>-->
+</div>
+
+<div id="___" class="container-fluid">
+        <section class="row-fluid">
+        <div class="span2 sidebar">
+                                <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle " data-toggle="collapse" data-target="#namespace-1851082498"></a>
+                                <a href="../namespaces/default.html" style="margin-left: 30px; padding-left: 0">\</a>
+            </div>
+            <div id="namespace-1851082498" class="accordion-body collapse in">
+                <div class="accordion-inner">
+
+                    
+                    <ul>
+                                                                                                    <li class="class"><a href="../classes/_Page.html">_Page</a></li>
+                                                    <li class="class"><a href="../classes/HocksManager.html">HocksManager</a></li>
+                                                    <li class="class"><a href="../classes/ScriptManager.html">ScriptManager</a></li>
+                                                    <li class="class"><a href="../classes/QueryBuilder.html">QueryBuilder</a></li>
+                                                    <li class="class"><a href="../classes/Base.html">Base</a></li>
+                                                    <li class="class"><a href="../classes/ImageManager.html">ImageManager</a></li>
+                                                    <li class="class"><a href="../classes/Page.html">Page</a></li>
+                                                    <li class="class"><a href="../classes/BuildManager.html">BuildManager</a></li>
+                                                    <li class="class"><a href="../classes/SystemLogger.html">SystemLogger</a></li>
+                                                    <li class="class"><a href="../classes/DownloadManager.html">DownloadManager</a></li>
+                                                    <li class="class"><a href="../classes/BaseTree.html">BaseTree</a></li>
+                                                    <li class="class"><a href="../classes/BaseExtender.html">BaseExtender</a></li>
+                                                    <li class="class"><a href="../classes/MemoryLogger.html">MemoryLogger</a></li>
+                                                    <li class="class"><a href="../classes/Base.html">Base</a></li>
+                                                    <li class="class"><a href="../classes/VideoManager.html">VideoManager</a></li>
+                                                    <li class="class"><a href="../classes/SessionManager.html">SessionManager</a></li>
+                                                    <li class="class"><a href="../classes/SessionHandlerDb.html">SessionHandlerDb</a></li>
+                                                    <li class="class"><a href="../classes/ErrorManager.html">ErrorManager</a></li>
+                                                    <li class="class"><a href="../classes/SignatureManager.html">SignatureManager</a></li>
+                                                    <li class="class"><a href="../classes/Page.html">Page</a></li>
+                                                    <li class="class"><a href="../classes/ModelsManager.html">ModelsManager</a></li>
+                                                    <li class="class"><a href="../classes/BrowserInfo.html">BrowserInfo</a></li>
+                                                    <li class="class"><a href="../classes/BaseWebService.html">BaseWebService</a></li>
+                                                    <li class="class"><a href="../classes/ConsoleManager.html">ConsoleManager</a></li>
+                                                    <li class="class"><a href="../classes/DbManager.html">DbManager</a></li>
+                                                    <li class="class"><a href="../classes/System.html">System</a></li>
+                                                    <li class="class"><a href="../classes/DbRowObject.html">DbRowObject</a></li>
+                                                    <li class="class"><a href="../classes/DbRowObjectList.html">DbRowObjectList</a></li>
+                                                    <li class="class"><a href="../classes/InstallInfo.html">InstallInfo</a></li>
+                                                    <li class="class"><a href="../classes/CacheManager.html">CacheManager</a></li>
+                                                    <li class="class"><a href="../classes/JsFormValidator.html">JsFormValidator</a></li>
+                                                    <li class="class"><a href="../classes/EmailManager.html">EmailManager</a></li>
+                                                    <li class="class"><a href="../classes/FilesManager.html">FilesManager</a></li>
+                                                    <li class="class"><a href="../classes/Form_Filters.html">Form_Filters</a></li>
+                                                    <li class="class"><a href="../classes/Form_Rules.html">Form_Rules</a></li>
+                                                    <li class="class"><a href="../classes/Form_Rule.html">Form_Rule</a></li>
+                                                    <li class="class"><a href="../classes/Form_Filter.html">Form_Filter</a></li>
+                                                    <li class="class"><a href="../classes/Form_Field.html">Form_Field</a></li>
+                                                    <li class="class"><a href="../classes/Form_Object.html">Form_Object</a></li>
+                                                    <li class="class"><a href="../classes/FormsManager.html">FormsManager</a></li>
+                                                    <li class="class"><a href="../classes/TimeLogger.html">TimeLogger</a></li>
+                                                    <li class="class"><a href="../classes/TraceManager.html">TraceManager</a></li>
+                                                    <li class="class"><a href="../classes/TablesManager.html">TablesManager</a></li>
+                                                    <li class="class"><a href="../classes/BaseExtenderList.html">BaseExtenderList</a></li>
+                                                    <li class="class"><a href="../classes/ServerInfo.html">ServerInfo</a></li>
+                                                    <li class="class"><a href="../classes/AuthenticationManager.html">AuthenticationManager</a></li>
+                                                    <li class="class"><a href="../classes/_Base.html">_Base</a></li>
+                                                    <li class="class"><a href="../classes/HistoryManager.html">HistoryManager</a></li>
+                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+        </div>
+    </section>
+    <section class="row-fluid">
+        <div class="span10 offset2">
+            <div class="row-fluid">
+                <div class="span8 content class">
+                    <nav>
+                                                <a href="../namespaces/default.html">\</a> <i class="icon-level-up"></i>
+                                            </nav>
+                    <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal"><i class="icon-code"></i></a>
+
+                    <h1><small>\</small>FilesManager</h1>
+                    <p><em>Files and Uplaods Manager Class</em></p>
+                    
+
+
+                    <section id="summary">
+                        <h2>Summary</h2>
+                        <section class="row-fluid heading">
+                            <section class="span4">
+                                <a href="#methods">Methods</a>
+                            </section>
+                            <section class="span4">
+                                <a href="#properties">Properties</a>
+                            </section>
+                            <section class="span4">
+                                <a href="#constants">Constants</a>
+                            </section>
+                        </section>
+                        <section class="row-fluid public">
+                            <section class="span4">
+                                                                    <a href="../classes/FilesManager.html#method___construct" class="">__construct()</a><br />
+                                                                    <a href="../classes/FilesManager.html#method___get" class="">__get()</a><br />
+                                                                    <a href="../classes/FilesManager.html#method_save_upload" class="deprecated">save_upload()</a><br />
+                                                                    <a href="../classes/FilesManager.html#method_save_upload_full" class="deprecated">save_upload_full()</a><br />
+                                                                    <a href="../classes/FilesManager.html#method_clean_filename" class="">clean_filename()</a><br />
+                                                                    <a href="../classes/FilesManager.html#method_get_local_folder" class="">get_local_folder()</a><br />
+                                                                    <a href="../classes/FilesManager.html#method_get_http_path" class="">get_http_path()</a><br />
+                                                                    <a href="../classes/FilesManager.html#method_upload" class="">upload()</a><br />
+                                                                    <a href="../classes/FilesManager.html#method__init" class="">_init()</a><br />
+                                                                    <a href="../classes/FilesManager.html#method_get_upload_content" class="">get_upload_content()</a><br />
+                                                                    <a href="../classes/FilesManager.html#method_isAllowed" class="">isAllowed()</a><br />
+                                                                    <a href="../classes/FilesManager.html#method_valid" class="">valid()</a><br />
+                                                                    <a href="../classes/FilesManager.html#method_get_extension" class="">get_extension()</a><br />
+                                                                    <a href="../classes/FilesManager.html#method_add_dir" class="">add_dir()</a><br />
+                                                                    <a href="../classes/FilesManager.html#method_save_file" class="deprecated">save_file()</a><br />
+                                                                    <a href="../classes/FilesManager.html#method_delete" class="">delete()</a><br />
+                                                                    <a href="../classes/FilesManager.html#method_delete_tree" class="deprecated">delete_tree()</a><br />
+                                                                    <a href="../classes/FilesManager.html#method_empty_folder" class="deprecated">empty_folder()</a><br />
+                                                                    <a href="../classes/FilesManager.html#method_file_array" class="">file_array()</a><br />
+                                                            </section>
+                            <section class="span4">
+                                                                    <a href="../classes/FilesManager.html#property_folder" class="">$folder</a><br />
+                                                                    <a href="../classes/FilesManager.html#property_last_filename" class="">$last_filename</a><br />
+                                                                    <a href="../classes/FilesManager.html#property_last_local_file" class="">$last_local_file</a><br />
+                                                                    <a href="../classes/FilesManager.html#property_last_http_path" class="">$last_http_path</a><br />
+                                                                    <a href="../classes/FilesManager.html#property_messages" class="">$messages</a><br />
+                                                                    <a href="../classes/FilesManager.html#property_http_root" class="">$http_root</a><br />
+                                                                    <a href="../classes/FilesManager.html#property_local_root" class="">$local_root</a><br />
+                                                                    <a href="../classes/FilesManager.html#property_valid" class="">$valid</a><br />
+                                                                    <a href="../classes/FilesManager.html#property_errors" class="">$errors</a><br />
+                                                            </section>
+                            <section class="span4">
+                                                                    <em>No constants found</em>
+                                                            </section>
+                        </section>
+                        <section class="row-fluid protected">
+                            <section class="span4">
+                                                                    <em>No protected methods found</em>
+                                                            </section>
+                            <section class="span4">
+                                                                    <em>No protected properties found</em>
+                                                            </section>
+                            <section class="span4">
+                                <em>N/A</em>
+                            </section>
+                        </section>
+                        <section class="row-fluid private">
+                            <section class="span4">
+                                                                    <em>No private methods found</em>
+                                                            </section>
+                            <section class="span4">
+                                                                    <em>No private properties found</em>
+                                                            </section>
+                            <section class="span4">
+                                <em>N/A</em>
+                            </section>
+                        </section>
+                    </section>
+                </div>
+                <aside class="span4 detailsbar">
+                                        
+                    
+                    <dl>
+                        <dt>File</dt>
+                            <dd><a href="../files/classes.managers.FilesManager.php.html"><div class="path-wrapper">classes\managers\FilesManager.php</div></a></dd>
+                                                <dt>Package</dt>
+                            <dd><div class="namespace-wrapper">\WebLauncher\Managers</div></dd>
+                                                <dt>Class hierarchy</dt>
+                            <dd class="hierarchy">
+                                                                                                                                                                    <div class="namespace-wrapper">\FilesManager</div>
+                            </dd>
+
+                        
+                        
+                        
+                                                                        </dl>
+                    <h2>Tags</h2>
+                    <table class="table table-condensed">
+                                            <tr><td colspan="2"><em>None found</em></td></tr>
+                                        </table>
+                </aside>
+            </div>
+
+                        
+                                    <a id="properties" name="properties"></a>
+            <div class="row-fluid">
+                <div class="span8 content class">
+                    <h2>Properties</h2>
+                </div>
+                <aside class="span4 detailsbar"></aside>
+            </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_folder" name="property_folder" class="anchor"></a>
+            <article class="property">
+                <h3 class="public ">$folder</h3>
+                <pre class="signature">$folder : string</pre>
+                <p><em></em></p>
+                
+
+
+                                <h4>Type</h4>
+                string
+                &mdash; Folder location                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_last_filename" name="property_last_filename" class="anchor"></a>
+            <article class="property">
+                <h3 class="public ">$last_filename</h3>
+                <pre class="signature">$last_filename : string</pre>
+                <p><em></em></p>
+                
+
+
+                                <h4>Type</h4>
+                string
+                &mdash; Last file name uploaded                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_last_local_file" name="property_last_local_file" class="anchor"></a>
+            <article class="property">
+                <h3 class="public ">$last_local_file</h3>
+                <pre class="signature">$last_local_file : string</pre>
+                <p><em></em></p>
+                
+
+
+                                <h4>Type</h4>
+                string
+                &mdash; Last local file uploaded path                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_last_http_path" name="property_last_http_path" class="anchor"></a>
+            <article class="property">
+                <h3 class="public ">$last_http_path</h3>
+                <pre class="signature">$last_http_path : string</pre>
+                <p><em></em></p>
+                
+
+
+                                <h4>Type</h4>
+                string
+                &mdash; Last http path to the file uploaded                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_messages" name="property_messages" class="anchor"></a>
+            <article class="property">
+                <h3 class="public ">$messages</h3>
+                <pre class="signature">$messages : array</pre>
+                <p><em></em></p>
+                
+
+
+                                <h4>Type</h4>
+                array
+                &mdash; Uploade error messages                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_http_root" name="property_http_root" class="anchor"></a>
+            <article class="property">
+                <h3 class="public ">$http_root</h3>
+                <pre class="signature">$http_root : string</pre>
+                <p><em></em></p>
+                
+
+
+                                <h4>Type</h4>
+                string
+                &mdash; Root of site                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_local_root" name="property_local_root" class="anchor"></a>
+            <article class="property">
+                <h3 class="public ">$local_root</h3>
+                <pre class="signature">$local_root : string</pre>
+                <p><em></em></p>
+                
+
+
+                                <h4>Type</h4>
+                string
+                &mdash; Local strorage root                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_valid" name="property_valid" class="anchor"></a>
+            <article class="property">
+                <h3 class="public ">$valid</h3>
+                <pre class="signature">$valid : bool</pre>
+                <p><em></em></p>
+                
+
+
+                                <h4>Type</h4>
+                bool
+                &mdash; Flag if upload was valid                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_errors" name="property_errors" class="anchor"></a>
+            <article class="property">
+                <h3 class="public ">$errors</h3>
+                <pre class="signature">$errors : array</pre>
+                <p><em></em></p>
+                
+
+
+                                <h4>Type</h4>
+                array
+                &mdash; Recorded errors                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                                            
+                                    <a id="methods" name="methods"></a>
+            <div class="row-fluid">
+                <div class="span8 content class"><h2>Methods</h2></div>
+                <aside class="span4 detailsbar"></aside>
+            </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method___construct" name="method___construct" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">__construct()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">__construct(string <span class="argument">$folder</span>, string <span class="argument">$http_root</span>, string <span class="argument">$local_root</span>)</pre>
+                <p><em>Constructor</em></p>
+                
+
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$folder</td>
+                                <td>
+</td>
+                            </tr>
+                                                    <tr>
+                                <td>string</td>
+                                <td>$http_root</td>
+                                <td>
+</td>
+                            </tr>
+                                                    <tr>
+                                <td>string</td>
+                                <td>$local_root</td>
+                                <td>
+</td>
+                            </tr>
+                                            </table>
+                
+                
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method___get" name="method___get" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">__get()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">__get(string <span class="argument">$name</span>)</pre>
+                <p><em>get magic method</em></p>
+                
+
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$name</td>
+                                <td>
+</td>
+                            </tr>
+                                            </table>
+                
+                
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_save_upload" name="method_save_upload" class="anchor"></a>
+            <article class="method">
+                <h3 class="public deprecated">save_upload()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">save_upload(string <span class="argument">$name</span>, string <span class="argument">$folder</span>, string <span class="argument">$newname</span>) : array</pre>
+                <p><em>Save upload to a given folder and newname</em></p>
+                
+
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$name</td>
+                                <td><p>Name parameter from $_FILES[$name] to look for the file details</p>
+</td>
+                            </tr>
+                                                    <tr>
+                                <td>string</td>
+                                <td>$folder</td>
+                                <td><p>[optional] Folder where to save file (relative to $this->folder)</p>
+</td>
+                            </tr>
+                                                    <tr>
+                                <td>string</td>
+                                <td>$newname</td>
+                                <td><p>[optional] New name for the file</p>
+</td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    array
+                                            &mdash; <p>Details for the file uploaded (this will be also overwriten on $_FILES[$name])</p>
+
+                                                </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                                <aside class="alert alert-block alert-error">
+                    <h4>Deprecated</h4>
+                    Will be replaced by $this-&gt;upload()
+                </aside>
+                        <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            example
+                        </th>
+                        <td>
+                                                            <p>page: $this->uploads->save_upload('file','','');</p>
+
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_save_upload_full" name="method_save_upload_full" class="anchor"></a>
+            <article class="method">
+                <h3 class="public deprecated">save_upload_full()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">save_upload_full(string <span class="argument">$name</span>, string <span class="argument">$folder</span>, string <span class="argument">$newname</span>) : array</pre>
+                <p><em>Save upload to a given full path folder and newname</em></p>
+                
+
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$name</td>
+                                <td><p>Name parameter from $_FILES[$name] to look for the file details</p>
+</td>
+                            </tr>
+                                                    <tr>
+                                <td>string</td>
+                                <td>$folder</td>
+                                <td><p>[optional] Folder where to save file full path</p>
+</td>
+                            </tr>
+                                                    <tr>
+                                <td>string</td>
+                                <td>$newname</td>
+                                <td><p>[optional] New name for the file</p>
+</td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    array
+                                            &mdash; <p>Details for the file uploaded (this will be also overwriten on $_FILES[$name])</p>
+
+                                                </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                                <aside class="alert alert-block alert-error">
+                    <h4>Deprecated</h4>
+                    Will be replaced by $this-&gt;upload()
+                </aside>
+                        <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            example
+                        </th>
+                        <td>
+                                                            <p>page: $this->uploads->save_upload_full('file','/home/uploads/','');</p>
+
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_clean_filename" name="method_clean_filename" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">clean_filename()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">clean_filename(string <span class="argument">$filename</span>) : string</pre>
+                <p><em>Cleans the file name for proper storring it in any file system</em></p>
+                
+
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$filename</td>
+                                <td><p>Name to clean</p>
+</td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    string
+                                            &mdash; <p>File name cleaned</p>
+
+                                                </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_get_local_folder" name="method_get_local_folder" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">get_local_folder()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">get_local_folder(string <span class="argument">$folder</span>, bool <span class="argument">$append_main_folder</span>) : string</pre>
+                <p><em>Get the local folder where the storring is done</em></p>
+                
+
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$folder</td>
+                                <td><p>[optional] Folder to append to $this->folder</p>
+</td>
+                            </tr>
+                                                    <tr>
+                                <td>bool</td>
+                                <td>$append_main_folder</td>
+                                <td><p>[optional] Flag if $this->folder should be appended</p>
+</td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    string
+                                            &mdash; <p>Local folder where to strore files</p>
+
+                                                </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_get_http_path" name="method_get_http_path" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">get_http_path()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">get_http_path(string <span class="argument">$folder</span>, bool <span class="argument">$append_main_folder</span>) : string</pre>
+                <p><em>Get the URL to the folder where the data is stored</em></p>
+                
+
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$folder</td>
+                                <td><p>[optional] Folder to append to $this->folder</p>
+</td>
+                            </tr>
+                                                    <tr>
+                                <td>bool</td>
+                                <td>$append_main_folder</td>
+                                <td><p>[optional] Flag if $this->folder should be appended</p>
+</td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    string
+                                            &mdash; <p>Url to the local strorage area</p>
+
+                                                </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_upload" name="method_upload" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">upload()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">upload(string <span class="argument">$name</span>, string <span class="argument">$folder</span>, string <span class="argument">$newname</span>, bool <span class="argument">$append_main_folder</span>)</pre>
+                <p><em>Uplaod files to the local set storage folder</em></p>
+                
+
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$name</td>
+                                <td><p>Name parameter from $_FILES[$name] to look for the file details</p>
+</td>
+                            </tr>
+                                                    <tr>
+                                <td>string</td>
+                                <td>$folder</td>
+                                <td><p>[optional] Folder where to save file (relative to $this->folder)</p>
+</td>
+                            </tr>
+                                                    <tr>
+                                <td>string</td>
+                                <td>$newname</td>
+                                <td><p>[optional] New name for the file</p>
+</td>
+                            </tr>
+                                                    <tr>
+                                <td>bool</td>
+                                <td>$append_main_folder</td>
+                                <td><p>[optional][default=true] Flag if the $this->folder path should be appended</p>
+</td>
+                            </tr>
+                                            </table>
+                
+                
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method__init" name="method__init" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">_init()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">_init()</pre>
+                <p><em>Init function</em></p>
+                
+
+
+                
+                
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_get_upload_content" name="method_get_upload_content" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">get_upload_content()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">get_upload_content(string <span class="argument">$name</span>) : string</pre>
+                <p><em>Get the content of the uploaded file</em></p>
+                
+
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$name</td>
+                                <td><p>Name from $_FILES[$name]</p>
+</td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    string
+                                            &mdash; <p>Content of the uploaded file</p>
+
+                                                </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_isAllowed" name="method_isAllowed" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">isAllowed()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">isAllowed(string <span class="argument">$fileName</span>) : bool</pre>
+                <p><em>Check if a filename is allowed to be uploaded (done by extension)</em></p>
+                
+
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$fileName</td>
+                                <td><p>Name of the file</p>
+</td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    bool
+                                            &mdash; <p>True if the file can be uploaded</p>
+
+                                                </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_valid" name="method_valid" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">valid()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">valid()</pre>
+                <p><em>Returns the value of $this-&gt;valid</em></p>
+                
+
+
+                
+                
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_get_extension" name="method_get_extension" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">get_extension()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">get_extension(string <span class="argument">$fileName</span>) : string</pre>
+                <p><em>Get the extension of a file</em></p>
+                
+
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$fileName</td>
+                                <td>
+</td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    string
+                                            &mdash; <p>The extension</p>
+
+                                                </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_add_dir" name="method_add_dir" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">add_dir()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">add_dir(string <span class="argument">$dir</span>) : bool</pre>
+                <p><em>Creates a folder that has the permissions to be uplaoded in</em></p>
+                
+
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$dir</td>
+                                <td>
+</td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    bool
+                                            &mdash; <p>True if folder was created</p>
+
+                                                </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_save_file" name="method_save_file" class="anchor"></a>
+            <article class="method">
+                <h3 class="public deprecated">save_file()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">save_file(string <span class="argument">$path</span>, string <span class="argument">$content</span>) : True</pre>
+                <p><em>Put content into a file</em></p>
+                
+
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$path</td>
+                                <td>
+</td>
+                            </tr>
+                                                    <tr>
+                                <td>string</td>
+                                <td>$content</td>
+                                <td>
+</td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    True
+                                            &mdash; <p>if file was written</p>
+
+                                                </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                                <aside class="alert alert-block alert-error">
+                    <h4>Deprecated</h4>
+                    Please use file_put_contents
+                </aside>
+                        <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_delete" name="method_delete" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">delete()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">delete(string <span class="argument">$dir</span>, bool <span class="argument">$files_only</span>)</pre>
+                <p><em>Deletes files and folders from a given path</em></p>
+                
+
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$dir</td>
+                                <td><p>File path or folder path to be removed</p>
+</td>
+                            </tr>
+                                                    <tr>
+                                <td>bool</td>
+                                <td>$files_only</td>
+                                <td><p>[optional][default=false] Flag if only files should be removed</p>
+</td>
+                            </tr>
+                                            </table>
+                
+                
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_delete_tree" name="method_delete_tree" class="anchor"></a>
+            <article class="method">
+                <h3 class="public deprecated">delete_tree()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">delete_tree(string <span class="argument">$dir</span>)</pre>
+                <p><em>Delete folder tree method</em></p>
+                
+
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$dir</td>
+                                <td>
+</td>
+                            </tr>
+                                            </table>
+                
+                
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                                <aside class="alert alert-block alert-error">
+                    <h4>Deprecated</h4>
+                    Please use $this-&gt;delete
+                </aside>
+                        <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_empty_folder" name="method_empty_folder" class="anchor"></a>
+            <article class="method">
+                <h3 class="public deprecated">empty_folder()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">empty_folder(string <span class="argument">$dir</span>)</pre>
+                <p><em>Empty folder</em></p>
+                
+
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$dir</td>
+                                <td>
+</td>
+                            </tr>
+                                            </table>
+                
+                
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                                <aside class="alert alert-block alert-error">
+                    <h4>Deprecated</h4>
+                    Please use $this-&gt;delete($dir,true)
+                </aside>
+                        <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_file_array" name="method_file_array" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">file_array()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">file_array(string <span class="argument">$path</span>, string <span class="argument">$exclude</span>, bool <span class="argument">$recursive</span>) : array</pre>
+                <p><em>Returns the files at a given path</em></p>
+                
+
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$path</td>
+                                <td>
+</td>
+                            </tr>
+                                                    <tr>
+                                <td>string</td>
+                                <td>$exclude</td>
+                                <td><p>[optional][default=".|.."]</p>
+</td>
+                            </tr>
+                                                    <tr>
+                                <td>bool</td>
+                                <td>$recursive</td>
+                                <td><p>Flag if it should go through subfolders</p>
+</td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    array
+                                            &mdash; <p>Files found at the given path</p>
+
+                                                </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                                                    </div>
+    </section>
+
+    <div id="source-view" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="source-view-label" aria-hidden="true">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3 id="source-view-label">FilesManager.php</h3>
+        </div>
+        <div class="modal-body">
+            <pre data-src="../files/classes\managers\FilesManager.php.txt" class="language-php line-numbers"></pre>
+        </div>
+    </div>
+
+    <footer class="row-fluid">
+        <section class="span10 offset2">
+            <section class="row-fluid">
+                <section class="span10 offset1">
+                    <section class="row-fluid footer-sections">
+                        <section class="span4">
+                                                        <h1><i class="icon-code"></i></h1>
+                            <div>
+                                <ul>
+                                                                    </ul>
+                            </div>
+                        </section>
+                        <section class="span4">
+                                                        <h1><i class="icon-bar-chart"></i></h1>
+                            <div>
+                                <ul>
+                                    <li><a href="">Class Hierarchy Diagram</a></li>
+                                </ul>
+                            </div>
+                        </section>
+                        <section class="span4">
+                                                        <h1><i class="icon-pushpin"></i></h1>
+                            <div>
+                                <ul>
+                                    <li><a href="">Errors</a></li>
+                                    <li><a href="">Markers</a></li>
+                                </ul>
+                            </div>
+                        </section>
+                    </section>
+                </section>
+            </section>
+            <section class="row-fluid">
+                <section class="span10 offset1">
+                    <hr />
+                    Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor </a> and authored
+                    on March 12th, 2014 at 13:13.
+                </section>
+            </section>
+        </section>
+    </footer>
+</div>
+
+</body>
+</html>

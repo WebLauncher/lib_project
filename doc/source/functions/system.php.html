@@ -1,0 +1,541 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * System helper functions
+ */
+
+/**
+ * Display array formated
+ * @param $arr
+ * @param $return if true return value instead of writing it
+ */
+function echopre($arr, $return = false) {
+	$text = '&lt;div align=&quot;left&quot; style=&quot;font-size:-1;&quot;&gt;&lt;pre class=&quot;debug&quot;&gt;';
+	$text .= print_r($arr, true);
+	$text .= '&lt;/pre&gt;&lt;/div&gt;';
+	if ($return)
+		return $text;
+	echo $text;
+}
+
+/**
+ * Return formated display for array
+ * @param $arr
+ */
+function echopre_r($arr) {
+	return echopre($arr, true);
+}
+
+/**
+ * Echo and return value
+ * @param $str
+ */
+function echo_r($str) {
+	ob_start();
+	echo $str;
+	$value = ob_get_contents();
+	ob_end_clean();
+	return $value;
+}
+
+/**
+ * The system error handler
+ * @param $errno
+ * @param $errstr
+ * @param $errfile
+ * @param $errline
+ */
+function the_error_handler($errno = '', $errstr = '', $errfile = '', $errline = '', $errcontext = '') {
+	$errortype = array(1 =&gt; array('code' =&gt; '_ERR_ERROR', 'name' =&gt; 'Error', 'back' =&gt; 'ffcccc', 'color' =&gt; '990000', 'line' =&gt; '660000'), 2 =&gt; array('code' =&gt; '_ERR_WARNING', 'name' =&gt; 'Warning', 'back' =&gt; 'FFD5BF', 'color' =&gt; 'CC3300', 'line' =&gt; 'FF9966'), 4 =&gt; array('code' =&gt; '_ERR_PARSE', 'name' =&gt; 'Parse Error', 'back' =&gt; 'D7EBFF', 'color' =&gt; '003366', 'line' =&gt; '71B8FF'), 8 =&gt; array('code' =&gt; '_ERR_NOTICE', 'name' =&gt; 'Notice', 'back' =&gt; 'EAEAEA', 'color' =&gt; '333333', 'line' =&gt; '999999'), 16 =&gt; array('code' =&gt; '_ERR_CORE_ERROR', 'name' =&gt; 'Core Error', 'back' =&gt; 'ffcccc', 'color' =&gt; '990000', 'line' =&gt; '660000'), 32 =&gt; array('code' =&gt; '_ERR_CORE_WARNING', 'name' =&gt; 'Core Warning', 'back' =&gt; 'FFD5BF', 'color' =&gt; 'CC3300', 'line' =&gt; 'FF9966'), 64 =&gt; array('code' =&gt; '_ERR_COMPILE_ERROR', 'name' =&gt; 'Compile Error', 'back' =&gt; 'ffcccc', 'color' =&gt; '990000', 'line' =&gt; '660000'), 128 =&gt; array('code' =&gt; '_ERR_COMPILE_WARNING', 'name' =&gt; 'Compile Warning', 'back' =&gt; 'FFD5BF', 'color' =&gt; 'CC3300', 'line' =&gt; 'FF9966'), 256 =&gt; array('code' =&gt; '_ERR_USER_ERROR', 'name' =&gt; 'User Error', 'back' =&gt; 'FFB7B7', //ffcccc',
+	'color' =&gt; '333333', //990000',
+	'line' =&gt; '660000'), 512 =&gt; array('code' =&gt; '_ERR_USER_WARNING', 'name' =&gt; 'User Warning', 'back' =&gt; 'FFD5BF', 'color' =&gt; 'CC3300', 'line' =&gt; 'FF9966'), 1024 =&gt; array('code' =&gt; '_ERR_USER_NOTICE', 'name' =&gt; 'User Notice', 'back' =&gt; 'EAEAEA', 'color' =&gt; '333333', 'line' =&gt; '999999'));
+	$default = array('code' =&gt; '_ERR_UNDEFINED', 'name' =&gt; 'Error Undefined', 'back' =&gt; 'EAEAEA', 'color' =&gt; '333333', 'line' =&gt; '999999');
+
+	$raw = debug_backtrace();
+	$hash = base64_encode(microtime());
+	$backtrace = '&lt;div id=&quot;_php_error_' . $hash . '&quot; style=&quot;display:none;&quot;&gt;&lt;table cellspacing=&quot;0&quot; cellpadding=&quot;0&quot; width=&quot;100%&quot; style=&quot;color:#' . isset_or($errortype[$errno]['color'], $default['color']) . ';background:#' . isset_or($errortype[$errno]['color'], $default['color']) . ';&quot;&gt;
+        	&lt;tr style=&quot;background:#' . isset_or($errortype[$errno]['color'], $default['color']) . '; color:#' . isset_or($errortype[$errno]['back'], $default['back']) . ';&quot;&gt;
+        		&lt;td&gt;Trace&lt;/td&gt;&lt;td&gt;File&lt;/td&gt;&lt;td&gt;Line&lt;/td&gt;&lt;td&gt;Function&lt;/td&gt;
+        	&lt;/tr&gt;
+        ';
+	$no = 0;
+	$method = '';
+	if (isset($raw[1]))
+		$method = $raw[1]['function'];
+	$raw = array_reverse($raw);
+	foreach ($raw as $entry) {
+		if (isset_or($entry['function']) != 'the_error_handler') {
+			$backtrace .= '&lt;tr style=&quot;background:#' . isset_or($errortype[$errno]['back'], $default['back']) . ';&quot;&gt;&lt;td&gt;' . $no . '&lt;/td&gt;';
+			$backtrace .= &quot;&lt;td&gt;&quot; . isset_or($entry['file']) . &quot;&lt;/td&gt;&lt;td&gt;&quot; . isset_or($entry['line']) . &quot;&lt;/td&gt;&quot;;
+			$backtrace .= &quot;&lt;td&gt;&lt;b&gt;&quot; . isset_or($entry['function']) . &quot;&lt;/b&gt;&lt;/td&gt;&quot;;
+			$no++;
+			$backtrace .= '&lt;/tr&gt;';
+		}
+	}
+	$backtrace .= '&lt;/table&gt;&lt;/div&gt;';
+
+	$output = '';
+	if (error_reporting() &amp; $errno) {
+		$output .= '&lt;div&gt;';
+		$output .= '&lt;table cellspacing=&quot;0&quot; cellpadding=&quot;0&quot; width=&quot;100%&quot; style=&quot;font-family:arial,lucida console,courier new;font-size:12px;color:#' . isset_or($errortype[$errno]['color'], $default['color']) . ';background-color:#' . isset_or($errortype[$errno]['back'], $default['back']) . ';margin:0px;padding:0px;border:1px solid #' . isset_or($errortype[$errno]['line'], $default['line']) . ';margin-bottom:2px;&quot;&gt;';
+		$output .= '&lt;tr&gt;&lt;td style=&quot;width:30%;vertical-align:top;padding:2px;&quot;&gt;';
+		$output .= '&lt;table cellspacing=&quot;0&quot; cellpadding=&quot;0&quot; width=&quot;100%&quot; style=&quot;color:#' . isset_or($errortype[$errno]['color'], $default['color']) . ';&quot;&gt;';
+		$output .= '&lt;tr&gt;';
+		$output .= '&lt;td&gt;&lt;b&gt;PHP ' . isset_or($errortype[$errno]['name'], $default['name']) . '&lt;/b&gt; No:' . $errno . ' &lt;br/&gt;&lt;small&gt;[' . isset_or($errortype[$errno]['code'], $default['code']) . ']&lt;/small&gt;&lt;/td&gt;';
+		$output .= '';
+		$output .= '';
+		$output .= '&lt;td colspan=2 style=&quot;color:#' . isset_or($errortype[$errno]['color'], $default['color']) . ';padding:2px 4px ;background:#fff;&quot;&gt;&lt;b&gt;' . $errstr . '&lt;/b&gt;&lt;/td&gt;';
+		$output .= '';
+		$output .= '';
+		$output .= '&lt;td style=&quot;padding:2px;&quot;&gt;' . 'File (Line)' . ': ' . $errfile . ' (' . $errline . ')' . ($method ? '&lt;br/&gt;Function: ' . $method : '') . ' (&lt;a href=&quot;#&quot; onclick=&quot;document.getElementById(\'_php_error_' . $hash . '\').style.display = \'block\';return false;&quot;&gt;show trace&lt;/a&gt;)&lt;/td&gt;';
+		$output .= '&lt;/tr&gt;';
+		$output .= '&lt;/table&gt;';
+		$output .= '&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align:top;padding:2px;&quot;&gt;';
+		$output .= '' . $backtrace;
+		$output .= '&lt;/td&gt;&lt;/tr&gt;';
+		$output .= '&lt;/table&gt;';
+		$output .= '&lt;/div&gt;';
+		$output = trim($output);
+		$output = str_replace(&quot;\n&quot;, &quot;&quot;, $output);
+		$output = str_replace(&quot;\r&quot;, &quot;&quot;, $output);
+		global $page;
+		if (isset_or($page -&gt; debug))
+			echo $output;
+
+		if (!is_writable(isset_or($page -&gt; error_log_path) . 'errs.log.csv')) {
+			$handle = @fopen(isset_or($page -&gt; error_log_path) . 'errs.log.csv', 'w');
+			@fclose($handle);
+		}
+		if (is_writable(isset_or($page -&gt; error_log_path) . 'errs.log.csv')) {
+			$handle = fopen(isset_or($page -&gt; error_log_path) . 'errs.log.csv', 'a');
+			fwrite($handle, '\'' . print_r($errortype[$errno], true) . &quot;','$errfile','$errline','$errstr','&quot; . date('Y-m-d\',\'H:i:s') . &quot;'\n&quot;);
+			fclose($handle);
+		}
+		/*
+		 if (!is_writable(isset_or($page-&gt;error_log_path).'errs.log.html')) {
+		 $handle = @fopen(isset_or($page-&gt;error_log_path).'errs.log.html', 'w');
+		 @fclose($handle);
+		 }
+		 if (is_writable(isset_or($page-&gt;error_log_path).'errs.log.html')) {
+		 $handle = fopen(isset_or($page-&gt;error_log_path).'errs.log.html', 'a');
+		 fwrite($handle,  date('Y-m-d H:i:s') . &quot;&lt;br/&gt;&quot;.$output);
+		 fclose($handle);
+		 }
+		 */
+	}
+}
+
+set_error_handler('the_error_handler');
+
+/**
+ * Register shutdown method
+ */
+function the_register_shutdown() {
+	global $page;
+	session_write_close();
+	# Getting last error
+	$error = error_get_last();
+	if ($page -&gt; debug)
+		//print_r($error);
+		# Checking if last error is a fatal error
+		if (($error['type'] === E_ERROR) || ($error['type'] === E_USER_ERROR)) {
+
+			if ($page -&gt; error_log_email) {
+				$page -&gt; import('library', 'mail');
+				$mail = new Mail();
+				$message = 'Found error: &lt;br/&gt;' . echopre_r($error);
+				$mail -&gt; send_mail($page -&gt; error_log_email, 'Fatal error on server ' . $page::$hostname, $message, $page -&gt; error_log_email, 'Fatal Errors Sender');
+			}
+			echo 'Sorry, a serious error has occured in the system.';
+			// . $error['file'];
+		}
+}
+
+register_shutdown_function('the_register_shutdown');
+
+/**
+ * The system exception handler
+ * @param $exception
+ */
+function the_exception_handler($exception) {
+	echo &quot;Uncaught exception: &quot;, $exception -&gt; getMessage(), &quot;\n&quot;;
+}
+
+set_exception_handler('the_register_shutdown');
+
+/**
+ * Check if isset else return alternate
+ * @param $check
+ * @param $alternate
+ */
+function isset_or(&amp;$check, $alternate = NULL) {
+	return (isset($check)) ? $check : $alternate;
+}
+
+/**
+ * Clean database insertion fields
+ * @param $string
+ */
+function sat($string) {
+	global $dal;
+	return $dal -&gt; db -&gt; stringEscape(stripslashes(addslashes(trim($string))));
+}
+
+/**
+ * Serialize array
+ * @param $array
+ */
+function ser($array) {
+	if (is_array($array))
+		return @serialize($array);
+	return $array;
+}
+
+/**
+ * Unserialize array
+ * @param $string
+ */
+function unser($string) {
+	if (is_string($string)) {
+		return @unserialize($string);
+	}
+	return $string;
+}
+
+/**
+ * validate numeric string structure
+ *
+ * @return true if ok false if not
+ *
+ * @param $value
+ *
+ * @author silviu
+ */
+function checkNumericString($value) {
+	$exp = '^[0-9]*$';
+	if (!eregi($exp, $value)) {
+		return false;
+	} else {
+		return true;
+	}//end if (!eregi($exp, $value))
+}//end function checkNumericString($value)
+
+/**
+ * transform the date to the age of the user
+ *
+ * @return the number of years or unknown
+ *
+ * @param $birthday the data used to calculate the age
+ *
+ * @author alex
+ */
+function date2birthday($birthday) {
+	if (($birthday != '0000-00-00') AND ($birthday != '0000-00-00 00:00:00') AND ($birthday != '')) {
+		list($year, $month, $day) = explode(&quot;-&quot;, $birthday);
+		$year_diff = date(&quot;Y&quot;) - $year;
+		$month_diff = date(&quot;m&quot;) - $month;
+		$day_diff = date(&quot;d&quot;) - $day;
+		if ($day_diff &lt; 0 || $month_diff &lt; 0) {
+			$year_diff--;
+		}//end if ($day_diff &lt; 0 || $month_diff &lt; 0)
+		return $year_diff;
+	} else {
+		return 'unknown';
+	}//end if (($birthday != '0000-00-00') AND ($birthday != '0000-00-00 00:00:00') AND ($birthday != ''))
+}//end function date2birthday ($birthday)
+
+// Function to calculate no of pages in function of items and items per page values.
+function countTotalNumberOfPages($totalrows, $setting_productsperpage) {
+
+	//$pages = $totalItem % $pageItem;
+	//if ($totalItem % $pageItem != 0 )  $pages++;
+
+	return intval($totalrows / $setting_productsperpage) + (($totalrows / $setting_productsperpage &gt; intval($totalrows / $setting_productsperpage)) ? 1 : 0);
+}
+
+function encrypt($plain_text) {
+	global $page;
+	$key = $page -&gt; crypt_key;
+
+	$plain_text = trim($plain_text);
+	$iv = substr(md5($key), 0, mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CFB));
+	$c_t = mcrypt_cfb(MCRYPT_RIJNDAEL_256, $key, $plain_text, MCRYPT_ENCRYPT, $iv);
+	return urlencode(base64_encode($c_t));
+}
+
+function decrypt($crypted_text) {
+	global $page;
+	$key = $page -&gt; crypt_key;
+	$crypted_text = base64_decode($crypted_text);
+	$iv = substr(md5($key), 0, mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CFB));
+	$p_t = mcrypt_cfb(MCRYPT_RIJNDAEL_256, $key, $crypted_text, MCRYPT_DECRYPT, $iv);
+	return trim($p_t);
+}
+
+function tr($content, $language_id = 0, $tags = 'site') {
+	if ($content != &quot;&quot;) {
+		global $page;
+			$language = $language_id ? $language_id : isset($page -&gt; session['language_id'])?$page -&gt; session['language_id']:0;
+			$quer = $content;
+
+			if ($page &amp;&amp; $page -&gt; db_conn_enabled) {
+				$hostname = '';
+				if ($page -&gt; admin)
+					$key = sha1($content);
+				else {
+					$hostname = System::get_hostname();
+					$key = sha1($content . '_' . $hostname);
+				}
+				if (!isset($page -&gt; translations))
+					$page -&gt; translations = array();
+				if (isset($page -&gt; translations[$key])) {
+					$content = $page -&gt; translations[$key];
+				} else {
+					$query = &quot;select &quot; . $page -&gt; db_conn -&gt; tables['tbl_x_conf_texts'] . &quot;.id,&quot; . $page -&gt; db_conn -&gt; tables['tbl_x_conf_texts'] . &quot;.tags,&quot; . $page -&gt; db_conn -&gt; tables['tbl_x_conf_texts'] . &quot;.query,&quot; . $page -&gt; db_conn -&gt; tables['tbl_x_conf_texts'] . &quot;.value,&quot; . $page -&gt; db_conn -&gt; tables['tbl_x_conf_translations'] . &quot;.value as translation from &quot; . $page -&gt; db_conn -&gt; tables['tbl_x_conf_texts'] . &quot; left join &quot; . $page -&gt; db_conn -&gt; tables['tbl_x_conf_translations'] . &quot; on &quot; . $page -&gt; db_conn -&gt; tables['tbl_x_conf_translations'] . &quot;.text_id=&quot; . $page -&gt; db_conn -&gt; tables['tbl_x_conf_texts'] . &quot;.id where &quot; . $page -&gt; db_conn -&gt; tables['tbl_x_conf_texts'] . &quot;.key=&quot; . sat($key) . &quot;&quot;;
+
+					$text = $page -&gt; db_conn -&gt; getRow($query);
+					if ($text) {
+						$text['tags'] = explode(&quot; &quot;, $text['tags']);
+						if (sat($text['query']) != sat($quer))
+							$page -&gt; db_conn -&gt; query(&quot;update &quot; . $page -&gt; db_conn -&gt; tables['tbl_x_conf_texts'] . &quot; set query=&quot; . sat($quer) . &quot; where id=&quot; . $text['id']);
+						if (count(array_diff($text['tags'], explode(&quot; &quot;, $tags)))) {
+							$tags = implode(&quot; &quot;, array_merge(array_diff(explode(&quot; &quot;, $tags), $text['tags']), $text['tags']));
+
+							$page -&gt; db_conn -&gt; query(&quot;update &quot; . $page -&gt; db_conn -&gt; tables['tbl_x_conf_texts'] . &quot; set tags=&quot; . sat($tags) . &quot; where id=&quot; . $text['id']);
+						}
+						if ($language &gt; 0 &amp;&amp; isset_or($text['translation']))
+							$text['value'] = $text['translation'];
+						$content = $text['value'];
+					} else {
+						$query = &quot;INSERT INTO `&quot; . $page -&gt; db_conn -&gt; tables['tbl_x_conf_texts'] . &quot;` (
+				`id` ,
+				`key` ,
+				`value`,
+				`query`,
+				`tags`,
+				`hostname`,
+				`admin`
+				)
+				VALUES (
+				NULL , &quot; . sat($key) . &quot;, &quot; . sat($content) . &quot;,&quot; . sat($quer) . &quot;,&quot; . sat($tags) . &quot;,&quot; . sat($hostname) . &quot;,&quot; . $page -&gt; admin . &quot;
+				);&quot;;
+						$text = $page -&gt; db_conn -&gt; query($query);
+					}
+					$page -&gt; translations[$key] = $content;
+				}
+			}
+		}
+	return $content;
+}
+
+function execute_wait($path, $exe, $args = &quot;&quot;) {
+	if (is_file($path . $exe)) {
+		$oldpath = getcwd();
+		chdir($path);
+
+		if (substr(php_uname(), 0, 7) == &quot;Windows&quot;) {
+			$cmd = $path . $exe;
+			$cmdline = &quot;cmd /c $cmd &quot; . $args;
+			$WshShell = new COM(&quot;WScript.Shell&quot;);
+			$oExec = $WshShell -&gt; Run($cmdline, 0, true);
+		} else {
+			exec(&quot;./&quot; . $exe . &quot; &quot; . $args);
+		}
+		chdir($oldpath);
+	}
+}
+
+/**
+ * Current date and time formated a database
+ */
+function nowfull() {
+	return date(&quot;Y-m-d H:i:s&quot;);
+}
+
+/**
+ * Current date formated as database
+ */
+function now() {
+	return date(&quot;Y-m-d&quot;);
+}
+
+function getNoDays($start, $end) {
+	// Vars
+	$day = 86400;
+	// Day in seconds
+	$format = 'Y-m-d';
+	// Output format (see PHP date funciton)
+	$sTime = strtotime($start);
+	// Start as time
+	$eTime = strtotime($end);
+	// End as time
+	$numDays = round(($sTime - $eTime) / $day) + 1;
+	return intval($numDays);
+}
+
+function parse_date($str, $format = 'Y-m-d', $target_format = 'Y-m-d') {
+	$date = date_parse_from_format($format, $str);
+	return date($target_format, mktime(isset_or($date['hour'], 0), isset_or($date['minute'], 0), isset_or($date['second'], 0), isset_or($date['month'], 0), isset_or($date['day'], 0), isset_or($date['year'], 0)));
+}
+
+/**
+ * Get current page url
+ * @return String URL
+ */
+function page_url() {
+	$pageURL = 'http';
+	if (isset($_SERVER['HTTPS']) &amp;&amp; $_SERVER['HTTPS'] == 'on') {$pageURL .= 's';
+	}
+	$pageURL .= '://';
+	$pageURL .= isset_or($_SERVER['SERVER_NAME']) . isset_or($_SERVER['REQUEST_URI']);
+	if ($url_parts = parse_url($pageURL)) {
+		if (isset($url_parts['path'])) {
+			if (substr($url_parts['path'], strlen($url_parts['path']) - 1, 1) != '/')
+				$url_parts['path'] .= '/';
+			$pageURL = $url_parts['scheme'] . '://' . $url_parts['host'] . $url_parts['path'] . (isset_or($url_parts['query']) ? '?' . $url_parts['query'] : '');
+		}
+	}
+	return $pageURL;
+}
+
+function get_hostname() {
+	$server_host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : (defined(&quot;RHOST&quot;) ? RHOST : '');
+	if (strpos($server_host, 'www.') == 0)
+		$server_host = str_replace('www.', '', $server_host);
+	return $server_host;
+}
+
+/* takes the input, scrubs bad characters */
+function generate_seo_link($input, $replace = '-', $remove_words = true, $words_array = array()) {
+	//make it lowercase, remove punctuation, remove multiple/leading/ending spaces
+	$return = trim(str_replace(' +', ' ', preg_replace('/[^a-zA-Z0-9\s]/', '', strtolower($input))));
+
+	//remove words, if not helpful to seo
+	//i like my defaults list in remove_words(), so I wont pass that array
+	if ($remove_words) { $return = remove_words($return, $replace, $words_array);
+	}
+
+	//convert the spaces to whatever the user wants
+	//usually a dash or underscore..
+	//...then return the value.
+	return str_replace(' ', $replace, $return);
+}
+
+/* takes an input, scrubs unnecessary words */
+function remove_words($input, $replace, $words_array = array(), $unique_words = true) {
+	//separate all words based on spaces
+	$input_array = explode(' ', $input);
+
+	//create the return array
+	$return = array();
+
+	//loops through words, remove bad words, keep good ones
+	foreach ($input_array as $word) {
+		//if it's a word we should add...
+		if (!in_array($word, $words_array) &amp;&amp; ($unique_words ? !in_array($word, $return) : true)) {
+			$return[] = $word;
+		}
+	}
+
+	//return good words separated by dashes
+	return implode($replace, $return);
+}
+
+// PHP &lt; 5.5.0
+if (!function_exists('array_column')) {
+    function array_column($input, $column_key, $index_key = null)
+    {
+        if ($index_key !== null) {
+            // Collect the keys
+            $keys = array();
+            $i = 0; // Counter for numerical keys when key does not exist
+            
+            foreach ($input as $row) {
+                if (array_key_exists($index_key, $row)) {
+                    // Update counter for numerical keys
+                    if (is_numeric($row[$index_key]) || is_bool($row[$index_key])) {
+                        $i = max($i, (int) $row[$index_key] + 1);
+                    }
+                    
+                    // Get the key from a single column of the array
+                    $keys[] = $row[$index_key];
+                } else {
+                    // The key does not exist, use numerical indexing
+                    $keys[] = $i++;
+                }
+            }
+        }
+        
+        if ($column_key !== null) {
+            // Collect the values
+            $values = array();
+            $i = 0; // Counter for removing keys
+            
+            foreach ($input as $row) {
+                if (array_key_exists($column_key, $row)) {
+                    // Get the values from a single column of the input array
+                    $values[] = $row[$column_key];
+                    $i++;
+                } elseif (isset($keys)) {
+                    // Values does not exist, also drop the key for it
+                    array_splice($keys, $i, 1);
+                }
+            }
+        } else {
+            // Get the full arrays
+            $values = array_values($input);
+        }
+        
+        if ($index_key !== null) {
+            return array_combine($keys, $values);
+        }
+        
+        return $values;
+    }
+}
+
+?&gt;
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all()
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

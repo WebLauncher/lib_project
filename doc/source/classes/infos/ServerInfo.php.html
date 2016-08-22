@@ -1,0 +1,86 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+
+
+/**
+ * @package WebLauncher\Infos
+ * @example $this-&gt;system-&gt;server
+ */
+class ServerInfo
+{
+	public static function get()
+	{
+		$info=array();
+		if(isset($_SERVER['HTTP_HOST']))
+		{
+			$info['host']=isset_or($_SERVER['HTTP_HOST']);
+			$info['language']=isset_or($_SERVER['HTTP_ACCEPT_LANGUAGE']);
+			$info['encoding']=isset_or($_SERVER['HTTP_ACCEPT_ENCODING']);
+			$info['charset']=isset_or($_SERVER['HTTP_ACCEPT_CHARSET']);
+			$info['port']=isset_or($_SERVER['SERVER_PORT']);
+			$info['referer']=isset_or($_SERVER['HTTP_REFERER']);
+			$info['os']=isset($_SERVER['WINDIR'])?'windows':'other';
+			$info['local_root']=isset_or($_SERVER['SCRIPT_FILENAME'])?substr($_SERVER['SCRIPT_FILENAME'],0,strrpos($_SERVER['SCRIPT_FILENAME'],'/')).'/':'';
+			$info['site_name']=isset_or($_SERVER['SCRIPT_FILENAME'])?substr($_SERVER['SCRIPT_NAME'],1,strrpos($_SERVER['SCRIPT_NAME'],'/')-1):'';
+			if(strpos($info['site_name'],'.')&gt;0)$info['site_name']='';
+			switch($info['port'])
+			{
+				case '433':
+					$info['protocol']='https';
+				break;
+				default:
+					$info['protocol']='http';
+				break;
+			}
+			$info['client_ip']=isset_or($_SERVER['REMOTE_ADDR']);
+			$info['http_root']=$info['protocol'].'://'.$info['host'].'/'.$info['site_name'];
+			if($info['site_name'])$info['http_root'].='/';
+		}
+		return $info;
+	}
+}
+
+?&gt;</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all()
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

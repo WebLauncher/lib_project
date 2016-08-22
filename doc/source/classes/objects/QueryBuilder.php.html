@@ -1,0 +1,467 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * Query Builder
+ */
+
+/**
+ * Query builder Class
+ * @package WebLauncher\Objects
+ */
+class QueryBuilder
+{
+	/**
+	 * @var string $query
+	 */
+	private $query='';
+	/**
+	 * @var string $table
+	 */
+	private $table='';
+	/**
+	 * @var DbManager $db
+	 */
+	private $db=null;
+	/**
+	 * @var string $query_type
+	 */
+	private $query_type='';
+	/**
+	 * @var bool $calculate
+	 */
+	private $calculate=false;
+	/**
+	 * @var int $no_values
+	 */
+	private $no_values=0;
+	/**
+	 * @var array $args
+	 */
+	private $args=array();
+
+	/**
+	 * Constructor
+	 * @param string $table
+	 * @param string $query
+	 */
+	function __construct($table,$query='')
+	{
+		if(is_a($table,'Base'))
+		{
+			$this-&gt;table=&amp;$table-&gt;table;
+			$this-&gt;db=&amp;$table-&gt;db;
+		}
+		else
+		{
+			$this-&gt;table=$table;
+			global $dal;
+			$this-&gt;db=&amp;$dal-&gt;db;
+		}
+		$this-&gt;query=$query;
+	}
+	
+	/**
+	 * Append to current query
+	 * @param string $sql_text
+	 * @param string $separator
+	 */
+	function append($sql_text,$separator=' ')
+	{
+		$this-&gt;query.=($sql_text.$separator);
+	}
+	
+	/**
+	 * Start update query
+	 * @param array $fields
+	 * @param bool $escape
+	 */
+	function update($fields=array(),$escape=true)
+	{
+		$this-&gt;query_type='query';
+		$this-&gt;append('update');
+		$this-&gt;append('`'.$this-&gt;table.'` set ');
+
+		if($no_fields=count($fields))
+		{
+			$count=0;
+			foreach($fields as $k=&gt;$f)
+			{
+				if($escape) $this-&gt;append('`','');
+				$this-&gt;append($k,'');
+				if($escape) $this-&gt;append('`','');
+				$this-&gt;append('=','');
+				if($escape){
+					$this-&gt;args[]=$f;
+					$this-&gt;append('?');
+				}
+				else
+					$this-&gt;append($f);
+				if($count&lt;$no_fields-1)
+					$this-&gt;append(',');
+				$count++;
+			}
+		}
+		return $this;
+	}
+	
+	/**
+	 * Start insert query
+	 * @param array $fields
+	 */
+	function insert($fields=array())
+	{
+		$this-&gt;query_type='insert';
+		$this-&gt;append('insert into');
+		$this-&gt;append('`'.$this-&gt;table.'`');
+
+		if($no_fields=count($fields))
+		{
+			$this-&gt;append('(');
+			$count=0;
+			foreach($fields as $k=&gt;$f)
+			{
+				if($count&lt;$no_fields-1)
+					$this-&gt;append('`'.$f.'`',',');
+				else
+					$this-&gt;append('`'.$f.'`');
+				$count++;
+			}
+			$this-&gt;append(') values');
+		}
+		return $this;
+	}
+	
+	/**
+	 * Add values to query
+	 * @param array $values
+	 * @param bool $escape
+	 */
+	function values($values,$escape=true)
+	{
+		if($no_fields=count($values))
+		{
+			if($this-&gt;no_values)
+			{
+				$this-&gt;append('',',');
+				$this-&gt;query_type='query';
+			}
+			$this-&gt;append('(');
+			$count=0;
+			foreach($values as $k=&gt;$f)
+			{
+				if($escape){
+					$this-&gt;args[]=$f;
+					$this-&gt;append('?');
+				}
+				else
+					$this-&gt;append($f);
+				if($count&lt;$no_fields-1)
+					$this-&gt;append(',');
+				$count++;
+			}
+			$this-&gt;append(')');
+			$this-&gt;no_values++;
+		}
+		return $this;
+	}
+	
+	/**
+	 * Start delete query
+	 */
+	function delete()
+	{
+		$this-&gt;query_type='query';
+		$this-&gt;append('delete from');
+		$this-&gt;append('`'.$this-&gt;table.'`');
+
+		return $this;
+	}
+	
+	/**
+	 * Start select query
+	 * @param array $fields
+	 */
+	function select($fields=array())
+	{
+		$this-&gt;query_type='select';
+		$this-&gt;append('select');
+		if($this-&gt;calculate)
+			$this-&gt;append('SQL_CALC_FOUND_ROWS');
+		if($no_fields=count($fields))
+		{
+			$count=0;
+			foreach($fields as $k=&gt;$f)
+			{
+				if($count&lt;$no_fields-1)
+					$this-&gt;field($f,$k);
+				else
+					$this-&gt;field($f,$k,' ');
+				$count++;
+			}
+		}
+		else
+		{
+			$this-&gt;append('`'.$this-&gt;table.'`.*');
+		}
+		$this-&gt;append('from `'.$this-&gt;table.'`');
+		return $this;
+	}
+	
+	/**
+	 * Calculate total rows
+	 */
+	function calculate()
+	{
+		$this-&gt;calculate=true;
+	}
+	
+	/**
+	 * Add field to query
+	 * @param string $field
+	 * @param string $as
+	 * @param string $separator
+	 */
+	function field($field,$as=0,$separator=',')
+	{
+		if($as &amp;&amp; !is_numeric($as))
+			$this-&gt;append($field.' as '.$as,$separator);
+		else
+			$this-&gt;append($field,$separator);
+		return $this;
+	}
+	
+	/**
+	 * Add join to query
+	 * @param string|array $table
+	 * @param string $condition
+	 * @param string $join_type
+	 */
+	function join($table,$condition='',$join_type='')
+	{
+		if(is_array($table)){
+			if(count($table))
+				foreach($table as $v)
+					$this-&gt;_append_join($v['table'],$v['on'],$v['type']);	
+		}
+		else{
+			$this-&gt;_append_join($table,$condition,$join_type);
+		}
+		return $this;
+	}
+	
+	/**
+	 * Private append join
+	 * @param string $table
+	 * @param string $condition
+	 * @param string $join_type
+	 */
+	private function _append_join($table,$condition='',$join_type=''){
+		$this-&gt;append($join_type.' join');
+		$this-&gt;append('`'.$table.'`');
+		if($condition)
+			$this-&gt;append('on '.$condition);
+	}
+	
+	/**
+	 * Add group to query
+	 * @param array $fields
+	 */
+	function group($fields)
+	{
+		if($no_fields=count($fields))
+		{
+			$this-&gt;append('group by');
+			foreach($fields as $k=&gt;$v)
+			{
+				if($k&lt;$no_fields-1)
+					$this-&gt;append($v,',');
+				else
+					$this-&gt;append($v);
+			}
+		}
+		return $this;
+	}
+	
+	/**
+	 * Add order to query
+	 * @param array $fields
+	 * @param array $directions
+	 */
+	function order($fields,$directions)
+	{
+		if($no_fields=count($fields))
+		{
+			$this-&gt;append('order by');
+			foreach($fields as $k=&gt;$v)
+			{
+				if($k&lt;$no_fields-1)
+					$this-&gt;append('`'.$v.'`'.(isset($directions[$k])?' '.$directions[$k]:''),',');
+				else
+					$this-&gt;append('`'.$v.'`'.(isset($directions[$k])?' '.$directions[$k]:''));
+			}
+		}
+		return $this;
+	}
+	
+	/**
+	 * Add where to query
+	 * @param string $condition
+	 */
+	function where($condition)
+	{
+		if($condition)
+			$this-&gt;append('where '.$condition);
+		return $this;
+	}
+	
+	/**
+	 * Add limit to query
+	 * @param int $start
+	 * @param int $no_rows
+	 */
+	function limit($start=0,$no_rows='')
+	{
+		$this-&gt;append('limit '.$start.','.$no_rows);
+		return $this;
+	}
+	
+	/**
+	 * Execute current query
+	 * @param string $query_type
+	 */
+	function execute($query_type='')
+	{
+		if($query_type)$this-&gt;query_type=$query_type;
+		if($this-&gt;query_type)
+		{
+			$func='execute_'.$this-&gt;query_type;
+			$return=$this-&gt;$func();
+			$this-&gt;reset();
+			return $return;
+		}
+	}
+	
+	/**
+	 * Reset current query
+	 */
+	function reset()
+	{
+		$this-&gt;args=array();
+		$this-&gt;query='';
+		$this-&gt;query_type='';
+		$this-&gt;no_values=0;
+	}
+	
+	/**
+	 * Get first row from query response
+	 * @return array
+	 */
+	function first()
+	{
+		return $this-&gt;db-&gt;getRow($this-&gt;query,$this-&gt;args);
+	}
+	
+	/**
+	 * Get first value from the query response
+	 * @return object
+	 */
+	function value()
+	{
+		return $this-&gt;execute_one();
+	}
+	
+	/**
+	 * Execute query for value return
+	 */
+	private function execute_one()
+	{
+		return $this-&gt;db-&gt;getOne($this-&gt;query,$this-&gt;args);
+	}
+	
+	/**
+	 * Execute query for all rows returned by query
+	 */
+	private function execute_select()
+	{
+		return $this-&gt;db-&gt;getAll($this-&gt;query,$this-&gt;args);
+	}
+	
+	/**
+	 * Execute simple query with no response
+	 */
+	private function execute_query()
+	{
+		$this-&gt;db-&gt;query($this-&gt;query,$this-&gt;args);
+	}
+	
+	/**
+	 * Execute insert query
+	 */
+	private function execute_insert()
+	{
+		$this-&gt;db-&gt;query($this-&gt;query,$this-&gt;args);
+		return $this-&gt;db-&gt;last_id();
+	}
+	
+	/**
+	 * Start new query
+	 */
+	function new_query()
+	{
+		$this-&gt;append(';');
+		$this-&gt;query_type='query';
+		return $this;
+	}
+	
+	/**
+	 * __toString Magic return this current query
+	 */
+	function __toString(){
+		return $this-&gt;query;
+	}
+}
+
+?&gt;</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all()
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

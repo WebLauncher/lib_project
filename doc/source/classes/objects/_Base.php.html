@@ -1,0 +1,778 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+	/**
+	 * Model Class
+	 */
+	
+	/**
+	 * Model Class
+	 * @uses ArrayAccess
+	 * @property-read int $total_rows Total rows currently returned from database
+	 * @property-read DbManager $db Current manager used by model 
+	 * @package WebLauncher\Objects
+	 */
+	class _Base implements ArrayAccess
+	{
+	    /**
+		 * 
+		 */
+		public $table = '';
+		public $id_field = 'id';
+		public $order_field = 'order';
+		public $active_field = 'is_active';
+		public $process_row_func='process_row';
+        public $uses='';
+        public $models=null;
+		public $extends=array();
+		public $Extensions=null;
+		public $process=true;
+		public $joins=array();
+        
+        // protected vars
+		protected $_total_rows = -1;
+		protected $_last_inserted_id = '';
+		protected $_extend=array();
+		
+
+		/**
+		 * COnstructor
+		 * @return
+		 */
+		function __construct()
+		{
+			$this-&gt;init_extesions();
+		}
+		
+		function init_extesions(){
+			if(count($this-&gt;extends)){
+				if(!$this-&gt;Extensions)
+					$this-&gt;Extensions=new BaseExtenderList($this);
+				$this-&gt;extend($this-&gt;extends);
+			}
+		}
+		
+		/**
+		 * Extend model with more functionality of other classes
+		 */
+		function extend($class){
+			$this-&gt;Extensions-&gt;add($class);
+		}
+
+		/**
+		 * Get magic method 
+		 */
+		function __get($name)
+		{
+			if($name == 'total_rows')
+			{
+				if($this -&gt; _total_rows &lt; 0)
+					$this -&gt; _total_rows = $this -&gt; db -&gt; countTotalRows();
+				return $this -&gt; _total_rows;
+			}
+			if($name == 'db')
+			{
+				global $dal;
+                return $dal-&gt;db;
+			}
+			if($this-&gt;uses &amp;&amp; is_array($this-&gt;uses) &amp;&amp; in_array($name,$this-&gt;uses))
+            {
+				return $this-&gt;models -&gt; $name;
+            }
+			else{
+    			if(isset($this -&gt; db -&gt; tables[$name]))
+    				return $this -&gt; db -&gt; tables[$name];
+    			elseif(strpos($name, 'tbl_') == 0)
+    				return substr($name, 4, strlen($name) - 4);
+            }
+			$trace = debug_backtrace();
+			trigger_error('Undefined property via __get(): ' . $name . ' in ' . $trace[0]['file'] . ' on line ' . $trace[0]['line'], E_USER_NOTICE);
+			return null;
+		}
+
+		/**
+		 * Call magic method
+		 */
+		function __call($name, $arguments)
+		{
+			// process old methods
+			$results=array();
+			preg_match_all('/[A-Z][^A-Z]*/', $name, $results);
+			if(isset($results[0])){
+				$method=implode('_',array_map('strtolower',$results[0]));
+				if(method_exists($this, $method))
+					return call_user_func_array(array(
+						$this,
+						$method
+					), $arguments);
+			}
+			if($this-&gt;Extensions-&gt;method_exists($name))
+				return call_user_func_array(array(
+					$this-&gt;Extensions,
+					$name
+				), $arguments);
+			trigger_error('Model for ' . $this -&gt; table . ' does not have method &quot;' . $name . '&quot; defined!');
+		}
+
+		/**
+		 * Deletes row from database table mantaining order field
+		 * @param object $id
+		 * @param object $id_field [optional]
+		 * @param object $order_field [optional]
+		 * @return
+		 */
+		public function delete($id)
+		{
+			if($this -&gt; table &amp;&amp; $id)
+			{
+				if(is_array($id)){
+					foreach($id as $sid)
+						$this-&gt;delete($sid);
+				}
+				else{
+					$this -&gt; _before_delete($id);
+					$this -&gt; delete_cond('`' . $this -&gt; id_field . '`=&quot;' . $id . '&quot;');
+					$this -&gt; _after_delete($id);
+				}
+			}
+		}
+
+		/**
+		 * Before delete method
+		 * @param object $id
+		 */
+		private function _before_delete($id)
+		{
+			$obj = $this -&gt; get($id);
+			// maintain order
+			if(isset($obj[$this -&gt; order_field]) &amp;&amp; $obj[$this -&gt; order_field] &gt;= 0)
+				$this -&gt; builder('update ' . $this -&gt; table . ' set `' . $this -&gt; order_field . '`=`' . $this -&gt; order_field . '`-1 where `order`&gt;' . $obj[$this -&gt; order_field]) -&gt; execute();
+			$this -&gt; before_delete($id);
+		}
+
+		/**
+		 * Before delete public method
+		 */
+		public function before_delete($id = '')
+		{
+		}
+
+		/**
+		 * After delete method
+		 * @param object $id
+		 */
+		private function _after_delete($id)
+		{
+			$this -&gt; after_delete($id);
+		}
+
+		/**
+		 * After delete public method
+		 */
+		public function after_delete($id = '')
+		{
+		}
+
+		/**
+		 * Delete from table on found condition
+		 * @return
+		 * @param object $condition
+		 */
+		function delete_cond($condition)
+		{
+			if($this -&gt; table &amp;&amp; $condition)
+				$this -&gt; builder() -&gt; delete() -&gt; where($this-&gt;__process_cond($condition)) -&gt; execute();
+		}
+
+		/**
+		 * Return the row from the current table at the given id
+		 * @return array|null Data found in the model database table looking by $this-&gt;id_field equal to $id 
+		 * @param object $id
+		 * @example: In model use: $this-&gt;get(1); or $this-&gt;get('hash'); 
+		 */
+		public function get($id)
+		{
+			if(is_array($id))
+				return $this-&gt;get_all('','','','','`'.$this-&gt;id_field.'` in ('.implode(',', $id).')');	
+			if($this -&gt; table &amp;&amp; $id)
+				return $this -&gt; get_cond('`' . $this -&gt; id_field . '`=' . sat($id));
+			return '';
+		}
+
+		/**
+		 * Returns the first row found by condition
+		 * @return array|null Data found in the model database table looking by condition $condition
+		 * @param string|array $condition
+		 * @example In model use: $this-&gt;get_cond('field=&quot;value&quot;')
+		 */
+		public function get_cond($condition)
+		{
+			$arr=$this -&gt; builder()-&gt; select()-&gt;join($this-&gt;joins)-&gt; where($this-&gt;__process_cond($condition)) -&gt; first();;
+			if(count($arr))
+				return $this -&gt; _process_row($arr);
+			return '';
+		}
+
+		/**
+		 * Returns the rows from the current table limited and sorted using the parameters
+		 * @return array|null
+		 * @param int $skip[optional]
+		 * @param int $nr_rows[optional]
+		 * @param string|array $order_by[optional]
+		 * @param string|array $order_dir[optional]
+		 * @param string|array $cond[optional]
+		 * @param bool $calc_rows[optional]
+		 * @param array $search_fields[optional]
+		 * @param string $keyword[optional]
+		 * @example In model use: $this-&gt;get_all(0,10,'field','desc','field1=&quot;value&quot;',true,array('field1','field2',...),'keyword')
+		 */
+		public function get_all($skip = '', $nr_rows = '', $order_by = '', $order_dir = '', $cond = '', $calc_rows = false, $search_fields = '', $keyword = '')
+		{
+			return $this -&gt; get_colls('*', $skip, $nr_rows, $order_by, $order_dir, $cond, $calc_rows, $search_fields, $keyword);
+		}
+
+		/**
+		 * Returns the rows and required columns from the current table limited and
+		 * sorted using the parameters
+		 * @return
+		 * @param array $colls[optional]
+		 * @param int $skip[optional]
+		 * @param int $nr_rows[optional]
+		 * @param string|array $order_by[optional]
+		 * @param string|array $order_dir[optional]
+		 * @param string|array $cond[optional]
+		 * @param bool $calc_rows[optional]
+		 * @param array $search_fields[optional]
+		 * @param string $keyword[optional]
+		 * @example In model use: $this-&gt;get_cools(array('field1','field1'),0,10,'field','desc','field1=&quot;value&quot;',true,array('field1','field2',...),'keyword')
+		 */
+		public function get_colls($colls = array('*'), $skip = '', $nr_rows = '', $order_by = '', $order_dir = '', $cond = '', $calc_rows = false, $search_fields = '', $keyword = '')
+		{
+			$cond_text = '';
+			$order_text = '';
+			$skip_text = '';
+			$builder = $this -&gt; builder();
+			if($calc_rows)
+				$builder -&gt; calculate();
+			if(!is_array($colls))
+				$colls = explode(',', $colls);
+			$builder -&gt; select($colls)-&gt;join($this-&gt;joins);
+			
+			$cond_s = '';
+			if($search_fields &amp;&amp; $keyword)
+				$cond_s = $this -&gt; _searchLikeCond($search_fields, $keyword);
+
+			if($cond != '')
+				$cond_text = '(' . $cond . ')' . ($cond_s ? ' and (' . $cond_s . ')' : '');
+			else
+				$cond_text = ($cond_s ? '(' . $cond_s . ')' : '');
+
+			$builder -&gt; where($cond_text);
+
+			if($order_by != '')
+				if(is_array($order_by))
+					$builder -&gt; order($order_by, $order_dir ? (is_array($order_dir) ? $order_dir : array($order_dir)) : array());
+				else
+					$builder -&gt; order(array($order_by), array($order_dir));
+			$arr = array();
+			if($skip &gt;= 0 &amp;&amp; $nr_rows &gt; 0)
+				$builder -&gt; limit($skip, $nr_rows);
+			if($this -&gt; table)
+			{
+				$arr = $builder -&gt; execute();
+			}
+			if($calc_rows)
+				$this -&gt; _total_rows = $this -&gt; db -&gt; countTotalRows();
+			return $this -&gt; _process_array($arr);
+		}
+
+		/**
+		 * Processes returned array
+		 * @return
+		 * @param object $arr
+		 */
+		private function _process_array($arr)
+		{
+			return $this-&gt;process?array_map(array(
+				$this,
+				'_process_row'
+			), $arr):$arr;
+		}
+		
+		private function _process_row($row){
+			if($this-&gt;process){
+				if(is_callable($this-&gt;process_row_func))
+					return call_user_func($this-&gt;process_row_func,$row);
+				else
+					return call_user_func(array($this,$this-&gt;process_row_func),$row);
+			}
+			return $row;
+		}
+
+		/**
+		 * Count all found rows in table of model by condition
+		 * @return int|0
+		 * @param string|array $cond[optional]
+		 * @example In model use: $this-&gt;count_all('field1=&quot;value&quot;');
+		 */
+		public function count_all($cond = '')
+		{
+			if($this -&gt; table)
+			{
+				$count = $this -&gt; builder() -&gt; select(array('count(*)')) -&gt; where($this-&gt;__process_cond($cond)) -&gt; value();
+				return $count ? $count : 0;
+			}
+			return 0;
+		}
+
+		/**
+		 * Decreases or increase `order` field of the row indentified by id
+		 * @return
+		 * @param string|int $id - id of the object to increase or descrease order
+		 * @param int $order - [-1,1] for decrease and increase
+		 * [param object $field]
+		 */
+		public function set_order($id, $order, $field = '')
+		{
+			if($field)
+				$this -&gt; order_field = $field;
+			if($id &amp;&amp; $obj = $this -&gt; get($id))
+			{				
+				$this -&gt; builder('update ' . $this -&gt; table . ' set `' . $this -&gt; order_field . '`=`' . $this -&gt; order_field . '`-(' . $order . ') where `' . $this -&gt; order_field . '`=' . ($obj[$this -&gt; order_field] + $order)) -&gt; execute('query');
+				$this -&gt; builder('update ' . $this -&gt; table . ' set `' . $this -&gt; order_field . '`=`' . $this -&gt; order_field . '`+(' . $order . ') where `' . $this -&gt; id_field . '`=' . $id) -&gt; execute('query');
+				return 1;
+			}
+			return 0;
+		}
+
+		/**
+		 * Sets the value of the field 'is_active' to the value given
+		 * @return
+		 * @param object $id
+		 * @param object $value
+		 * [@param object $field]
+		 */
+		public function set_active($id, $value, $field = '')
+		{
+			if($field)
+				$this -&gt; active_field = $field;
+			$this -&gt; update_field($id, $this -&gt; active_field, $value);
+		}
+
+		/**
+		 * Inserts into the current table of model according to the parameter array
+		 * @return int|string Inserted id  
+		 * @param array $params ex. array('name'=&gt;'John','function'=&gt;'operator');
+		 * @example In model use: 
+		 * $this-&gt;insert(array(
+		 * 		'field1'=&gt;'value1'
+		 * 		'field2'=&gt;'value2'
+		 * 		...
+		 * ))
+		 */
+		public function insert($params)
+		{
+			if(is_array($params))
+			{
+				$this -&gt; _before_insert($params);
+				$this -&gt; _last_inserted_id = $this -&gt; builder() -&gt; insert(array_keys($params)) -&gt; values($params) -&gt; execute();
+				$this -&gt; _after_insert($params);
+				return $this -&gt; last_id();
+			}
+			return '';
+		}
+
+		/**
+		 * Before insert callback private method
+		 * @param object $params
+		 */
+		private function _before_insert($params)
+		{
+			$this -&gt; before_insert($params);
+		}
+
+		/**
+		 * Before insert callback public method
+		 * @param object $params
+		 */
+		public function before_insert($params = '')
+		{
+		}
+
+		/**
+		 * After insert callback private method
+		 * @param object $params
+		 */
+		private function _after_insert($params)
+		{
+			$this -&gt; after_insert($params);
+		}
+
+		/**
+		 * After insert callback public method
+		 * @param object $params
+		 */
+		public function after_insert($params = '')
+		{
+		}
+
+		/**
+		 * Inserts into the current table according to the parameter array multiple rows
+		 * @return
+		 * @param object $params
+		 */
+		public function insert_multiple($fields, $params)
+		{
+			if(is_array($params))
+			{
+				$builder = $this -&gt; builder();
+				$builder -&gt; insert($fields);
+
+				foreach($params as $k =&gt; $v)
+					$builder -&gt; values($v);
+				$builder -&gt; execute();
+				return $this -&gt; db -&gt; last_id();
+			}
+			return '';
+		}
+
+		/**
+		 * Update in current table of model according to the parameter array
+		 * @return
+		 * @param array $params ex. array('name'=&gt;'John','function'=&gt;'operator');
+		 * @param string|array $cond '`id`=1
+		 * @example In model use: 
+		 * $this-&gt;update(array(
+		 * 		'field1'=&gt;'value1'
+		 * 		'field2'=&gt;'value2'
+		 * 		...
+		 * ),'field1=&quot;value1&quot;');
+		 */
+		function update($params, $cond = '')
+		{
+			if(!$cond)
+			{
+				if(isset_or($params[$this -&gt; id_field]))
+					$cond = '`' . $this -&gt; id_field . '`=&quot;' . $params[$this -&gt; id_field] . '&quot;';
+				else
+				{
+					trigger_error('Wrong call of function ' . get_class($this) . '-&gt;update() :' . ' in ' . $trace[0]['file'] . ' on line ' . $trace[0]['line'], E_USER_NOTICE);
+					return null;
+				}
+			}
+			if(is_array($params) &amp;&amp; $cond)
+			{
+				$this -&gt; _before_update($params, $cond);
+				$this -&gt; builder() -&gt; update($params) -&gt; where($this-&gt;__process_cond($cond)) -&gt; execute();
+				$this -&gt; _after_update($params, $cond);
+			}
+		}
+
+		/**
+		 * Before update callback private method	 *
+		 */
+		private function _before_update($params, $cond)
+		{
+			$this -&gt; before_update($params, $cond);
+		}
+
+		/**
+		 * Before update callback public method
+		 */
+		public function before_update($params, $cond)
+		{
+		}
+
+		/**
+		 * After update callback private method	 *
+		 */
+		private function _after_update($params, $cond)
+		{
+			$this -&gt; after_update($params, $cond);
+		}
+
+		/**
+		 * After update callback public method
+		 */
+		public function after_update($params, $cond)
+		{
+		}
+
+		/**
+		 * Updates the field from the table at the given id
+		 * @return
+		 * @param object $id
+		 * @param object $field
+		 * @param object $value
+		 * @example In model use: $this-&gt;update_field(1,'fiel1','value1');
+		 */
+		public function update_field($id, $field, $value)
+		{
+			if($id &amp;&amp; $field){
+				if(is_array($id))
+					$cond='`' . $this -&gt; id_field . '` in (' . implode(',',$id) . ')';
+				else
+					$cond='`' . $this -&gt; id_field . '`=&quot;' . $id . '&quot;';
+				$this -&gt; update_field_cond($field, $value, $cond);
+			}
+		}
+
+		/**
+		 * Updates the field from the table at the given cond
+		 * @return
+		 *
+		 * @param object $field
+		 * @param object $value
+		 * @param object $cond
+		 * @example In model use: $this-&gt;update_field_cond('fiel1','value1','field1=&quot;value1&quot;');
+		 */
+		public function update_field_cond($field, $value, $cond)
+		{
+			if($field)
+				$this -&gt; builder() -&gt; update(array($field =&gt; $value)) -&gt; where($this-&gt;__process_cond($cond)) -&gt; execute();
+		}
+
+		/**
+		 * Checks if it exist in the current table a row with the field equal to a value
+		 * @return [true/false]
+		 * @param string|array $field
+		 * @param string|int $value
+		 * @example In model use: $this-&gt;exists('field1','value1');	
+		 * @example Look in multiple fields $this-&gt;exists(array('field1'=&gt;'value1','field2'=&gt;'value2'));	 
+		 */
+		function exists($field, $value=null)
+		{
+			if(is_null($value))
+				return $this -&gt; exists_cond('`' . $this-&gt;id_field . '`=&quot;' . $field . '&quot;');
+			if($field &amp;&amp; $value)
+				if(is_array($field) &amp;&amp; is_array($value) &amp;&amp; count($field)==count($value))
+					return $this -&gt; exists_cond(array_combine($field, $value));
+				else
+					return $this -&gt; exists_cond('`' . $field . '`=&quot;' . $value . '&quot;');
+			return false;
+		}
+		
+		/**
+		 * Processes array to cond
+		 */
+		private function __process_cond($cond){
+			if(is_array($cond))
+				$cond=implode(' AND ',array_map(function($v,$k){return '`'.$k.'`='.sat($v);},$cond,array_keys($cond)));
+			return $cond;
+		}
+
+		/**
+		 * Checks if there exista a row with the given condition in this table
+		 * @return [true/false]
+		 * @param string|array $cond
+		 * @example In model use: $this-&gt;exists_cond('field1=&quot;value1&quot;');
+		 */
+		function exists_cond($cond)
+		{			
+			if($cond)
+				if($this -&gt; builder() -&gt; select() -&gt; where($this-&gt;__process_cond($cond)) -&gt; first())
+					return true;
+			return false;
+		}
+
+		/**
+		 * get a value from a selected field
+		 * @return int|string the value of the field from the record $id
+		 * @param int|string $id
+		 * @param string $field
+		 * @example In model use: $this-&gt;get_field(1,'field1');
+		 */
+		function get_field($id, $field)
+		{
+			if($id)
+				return $this -&gt; get_field_cond($field, '`' . $this -&gt; id_field . '`=&quot;' . $id . '&quot;');
+			return '';
+		}
+
+		/**
+		 * Gets field from the first found row from table on condition
+		 * @return field value
+		 * @param string $field
+		 * @param string|array $cond
+		 * @example In model use: $this-&gt;get_field_cond('field1','field2=&quot;value2&quot;');
+		 */
+		function get_field_cond($field, $cond)
+		{
+			if($cond &amp;&amp; $field)
+				return $this -&gt; builder() -&gt; select(array('`' . $field . '`')) -&gt;join($this-&gt;joins) -&gt; where($this-&gt;__process_cond($cond)) -&gt; limit(0, 1) -&gt; value();
+			return '';
+		}
+
+		/**
+		 * Generates search condition using Like
+		 * @return condition string
+		 * @param object $fields
+		 * @param object $kwd
+		 */
+		function _searchLikeCond($fields, $kwd)
+		{
+			$cond_s = '1=0 ';
+
+			$kwd = stripslashes($kwd);
+			if((strpos($kwd, '&quot;') == 0 &amp;&amp; strrpos($kwd, '&quot;') == strlen($kwd) - 1) || (strpos($kwd, '\'') == 0 &amp;&amp; strrpos($kwd, '\'') == strlen($kwd) - 1))
+			{
+				$kwd = substr($kwd, 1, strlen($kwd) - 2);
+				foreach($fields as $f)
+					$cond_s .= 'or lower(`' . $f . '`) like lower(&quot;%' . $kwd . '%&quot;) ';
+			}
+			else
+			{
+				foreach($fields as $v)
+				{
+					$cond_s .= 'or lower(`' . $v . '`) like lower(&quot;%' . $kwd . '%&quot;) ';
+				}
+				$kwds = explode(' ', $kwd);
+				if(count($kwds) &gt; 1)
+					foreach($kwds as $k)
+						foreach($fields as $f)
+							$cond_s .= 'or lower(`' . $f . '`) like lower(&quot;%' . $k . '%&quot;) ';
+			}
+			return $cond_s;
+		}
+
+		function process_row($row)
+		{
+			return $row;
+		}
+
+		function process_array($arr)
+		{
+			return $this -&gt; _process_array($arr);
+		}
+
+		function process_obj($obj)
+		{
+			return $obj;
+		}
+
+		function offsetExists($id)
+		{
+			return $this -&gt; exists($id);
+		}
+
+		function offsetGet($id)
+		{
+			$obj = new DbRowObject($this -&gt; get($id), $this);
+			return $this -&gt; process_obj($obj);
+		}
+
+		function offsetSet($id, $value)
+		{
+			if(is_array($value))
+			{
+				if($id)
+					$this -&gt; update($value, '`' . $this -&gt; id_field . '`=&quot;' . $id . '&quot;');
+				else
+					$this -&gt; _last_inserted_id = $this -&gt; insert($value);
+			}
+		}
+
+		function offsetUnset($id)
+		{
+			$this -&gt; delete($id);
+		}
+
+		/**
+		 * Last inserted id
+		 * @return int|string Last inserted id
+		 */
+		function last_id()
+		{
+			return $this -&gt; _last_inserted_id;
+		}
+
+		/**
+		 * Return a query builder for this model
+		 * @return QueryBuilder 
+		 */
+		function builder($query = '')
+		{
+			return new QueryBuilder($this, $query);
+		}
+		
+		/**
+		 * Executes a query on this models db connection
+		 * @param string $query  query string to execute
+		 * @param array $args  arguments to insert in prepared query
+		 * @example In model use: $this-&gt;query('select * from table1 where field1=?',array('value1'));
+		 */
+		function query($query,$args=array()){
+			$this-&gt;db-&gt;query($query,$args);
+		}
+
+		/**
+		 * To string method
+		 */
+		function __toString()
+		{
+			return $this -&gt; table;
+		}
+		/**
+		 * Clone method
+		 */
+		function __clone(){
+			
+		}
+		
+		/**
+		 * Create a temporary join with another table 
+		 * @return Base clone of the current model with added join
+		 * @param string $table table to make the join to
+		 * @param string|array $condition[optional] condition to use for join
+		 * @param string $type[optional] type of join to use [LEFT, INNER, RIGHT, OUTER] default: ''
+		 * @example In model use: $this-&gt;join('table2','table1.field1=table2.field2','LEFT')-&gt;get(1)
+		 */
+		function join($table,$condition='',$type=''){
+			$obj=clone $this;
+			$obj-&gt;joins[]=array('table'=&gt;$table,'on'=&gt;$condition,'type'=&gt;$type);
+			return $obj;
+		}
+	}
+?&gt;</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all()
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

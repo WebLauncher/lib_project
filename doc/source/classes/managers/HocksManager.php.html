@@ -1,0 +1,113 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+	/**
+	 * Hocks Manager
+	 */
+
+	/**
+	 * Code Hocks Manager Class
+	 * @package WebLauncher\Managers
+	 */
+	class HocksManager
+	{
+		/**
+		 * @var array $_data
+		 */
+		private $_data = array();
+		
+		/**
+		 * Contructor 
+		 */
+		function __construct()
+		{
+			$this -&gt; _data = array();
+		}
+		
+		/**
+		 * Magic method __call
+		 * @param string|object $name
+		 * @param array $args
+		 */
+		function __call($name,$args){
+			return $this-&gt;execute($name);
+		}
+		
+		/**
+		 * Add hock method
+		 * @param string $name
+		 * @param string|callable $function
+		 */
+		public function add($name, $function)
+		{
+			if(!isset($this -&gt; _data[$name]))
+				$this -&gt; _data[$name] = array();
+			$this -&gt; _data[$name][] = $function;
+		}
+		
+		/**
+		 * Add arr of functions
+		 * @param string $name
+		 * @param array $functions_arr
+		 */
+		public function add_arr($name,$functions_arr){
+			foreach($functions_arr as $function)
+				$this-&gt;add($name, $function);
+		}		
+		
+		/**
+		 * Execute hock zone by name
+		 * @param string $name
+		 * @param array $arguments
+		 */
+		public function execute($name, $arguments = array())
+		{
+			if(isset($this -&gt; _data[$name]))
+				foreach($this-&gt;_data[$name] as $func)
+					call_user_func_array($func, $arguments);
+		}
+
+	}
+?&gt;</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all()
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

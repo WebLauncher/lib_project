@@ -1,0 +1,298 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * Model class for back-end
+ */
+
+/**
+ * @ignore
+ * Model Class extender for back-end section
+ * @package WebLauncher\Objects
+ */
+class Base extends _Base
+{
+	var $admin_fields=array();
+	var $admin_actions=array();	
+	var $admin_form_options=array();
+	var $admin_init_function='AdminInit';
+	
+	private function _init_admin(){
+		if(method_exists($this,$this-&gt;admin_init_function))
+		{
+			$func=$this-&gt;admin_init_function;			
+			$this-&gt;$func();	
+		}
+		else
+		{
+			$trace = debug_backtrace();
+        	trigger_error(
+            	'Undefined function '.get_class($this).'-&gt;'.$this-&gt;admin_init_function.':'.
+            	' in ' . $trace[0]['file'] .
+            	' on line ' . $trace[0]['line'],
+           	 E_USER_NOTICE);
+        	return null;
+		}
+	}
+	
+	function get_admin_table($id='ajax_table',$data=0,$cond='',$update_action='update',$edit_link='none',$sort_col_no=0)
+	{
+		global $page;
+		
+			$table=new AjaxTable();
+			$this-&gt;_init_admin();
+			$table-&gt;id=$id;
+			if($data)
+			{
+				foreach($this-&gt;admin_fields as $k=&gt;$v)
+					if(isset($v['table']))
+						$table-&gt;header[]=array_merge(array('col'=&gt;$k),$v['table']);
+
+				$table-&gt;process_request();
+
+				$table-&gt;process_content($this-&gt;get_all($page-&gt;page_skip,$page-&gt;page_offset,$table-&gt;sort_by,$table-&gt;sort_dir,$cond,true,$table-&gt;get_search_fields(),$table-&gt;search_keyword));
+				$page-&gt;no_total_rows=$this-&gt;total_rows;
+
+				foreach($this-&gt;admin_actions as $v)
+					$table-&gt;add_action(isset($v['title'])?$v['title']:'',isset($v['text'])?$v['text']:'',isset($v['link'])?$v['link']:'',isset($v['onclick'])?$v['onclick']:'',isset($v['refresh'])?$v['refresh']:1,isset($v['icon'])?$v['icon']:'',isset($v['confirm'])?$v['confirm']:'');
+			}
+			$table-&gt;update_action=$update_action;
+			$table-&gt;edit_link=$edit_link;
+			$table-&gt;sort_col_no=$sort_col_no;
+			$table-&gt;total=$page-&gt;no_total_rows;
+
+		if($data)
+			$table-&gt;display_data();
+		else
+			return $table-&gt;get_array();
+	}
+
+	function add_action($title='',$text='',$link='',$onclick='',$refresh=1,$icon='',$confirm='')
+	{
+		$this-&gt;admin_actions[]=array(
+			'title'=&gt;$title,
+			'text'=&gt;$text,
+			'link'=&gt;$link,
+			'onclick'=&gt;$onclick,
+			'refresh'=&gt;$refresh,
+			'icon'=&gt;$icon,
+			'confirm'=&gt;$confirm
+		);
+	}
+	
+	function get_admin_form($title='',$description='',$action_url='',$action='',$id='',$values=array())
+	{		
+		$row='';
+		if($id)
+			$row=$this-&gt;get($id);						
+		$this-&gt;_init_admin();
+				
+		$name=get_class($this).'_'.str_replace(':', '_', $action);		
+		$form=new Wbl_Form_Generator($name,$name);
+		global $page;
+		$form-&gt;link_btn_cancel=isset_or($this-&gt;admin_form_options['link_btn_cancel'],$page-&gt;paths['current']);
+		$form-&gt;startZone($title,$description);
+		$form-&gt;addHidden('Action','a',$action);
+		
+		$form=$this-&gt;get_admin_form_layout($form,$row?$row:$values);
+		return $form-&gt;getForm();
+	}
+	
+	function get_admin_form_layout($form,$row=''){	
+		foreach($this-&gt;admin_fields as $k=&gt;$v)
+			if(isset($v['form']))
+			{
+				$attribute=$v['form'];
+				$attribute['name']=$k;
+				if(isset($row[$k]))
+					$attribute['value']=$row[$k];
+				$form-&gt;addField(isset_or($v['form']['label']),$v['form']['type'],$attribute);
+			}
+		return $form;
+	}
+	
+	function insert_from_admin_form(){		
+		$this-&gt;_init_admin();
+		$params=array();	
+		foreach($this-&gt;admin_fields as $k=&gt;$v)
+			if(isset($v['form']) &amp;&amp; isset_or($v['form']['insert'],true))
+			{
+				$params[$k]=$_POST[$k];
+			}
+		return $this-&gt;insert($params);	
+	}
+	
+	function update_from_admin_form($id){		
+		$this-&gt;_init_admin();
+		$params=array();
+		$params[$this-&gt;id_field]=$id;	
+		foreach($this-&gt;admin_fields as $k=&gt;$v)
+			if(isset($v['form']) &amp;&amp; isset_or($v['form']['insert'],true))
+			{
+				$params[$k]=$_POST[$k];
+			}
+		return $this-&gt;update($params);	
+	}
+
+	function export($type='none',$file_name='',$admin_init_function='AdminInit')
+	{
+		if(method_exists($this,$admin_init_function))
+		{
+			$this-&gt;$admin_init_function();
+		}
+		else
+		{
+			$trace = debug_backtrace();
+        	trigger_error(
+            	'Undefined function '.get_class($this).'-&gt;'.$admin_init_function.':'.
+            	' in ' . $trace[0]['file'] .
+            	' on line ' . $trace[0]['line'],
+           	 E_USER_NOTICE);
+        	return null;
+		}
+		global $page;
+		if(!$file_name)
+			$file_name='export_'.get_class($this);
+		switch($type)
+		{
+			case 'none':
+			case 'excel':
+				$file_name.='.xls';
+
+				$fields='';
+				$header=array();
+				foreach($this-&gt;admin_fields as $k=&gt;$v)
+					if(!isset($v['export']) || (isset($v['export']) &amp;&amp; $v['export']))
+					{
+						$fields.=' `'.$this-&gt;table.'`.`'.$k.'`, ';
+						if(isset($v['export']) &amp;&amp; $v['export'])
+							$header[]=$v['export'];
+						else
+							$header[]=$k;
+					}
+				$fields=substr($fields,0,strlen($fields)-2);
+				$query ='select '.$fields.' from `'.$this-&gt;table.'`';
+			   	$output=$this-&gt;db-&gt;getAll($query);
+
+				$page-&gt;import('class','objects.SimpleExcel');
+				SimpleExcel::Export($file_name,array_merge(array($header),$output));
+				die();
+			break;
+		}
+	}
+
+	function import($file='import',$has_header=1,$admin_init_function='AdminInit')
+	{
+		if(method_exists($this,$admin_init_function))
+		{
+			$this-&gt;$admin_init_function();
+		}
+		else
+		{
+			$trace = debug_backtrace();
+        	trigger_error(
+            	'Undefined function '.get_class($this).'-&gt;'.$admin_init_function.':'.
+            	' in ' . $trace[0]['file'] .
+            	' on line ' . $trace[0]['line'],
+           	 E_USER_NOTICE);
+        	return null;
+		}
+		global $page;
+		$page-&gt;import('class','objects.SimpleExcel');
+		$data=SimpleExcel::Import($file,$has_header);
+
+		$errors=array();
+		if($data)
+		{
+			$fields=array();
+			$pars=array();
+			$col=0;
+
+			foreach($this-&gt;admin_fields as $k=&gt;$v)
+			{
+				if(is_array($v['import']))
+				{
+					$fields[]=$k;
+					$nr_rows=count($data);
+					for($i=0;$i&lt;$nr_rows;$i++)
+					{
+						if(isset($v['import']['value']))
+						{
+							$pars[$i][$col]=$v['import']['value'];
+						}
+						else
+						{
+							$value=$data[$i][$v['import']['col']];
+							if(isset($v['import']['date']) &amp;&amp; $v['import']['date'])
+								$value=date ('Y-m-d',strtotime($value));
+							if(isset($v['import']['filter']))
+								$pars[$i][$col]=$v['import']['filter']($value);
+							else
+								$pars[$i][$col]=$value;
+							if(isset($v['import']['unique']) &amp;&amp; $v['import']['unique'] &amp;&amp; $this-&gt;exists_cond('`'.$k.'`=&quot;'.$value.'&quot;'))
+								if(!in_array($i,$errors))
+								{
+									echo 'Line &lt;strong&gt;'.$i.'&lt;/strong&gt; not unique &lt;strong&gt;'.$value.'&lt;/strong&gt;.&lt;br/&gt;';
+									flush();
+									$errors[]=$i;
+								}
+						}
+					}
+					$col++;
+				}
+			}
+			if(count($errors))
+				foreach($errors as $v)
+					array_splice($pars,$v,1);
+			if(count($pars))
+				return $this-&gt;insert_multiple($fields,$pars);
+			if(count($errors))
+				die('Errors where found in the file!');
+		}
+		return false;
+	}
+}
+
+?&gt;</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all()
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

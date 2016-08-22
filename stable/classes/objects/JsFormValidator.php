@@ -1,0 +1,111 @@
+<?php
+/**
+ * JsFormValidator
+ */
+/**
+ * Javascript JQuery code generator for validators
+ * @package WebLauncher\Objects
+ */
+class JsFormValidator {
+	/**
+	 * @var string $form_id Form id 
+	 */
+	var $form_id;
+	/**
+	 * @var array $fields Fields array
+	 */
+	var $fields = array();
+
+	/**
+	 * Constructor
+	 * @param string $form_id
+	 */
+	function __construct($form_id) {
+		$this -> form_id = $form_id;
+	}
+
+	/**
+	 * Add validator
+	 * @param string $field
+	 * @param string $rule
+	 * @param string $message
+	 */
+	function add_validator($field, $rule, $message) {
+		$this -> fields[$field]['rules'][$rule] = $this -> clean_message($message);
+	}
+
+	/**
+	 * Clean message
+	 * @param string $message
+	 */
+	function clean_message($message) {
+		return nl2br(str_replace("\\n", '', str_replace("\\r\\n", '', $message)));
+	}
+
+	/**
+	 * Get generated script
+	 *
+	 */
+	function get_script() {
+		$content = 'jQuery("#' . $this -> form_id . '").validate({onkeyup: false,
+		';
+
+		if (count($this -> fields)) {
+			$content .= 'rules:{';
+			foreach ($this->fields as $field => $arr) {
+				$content .= '\'' . $field . '\'' . ':{';
+
+				foreach ($arr['rules'] as $r => $m) {
+					$params = array();
+					$params = explode('|', $r);
+
+					if (count($params) > 1) {
+						if (count($params) > 2) {
+							$content .= $params[0] . ':[';
+							for ($i = 1; $i < count($params); $i++) {
+								if (is_numeric($params[$i]))
+									$content .= $params[$i] . ',';
+								else
+									$content .= '\'' . $params[$i] . '\',';
+							}
+							$content = rtrim($content, ',');
+							$content .= '],';
+						} else {
+							$content .= $params[0] . ':"' . $params[1] . '",';
+						}
+					} else {
+						$content .= $r . ':true,';
+					}
+				}
+				$content = rtrim($content, ',');
+
+				$content .= '},';
+			}
+			$content = rtrim($content, ',');
+			$content .= '},messages:{';
+			foreach ($this->fields as $field => $arr) {
+				$content .= '\'' . $field . '\':{';
+
+				foreach ($arr['rules'] as $r => $m) {
+					$params = array();
+					$params = explode('|', $r);
+
+					if (count($params) > 1) {
+						$content .= $params[0] . ':\'' . htmlspecialchars(addslashes($m)) . '\',';
+					} else
+						$content .= $r . ':\'' . htmlspecialchars(addslashes($m)) . '\',';
+				}
+				$content = rtrim($content, ',');
+
+				$content .= '},';
+			}
+			$content = rtrim($content, ',');
+			$content .= '}';
+		}
+
+		$content .= '});';
+		return $content;
+	}
+
+}
+?>

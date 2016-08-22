@@ -1,0 +1,121 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+	/**
+	 * @package WebLauncher\Loggers
+	 */
+	class TimeLogger
+	{
+		var $time=array();
+
+		var $active=true;
+
+		function __construct($active=true)
+		{
+			$this-&gt;active=$active;
+		}
+
+		function get($zone)
+		{
+			return $this-&gt;time[$zone];
+		}
+
+		function get_list()
+		{
+			return $this-&gt;time;
+		}
+
+		function start($zone,$value='')
+		{
+			if($this-&gt;active)
+			{
+				if(!$value)
+					$value=$this-&gt;_get_current();
+
+				$this-&gt;time[$zone]['start']=$value;
+			}
+		}
+
+		function end($zone,$value='')
+		{
+			if($this-&gt;active)
+			{
+				if(!$value)
+					$value=$this-&gt;_get_current();
+
+				$this-&gt;time[$zone]['end']=$value;
+				if(isset($this-&gt;time[$zone]['start']))
+				{
+					$this-&gt;time[$zone]=$this-&gt;time[$zone]['end']-$this-&gt;time[$zone]['start'];
+				}
+			}
+		}
+
+		function _get_current()
+		{
+			return microtime(true);
+		}
+
+		function _process_pattern($memory,$pattern='')
+		{
+			if(!$pattern)
+			{
+				$pattern=$this-&gt;pattern;
+			}
+			$return=str_replace('%B',$mem,$pattern);
+			$return=str_replace('%b',$mem*8,$return);
+			$return=str_replace('%M',($mem/(1024*1024)),$return);
+			$return=str_replace('%m',(($mem*8)/(1024*1024)),$return);
+			$return=str_replace('%k',(($mem*8)/(1024)),$return);
+			$return=str_replace('%K',($mem/(1024)),$return);
+			$return=str_replace('%g',(($mem*8)/(1024*1024*1024)),$return);
+			$return=str_replace('%G',($mem/(1024*1024*1024)),$return);
+
+			return $return;
+		}
+	}
+
+?&gt;
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all()
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

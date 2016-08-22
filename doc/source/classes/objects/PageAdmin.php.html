@@ -1,0 +1,82 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * Controller class for back-end
+ */
+/**
+ * Controller Class for back-end usage
+ * @ignore
+ * @package WebLauncher\Objects
+ */
+class Page extends _Page
+{
+	/**
+	 * @var \Base $model
+	 */
+	var $model=null;
+	
+	/**
+	 * Set model for current cotroller to use
+	 * @param \Base $model
+	 */
+	public function set_model($model){
+		if(is_a($model, 'Base'))
+			$this-&gt;model=$model;
+		elseif(is_string($model))
+			$this-&gt;model=&amp;$this-&gt;models-&gt;{$model};
+	}
+	
+	/**
+	 * Get gridview table for model display
+	 * @param bool $data Load data or just header
+	 */
+	public function get_model_table($data=0){
+		if($this-&gt;model)
+			return $this-&gt;model-&gt;get_admin_table('table_'.get_class($this).'_'.get_class($this-&gt;model), $data);
+		return '';
+	}
+}
+?&gt;</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all()
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

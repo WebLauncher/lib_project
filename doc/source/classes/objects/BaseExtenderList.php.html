@@ -1,0 +1,116 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+	/**
+	 * @ignore
+	 * @package WebLauncher\Objects
+	 */
+	class BaseExtenderList{
+		protected $_list=array();
+		protected $_model=null;
+		protected $_methods=array();
+		protected $_aliases=array();
+		protected $_accept_all_methods=null;
+		
+		function __construct($model){
+			$this-&gt;_model=&amp;$model;
+		}
+		
+		function __get($name){
+			if(isset($this-&gt;_list[$name]))
+				return $this-&gt;_list[$name];
+			if(isset($this-&gt;_aliases[$name]))
+				return $this-&gt;_list[$this-&gt;_aliases[$name]];
+			trigger_error('Extenssion '.$name.' not found on model '.get_class($this-&gt;_model).'.');
+		}
+		
+		function add($class){
+			if(is_array($class)){
+				foreach($class as $cl)
+					$this-&gt;add($cl);
+			}
+			else{
+				$obj=null;
+				if(is_string($class) &amp;&amp; !in_array($class,array_keys($this-&gt;_list))){
+					$cname='Base'.$class;
+					$this-&gt;_aliases[$class]=$cname;
+					$obj=new $cname($this-&gt;_model);
+					$class=$cname;
+				}			
+				elseif(is_object($class) &amp;&amp; is_a($class,'BaseExtender') &amp;&amp; !isset($this-&gt;_list[get_class($class)])){
+					$obj=$class;
+					$class=get_class($obj);
+				}
+				$this-&gt;_list[$class]=$obj;
+				if($obj-&gt;accept_all_methods)
+					$this-&gt;_accept_all_methods=$class;
+				$this-&gt;_methods=array_merge($this-&gt;_methods,$this-&gt;_get_methods($class));
+			}
+		}
+		
+		private function _get_methods($class){
+			if(is_object($class))
+				$class=get_class($class);
+			return array_fill_keys(get_class_methods($class),$class);
+		}
+		
+		function __call($name,$arguments){
+			if(isset($this-&gt;_methods[$name]))
+				return call_user_func_array(array(
+						$this-&gt;{$this-&gt;_methods[$name]},
+						$name
+					), $arguments);
+			elseif($this-&gt;_accept_all_methods)
+				return call_user_func_array(array(
+						$this-&gt;{$this-&gt;_accept_all_methods},
+						$name
+					), $arguments);
+		}
+		
+		function method_exists($name){
+			return isset($this-&gt;_methods[$name]) || $this-&gt;_accept_all_methods;
+		}
+	}
+?&gt;</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all()
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

@@ -1,0 +1,184 @@
+<?php
+/**
+ * Database Row Object
+ */
+/**
+ * Db Row Object
+ * @ignore
+ * @package WebLauncher\Objects
+ */
+class DbRowObject implements ArrayAccess
+{
+	/**
+	 * @var array $_data Row data array
+	 */
+	protected $_data=array();
+	/**
+	 * @var array $_old_data Row old data array
+	 */
+	protected $_old_data=array();
+	/**
+	 * @var /Base $_model Model that the row is from 
+	 */
+	private $_model='';
+	
+	/**
+	 * Constructor
+	 * @param array $row
+	 * @param /Base $model
+	 */
+	function __construct($row=array(),$model='')
+	{
+		$this->_data=$row;
+		$this->_old_data=$row;
+		$this->_model=&$model;
+	}
+	
+	/**
+	 * ArrayAccess offset exists 
+	 * @param string $field
+	 */
+	function offsetExists($field)
+	{
+		return isset($this->_data[$field]);
+	}
+	
+	/**
+	 * ArrayAccess ofset get
+	 * @param string $field
+	 */
+	function offsetGet($field)
+	{
+		return (isset($this[$field])?$this->_data[$field]:'');
+	}
+	
+	/**
+	 * ArrayAccess offset set
+	 * @param string $field
+	 * @param string $value
+	 */
+	function offsetSet($field, $value)
+	{
+		$this->_data[$field]=$value;
+	}
+	
+	/**
+	 * Set the field value
+	 * @param string $field
+	 * @param string $value
+	 */
+	function set($field,$value){
+		$this[$field]=$value;
+		return $this;
+	}
+	
+	/**
+	 * ArrayAccess unset 
+	 * @param string $field
+	 */
+	function offsetUnset($field)
+	{
+		$this[$field]='';
+	}
+	
+	/**
+	 * Save row method
+	 */
+	function save()
+	{
+		$diff=$this->_differences();
+		if(count($diff))
+			$this->_model[$this->_old_data[$this->_model->id_field]]=$diff;
+	}
+	
+	/**
+	 * Get get differences
+	 */
+	private function _differences()
+	{
+		$pars=array();
+		foreach($this->_data as $k=>$v)
+			if($v!=$this->_old_data[$k])
+				$pars[$k]=$v;
+		return $pars;
+	}
+}
+
+/**
+ * DbRowObjectList list of rows
+ * @package WebLauncher\Objects
+ */
+class DbRowObjectList implements ArrayAccess
+{
+	/**
+	 * @var array $_data List data array
+	 */
+	protected $_data=array();
+	/**
+	 * @var /Base Model that this row is associatied to
+	 */
+	private $_model='';
+	
+	/**
+	 * Costructor
+	 * @param array $row
+	 * @param string $model
+	 */
+	function __construct($row=array(),$model='')
+	{
+		$this->_model=&$model;
+		foreach($row as $k=>$v)
+		{
+			$this->_data[$k]=new DbRowObject($v,$this->_model);
+		}
+	}
+	
+	/**
+	 * ArrayAccess exists
+	 * @param string $key
+	 */
+	function offsetExists($key)
+	{
+		return isset($this->_data[$key]);
+	}
+	
+	/**
+	 * ArrayAccess get
+	 * @param string $key
+	 */
+	function offsetGet($key)
+	{
+		return (isset($this[$key])?$this->_data[$key]:'');
+	}
+	
+	/**
+	 * ArrayAccess set
+	 * @param string $key
+	 * @param string $value
+	 */
+	function offsetSet($key, $value)
+	{
+		if(!is_a($value,'DbRowObject'))
+			$value=new DbRowObject($value,$this->_model);
+		$this->_data[$key]=$value;
+	}
+	
+	/**
+	 * ArrayAccess unset
+	 * @param string $key
+	 */
+	function offsetUnset($key)
+	{
+		$this[$key]='';
+	}
+	
+	/**
+	 * Save list in db
+	 */
+	function save()
+	{
+		foreach($this->_data as $v)
+			$v->save();
+	}
+}
+?>

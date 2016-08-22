@@ -1,0 +1,232 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+	/**
+	 * System Trace Manager
+	 * @package WebLauncher\Managers
+	 */
+	class TraceManager
+	{
+		public static $trace='';
+		
+		public static function generate()
+		{
+			global $page;
+			$file_name=sha1($page-&gt;query).'_'.sha1(echopre_r($_REQUEST)).'_'.sha1(microtime()).'.html';
+			$page-&gt;session['__current_trace']=$file_name;
+			$page -&gt; import('library', 'debug');
+			ob_start();
+			new dBug($page -&gt; get_page());
+			$db = ob_get_contents();
+			ob_end_clean();
+
+			ob_start();
+			new dBug($page -&gt; session);
+			$session = ob_get_contents();
+			ob_end_clean();
+
+			ob_start();
+			new dBug($page -&gt; paths);
+			$paths = ob_get_contents();
+			ob_end_clean();
+
+			ob_start();
+			new dBug($page -&gt; user);
+			$user = ob_get_contents();
+			ob_end_clean();
+
+			$random = base64_encode(microtime());
+			$times = $page -&gt; time -&gt; get_list();
+			$memory = $page -&gt; memory -&gt; get_list();
+			$db_conn = array();
+			if(is_a($page -&gt; db_conn -&gt; tables, 'TablesManager'))
+			{
+				$db_conn['dns'] = $page -&gt; db_conn -&gt; get_dns();
+				$db_conn['tables'] = $page -&gt; db_conn -&gt; tables;
+				$db_conn['db_no_valid_queries'] = $page -&gt; db_conn -&gt; num_valid_queries;
+				$db_conn['db_no_invalid_queries'] = $page -&gt; db_conn -&gt; num_invalid_queries;
+				$db_conn['db_queries'] = $page -&gt; db_conn -&gt; queries;
+				$db_conn['db_slowest_query']=$page -&gt; db_conn -&gt;get_slowest_query();
+			}
+			ob_start();
+			new dBug($db_conn);
+			$db_conn = ob_get_contents();
+			ob_end_clean();
+			$btn_style=&quot;border:1px solid #ccc; color:#000; background:#efefef;margin-right:4px; border-top:0;height:auto;padding:auto;margin:auto; clear:none; float:left; width:auto;&quot;;
+			$page -&gt; trace_page = '&lt;div style=&quot;clear:both; position:fixed;bottom:0px; z-index:20000000000;&quot;&gt;&lt;button id=&quot;btn_page_trace_' . $random . '&quot; onclick=&quot;window.open(\''.$page-&gt;paths['root'].'?a=__sys_trace&amp;page='.$page-&gt;session['__current_trace'].'\');&quot; style=&quot;'.$btn_style.'&quot;&gt;trace&lt;/button&gt;';
+			if($page -&gt; debug)
+				$page -&gt; trace_page .= '';
+			if($page -&gt; logger -&gt; active &amp;&amp; $page -&gt; logger -&gt; no)
+				$page -&gt; trace_page .= '&lt;button onclick=&quot;jQuery(\'#page_log_' . $random . '\').toggle();&quot; style=&quot;'.$btn_style.'&quot;&gt;log (' . $page -&gt; logger -&gt; no . ')&lt;/button&gt;';
+			$page -&gt; trace_page .= '&lt;/div&gt;';
+			$page -&gt; trace_page .= '&lt;div id=&quot;page_trace_' . $random . '&quot; style=&quot;background:#fff;display:none;clear:both; border:1px solid #000; height:400px; overflow:scroll;&quot;&gt;&lt;br/&gt; ';
+
+			self::$trace .= '&lt;/div&gt;&lt;table width=&quot;100%&quot; cellspacing=&quot;0&quot; cellpadding=&quot;0&quot; id=&quot;trace_table&quot;&gt;
+				&lt;tr&gt;&lt;td style=&quot;width:10%; border-right:1px solid #ccc;&quot;&gt;
+					&lt;div class=&quot;wrapper&quot;&gt;
+					&lt;ul id=&quot;nav_menu&quot;&gt;
+					&lt;li&gt;&lt;a href=&quot;#&quot; onclick=&quot;show_panel(\'#div_statistics\');&quot;&gt;Statistics&lt;/a&gt;&lt;/li&gt;
+					&lt;li&gt;&lt;a href=&quot;#&quot; onclick=&quot;show_panel(\'#div_page\');&quot;&gt;Page&lt;/a&gt;&lt;/li&gt;
+					&lt;li&gt;&lt;a href=&quot;#&quot; onclick=&quot;show_panel(\'#div_session\');&quot;&gt;Session&lt;/a&gt;&lt;/li&gt;
+					&lt;li&gt;&lt;a href=&quot;#&quot; onclick=&quot;show_panel(\'#div_paths\');&quot;&gt;Paths&lt;/a&gt;&lt;/li&gt;
+					&lt;li&gt;&lt;a href=&quot;#&quot; onclick=&quot;show_panel(\'#div_db\');&quot;&gt;Database&lt;/a&gt;&lt;/li&gt;
+					&lt;li&gt;&lt;a href=&quot;#&quot; onclick=&quot;show_panel(\'#div_user\');&quot;&gt;Logged User&lt;/a&gt;&lt;/li&gt;
+					&lt;/ul&gt;
+					&lt;/td&gt;
+					&lt;/div&gt;
+					&lt;td style=&quot;max-width:90%;width:90%;&quot;&gt;
+						&lt;div class=&quot;container&quot;&gt;
+							&lt;div class=&quot;wrapper&quot;&gt;
+						&lt;div id=&quot;div_statistics&quot; class=&quot;panel&quot;&gt;&lt;h2&gt;Statistics&lt;/h2&gt;';
+			self::$trace.= '&lt;div style=&quot;border-top:1px dotted #000;&quot;&gt;&lt;strong&gt;Time&lt;/strong&gt;&lt;br/&gt;Total execution: &lt;strong&gt;' . $times['system'] . ' s&lt;/strong&gt;&amp;nbsp;&amp;nbsp;';
+			self::$trace .= 'Scripts execution: &lt;strong&gt;' . $times['render_scripts'] . ' s&lt;/strong&gt;&amp;nbsp;&amp;nbsp;';
+			self::$trace .= 'Templates render: &lt;strong&gt;' . $times['render_templates'] . ' s&lt;/strong&gt;&amp;nbsp;&amp;nbsp;';
+			self::$trace .= 'DB queries: &lt;strong&gt;' . $page -&gt; db_conn -&gt; total_execution_time() . ' s&lt;/strong&gt;&amp;nbsp;&amp;nbsp;&lt;/div&gt;';
+			self::$trace .= '&lt;div style=&quot;border-top:1px dotted #000;&quot;&gt;';
+
+			self::$trace .= '&lt;strong&gt;Memory&lt;/strong&gt;&lt;br/&gt; Maximum allowed: &lt;strong&gt;' . $memory['max'] . ' &lt;/strong&gt;&amp;nbsp;&amp;nbsp;';
+			self::$trace .= 'Before init: &lt;strong&gt;' . $memory['system_before_init'] . ' &lt;/strong&gt;&amp;nbsp;&amp;nbsp;';
+			self::$trace .= 'After init: &lt;strong&gt;' . $memory['system_after_init'] . ' &lt;/strong&gt;&amp;nbsp;&amp;nbsp;';
+			self::$trace .= 'Before render: &lt;strong&gt;' . $memory['system_before_render'] . ' &lt;/strong&gt;&amp;nbsp;&amp;nbsp;';
+			self::$trace .= 'After render: &lt;strong&gt;' . $memory['system_after_render'] . ' &lt;/strong&gt;&amp;nbsp;&amp;nbsp;';
+			self::$trace.='&lt;/div&gt;&lt;/div&gt;						
+						&lt;div id=&quot;div_page&quot; class=&quot;panel&quot; style=&quot;display:none;&quot;&gt;&lt;h2&gt;Page&lt;/h2&gt;' . $db . '&lt;/div&gt;
+						&lt;div id=&quot;div_session&quot; class=&quot;panel&quot; style=&quot;display:none;&quot;&gt;&lt;h2&gt;Session&lt;/h2&gt;' . $session . '&lt;/div&gt;
+						&lt;div id=&quot;div_paths&quot; class=&quot;panel&quot; style=&quot;display:none;&quot;&gt;&lt;h2&gt;Paths&lt;/h2&gt;' . $paths . '&lt;/div&gt;
+						&lt;div id=&quot;div_db&quot; class=&quot;panel&quot; style=&quot;display:none;&quot;&gt;&lt;h2&gt;Database&lt;/h2&gt;' . $db_conn . '&lt;/div&gt;
+						&lt;div id=&quot;div_user&quot; class=&quot;panel&quot; style=&quot;display:none;&quot;&gt;&lt;h2&gt;Logged User&lt;/h2&gt;' . $user . '&lt;/div&gt;
+						&lt;/div&gt;
+						&lt;/div&gt;
+					&lt;/tr&gt;
+					&lt;/table&gt;
+					';
+			$page-&gt;trace_page.='&lt;/div&gt;';
+			if($page -&gt; debug)
+				$page -&gt; trace_page .= '&lt;div id=&quot;page_template_0101&quot; style=&quot;background:#fff;display:none;clear:both; border:1px solid #000; height:400px;&quot;&gt;&lt;br/&gt;&lt;iframe id=&quot;page_template_0101_frame&quot; frameborder=&quot;0&quot;  vspace=&quot;0&quot;  hspace=&quot;0&quot;  marginwidth=&quot;0&quot;  marginheight=&quot;0&quot; width=&quot;100%&quot; height=&quot;100%&quot;&gt;&lt;/iframe&gt;&lt;/div&gt;';
+
+			if($page -&gt; logger -&gt; active &amp;&amp; $page -&gt; logger -&gt; no)
+				$page -&gt; trace_page .= '&lt;div id=&quot;page_log_' . $random . '&quot; style=&quot;background:#fff;display:none;clear:both; border:1px solid #000; height:400px; overflow:scroll;&quot;&gt;
+						' . $page -&gt; logger -&gt; get() . '&lt;/div&gt;';
+			self::save();
+		}
+
+		public static function save(){
+			global $page;
+			$html='
+				&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Transitional//EN&quot; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd&quot;&gt;
+			&lt;html  xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;
+				&lt;head&gt;&lt;title&gt;Page Trace&lt;/title&gt;
+				&lt;style&gt;
+					body {margin:0;padding:0;}
+					* {font-size:12px;}
+					td, th {vertical-align:top;}
+					.container {overflow:scroll;}
+					.wrapper {padding:10px;}
+					h2 {font-size:14px; color:#fff; background:blue; padding:5px;border-bottom:2px solid #333;margin:0;margin-bottom:10px;}
+					#nav_menu {list-style:none;margin:0;padding:0;}
+					#nav_menu a {font-size:13px; font-weight:bold;display:block;border:1px solid #ccc; padding:4px; color:#333; text-decoration:none;}
+					#nav_menu a:hover {background:#ccc;}
+					#nav_menu a.current {background:#333; color:#fff;}
+				&lt;/style&gt;
+				&lt;script src=&quot;//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js&quot;&gt;&lt;/script&gt;
+				&lt;script&gt;
+				function show_panel(panel_id){
+					$(&quot;.container .panel&quot;).hide();
+					$(panel_id).show();
+				}
+				$(function(){
+					$(&quot;#trace_table&quot;).height($(window).height());
+					$(&quot;#trace_table .container&quot;).height($(window).height()).width($(&quot;#trace_table .container&quot;).parent().width());
+				});
+				&lt;/script&gt;
+			&lt;/head&gt;
+			&lt;body&gt;';
+			$html.=self::$trace;
+			$html.='&lt;/body&gt;&lt;/html&gt;';
+			$html=preg_replace('!\s+!', ' ', $html);
+			if($trace_dir=self::check_dir())
+				file_put_contents($trace_dir.$page-&gt;session['__current_trace'], $html);
+			self::clean_dir();
+		} 
+
+		public static function check_dir(){
+			global $page;
+			$trace_dir=sys_get_temp_dir().'/wbl_sys_trace/';
+			if(!is_dir($trace_dir))
+			{
+				if(!mkdir($trace_dir, 0777, true))
+				{
+					$this -&gt; logger -&gt; log('Cache_Write_Error', 'Can not create dir &quot;' . $trace_dir . '&quot; to cache folder!');
+					return false;
+				}
+			}
+			return $trace_dir;
+		}
+
+		public static function clean_dir(){
+			global $page;
+			$trace_dir=sys_get_temp_dir().'/wbl_sys_trace/';
+			if ($handle = opendir($trace_dir)) {
+			
+			    /* This is the correct way to loop over the directory. */
+			    while (false !== ($file = readdir($handle)) &amp;&amp; $file!='.' &amp;&amp; $file!='..') {
+			        if ( filemtime($trace_dir.$file) &lt;= time()-60*15 ) {
+			           unlink($trace_dir.$file);
+			        }
+			    }
+			
+			    closedir($handle);
+			}
+		}
+
+		public static function init(){
+			global $page;
+			if(isset_or($page-&gt;actions[0])=='__sys_trace' &amp;&amp; $trace_dir=self::check_dir()){
+				echo file_get_contents($trace_dir.$_REQUEST['page']);
+				die;
+			}
+		}
+	}
+?&gt;</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all()
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

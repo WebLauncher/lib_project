@@ -1,0 +1,538 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+<meta charset="utf-8">
+<title>WebLauncher Framework » Default</title>
+<meta name="author" content="Mike van Riel">
+<meta name="description" content="">
+<link href="../css/template.css" rel="stylesheet" media="all">
+<script src="../js/jquery-1.7.1.min.js" type="text/javascript"></script><script src="../js/jquery-ui-1.8.2.custom.min.js" type="text/javascript"></script><script src="../js/jquery.mousewheel.min.js" type="text/javascript"></script><script src="../js/bootstrap.js" type="text/javascript"></script><script src="../js/template.js" type="text/javascript"></script><script src="../js/prettify/prettify.min.js" type="text/javascript"></script><link rel="shortcut icon" href="../img/favicon.ico">
+<link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="72x72" href="../img/apple-touch-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="114x114" href="../img/apple-touch-icon-114x114.png">
+</head>
+<body>
+<div class="navbar navbar-fixed-top">
+<div class="navbar-inner"><div class="container">
+<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></a><a class="brand" href="../index.html">WebLauncher Framework</a><div class="nav-collapse"><ul class="nav">
+<li class="dropdown">
+<a href="#api" class="dropdown-toggle" data-toggle="dropdown">
+                                    API Documentation <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a>Packages</a></li>
+<li><a href="../packages/Default.html"><i class="icon-folder-open"></i> Default</a></li>
+<li><a href="../packages/WebLauncher.html"><i class="icon-folder-open"></i> WebLauncher</a></li>
+</ul>
+</li>
+<li class="dropdown" id="charts-menu">
+<a href="#charts" class="dropdown-toggle" data-toggle="dropdown">
+                                    Charts <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="../graph_class.html"><i class="icon-list-alt"></i> Class hierarchy diagram</a></li></ul>
+</li>
+<li class="dropdown" id="reports-menu">
+<a href="#reports" class="dropdown-toggle" data-toggle="dropdown">
+                                    Reports <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a href="../errors.html"><i class="icon-remove-sign"></i> Errors 
+                <span class="label label-info">803</span></a></li>
+<li><a href="../markers.html"><i class="icon-map-marker"></i> Markers 
+                <ul></ul></a></li>
+<li><a href="../deprecated.html"><i class="icon-stop"></i> Deprecated elements 
+                <span class="label label-info">6</span></a></li>
+</ul>
+</li>
+</ul></div>
+</div></div>
+<div class="go_to_top"><a href="#___" style="color: inherit">Back to top  <i class="icon-upload icon-white"></i></a></div>
+</div>
+<div id="___" class="container">
+<noscript><div class="alert alert-warning">
+                            Javascript is disabled; several features are only available
+                            if Javascript is enabled.
+                        </div></noscript>
+<div class="row">
+<div class="span4">
+<div class="btn-group view pull-right" data-toggle="buttons-radio">
+<button class="btn details" title="Show descriptions and method names"><i class="icon-list"></i></button><button class="btn simple" title="Show only method names"><i class="icon-align-justify"></i></button>
+</div>
+<ul class="side-nav nav nav-list">
+<li class="nav-header">
+<i class="icon-map-marker"></i> Packages</li>
+<li>
+<a href="../packages/Default.html" title="Default"><i class="icon-folder-open"></i>Default</a><ul class="nav nav-list nav-packages"></ul>
+</li>
+<li class="nav-header">
+<i class="icon-custom icon-function"></i> Functions</li>
+<li class="function  "><a href="#function_array_column" title="array_column() :: "><span class="description">array_column()
+        </span><pre>array_column</pre></a></li>
+<li class="function  "><a href="#function_checkNumericString" title="checkNumericString() :: validate numeric string structure"><span class="description">validate numeric string structure</span><pre>checkNumericString</pre></a></li>
+<li class="function  "><a href="#function_countTotalNumberOfPages" title="countTotalNumberOfPages() :: "><span class="description">countTotalNumberOfPages()
+        </span><pre>countTotalNumberOfPages</pre></a></li>
+<li class="function  "><a href="#function_date2birthday" title="date2birthday() :: transform the date to the age of the user"><span class="description">transform the date to the age of the user</span><pre>date2birthday</pre></a></li>
+<li class="function  "><a href="#function_decrypt" title="decrypt() :: "><span class="description">decrypt()
+        </span><pre>decrypt</pre></a></li>
+<li class="function  "><a href="#function_echo_r" title="echo_r() :: Echo and return value"><span class="description">Echo and return value</span><pre>echo_r</pre></a></li>
+<li class="function  "><a href="#function_echopre" title="echopre() :: Display array formated"><span class="description">Display array formated</span><pre>echopre</pre></a></li>
+<li class="function  "><a href="#function_echopre_r" title="echopre_r() :: Return formated display for array"><span class="description">Return formated display for array</span><pre>echopre_r</pre></a></li>
+<li class="function  "><a href="#function_encrypt" title="encrypt() :: "><span class="description">encrypt()
+        </span><pre>encrypt</pre></a></li>
+<li class="function  "><a href="#function_execute_wait" title="execute_wait() :: "><span class="description">execute_wait()
+        </span><pre>execute_wait</pre></a></li>
+<li class="function  "><a href="#function_generate_seo_link" title="generate_seo_link() :: "><span class="description">generate_seo_link()
+        </span><pre>generate_seo_link</pre></a></li>
+<li class="function  "><a href="#function_getNoDays" title="getNoDays() :: "><span class="description">getNoDays()
+        </span><pre>getNoDays</pre></a></li>
+<li class="function  "><a href="#function_get_hostname" title="get_hostname() :: "><span class="description">get_hostname()
+        </span><pre>get_hostname</pre></a></li>
+<li class="function  "><a href="#function_isset_or" title="isset_or() :: Check if isset else return alternate"><span class="description">Check if isset else return alternate</span><pre>isset_or</pre></a></li>
+<li class="function  "><a href="#function_now" title="now() :: Current date formated as database"><span class="description">Current date formated as database</span><pre>now</pre></a></li>
+<li class="function  "><a href="#function_nowfull" title="nowfull() :: Current date and time formated a database"><span class="description">Current date and time formated a database</span><pre>nowfull</pre></a></li>
+<li class="function  "><a href="#function_page_url" title="page_url() :: Get current page url"><span class="description">Get current page url</span><pre>page_url</pre></a></li>
+<li class="function  "><a href="#function_parse_date" title="parse_date() :: "><span class="description">parse_date()
+        </span><pre>parse_date</pre></a></li>
+<li class="function  "><a href="#function_remove_words" title="remove_words() :: "><span class="description">remove_words()
+        </span><pre>remove_words</pre></a></li>
+<li class="function  "><a href="#function_sat" title="sat() :: Clean database insertion fields"><span class="description">Clean database insertion fields</span><pre>sat</pre></a></li>
+<li class="function  "><a href="#function_ser" title="ser() :: Serialize array"><span class="description">Serialize array</span><pre>ser</pre></a></li>
+<li class="function  "><a href="#function_the_error_handler" title="the_error_handler() :: The system error handler"><span class="description">The system error handler</span><pre>the_error_handler</pre></a></li>
+<li class="function  "><a href="#function_the_exception_handler" title="the_exception_handler() :: The system exception handler"><span class="description">The system exception handler</span><pre>the_exception_handler</pre></a></li>
+<li class="function  "><a href="#function_the_register_shutdown" title="the_register_shutdown() :: "><span class="description">the_register_shutdown()
+        </span><pre>the_register_shutdown</pre></a></li>
+<li class="function  "><a href="#function_tr" title="tr() :: "><span class="description">tr()
+        </span><pre>tr</pre></a></li>
+<li class="function  "><a href="#function_unser" title="unser() :: Unserialize array"><span class="description">Unserialize array</span><pre>unser</pre></a></li>
+<li class="nav-header">
+<i class="icon-custom icon-class"></i> Classes</li>
+<li><a href="#SessionHandlerDb" title="">SessionHandlerDb</a></li>
+<li><a href="#ValidateMethods" title="">ValidateMethods</a></li>
+<li><a href="#DbRowObjectList" title="">DbRowObjectList</a></li>
+<li><a href="#Form_Filters" title="">Form_Filters</a></li>
+<li><a href="#Form_Rules" title="">Form_Rules</a></li>
+<li><a href="#Form_Rule" title="">Form_Rule</a></li>
+<li><a href="#Form_Filter" title="">Form_Filter</a></li>
+<li><a href="#Form_Field" title="">Form_Field</a></li>
+<li><a href="#Form_Object" title="">Form_Object</a></li>
+<li class="nav-header">
+<i class="icon-custom icon-constant"></i> Constants</li>
+<li class="constant  "><a href="#constant_ALLOWED_REFERRER" title="ALLOWED_REFERRER() :: "><span class="description">ALLOWED_REFERRER</span><pre>ALLOWED_REFERRER</pre></a></li>
+<li class="constant  "><a href="#constant_BASE_DIR" title="BASE_DIR() :: "><span class="description">BASE_DIR</span><pre>BASE_DIR</pre></a></li>
+<li class="constant  "><a href="#constant_DS" title="DS() :: System Class File"><span class="description">System Class File</span><pre>DS</pre></a></li>
+<li class="constant  "><a href="#constant_LOG_DOWNLOADS" title="LOG_DOWNLOADS() :: "><span class="description">LOG_DOWNLOADS</span><pre>LOG_DOWNLOADS</pre></a></li>
+<li class="constant  "><a href="#constant_LOG_FILE" title="LOG_FILE() :: "><span class="description">LOG_FILE</span><pre>LOG_FILE</pre></a></li>
+<li class="constant  "><a href="#constant_SYS_VERSION" title="SYS_VERSION() :: "><span class="description">SYS_VERSION</span><pre>SYS_VERSION</pre></a></li>
+</ul>
+</div>
+<div class="span8 package-contents">
+<ul class="breadcrumb"><li>
+<a href="../index.html"><i class="icon-folder-open"></i></a><span class="divider">\</span><li class="active"><a href="../packages/Default.html">Default</a></li>
+</li></ul>
+<div class="package-indent">
+<h3>
+<i class="icon-custom icon-function"></i> Functions</h3>
+<a id="function_array_column"></a><div class="element clickable function  function_array_column" data-toggle="collapse" data-target=".function_array_column .collapse">
+<h2>array_column()
+        </h2>
+<pre>array_column($input, $column_key, $index_key) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$input</h4></div>
+<div class="subelement argument"><h4>$column_key</h4></div>
+<div class="subelement argument"><h4>$index_key</h4></div>
+</div></div>
+</div>
+<a id="function_checkNumericString"></a><div class="element clickable function  function_checkNumericString" data-toggle="collapse" data-target=".function_checkNumericString .collapse">
+<h2>validate numeric string structure</h2>
+<pre>checkNumericString(mixed $value) : true</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>author</th>
+<td><a href="">silviu</a></td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$value</h4></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>true</code>if ok false if not</div>
+</div></div>
+</div>
+<a id="function_countTotalNumberOfPages"></a><div class="element clickable function  function_countTotalNumberOfPages" data-toggle="collapse" data-target=".function_countTotalNumberOfPages .collapse">
+<h2>countTotalNumberOfPages()
+        </h2>
+<pre>countTotalNumberOfPages($totalrows, $setting_productsperpage) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$totalrows</h4></div>
+<div class="subelement argument"><h4>$setting_productsperpage</h4></div>
+</div></div>
+</div>
+<a id="function_date2birthday"></a><div class="element clickable function  function_date2birthday" data-toggle="collapse" data-target=".function_date2birthday .collapse">
+<h2>transform the date to the age of the user</h2>
+<pre>date2birthday(mixed $birthday) : <a href="the.html">\the</a></pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<table class="table table-bordered"><tr>
+<th>author</th>
+<td><a href="">alex</a></td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$birthday</h4><p>the data used to calculate the age</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code><a href="the.html">\the</a></code>number of years or unknown</div>
+</div></div>
+</div>
+<a id="function_decrypt"></a><div class="element clickable function  function_decrypt" data-toggle="collapse" data-target=".function_decrypt .collapse">
+<h2>decrypt()
+        </h2>
+<pre>decrypt($crypted_text) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$crypted_text</h4></div>
+</div></div>
+</div>
+<a id="function_echo_r"></a><div class="element clickable function  function_echo_r" data-toggle="collapse" data-target=".function_echo_r .collapse">
+<h2>Echo and return value</h2>
+<pre>echo_r(mixed $str) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$str</h4></div>
+</div></div>
+</div>
+<a id="function_echopre"></a><div class="element clickable function  function_echopre" data-toggle="collapse" data-target=".function_echopre .collapse">
+<h2>Display array formated</h2>
+<pre>echopre(mixed $arr, mixed $return) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$arr</h4></div>
+<div class="subelement argument">
+<h4>$return</h4><p>if true return value instead of writing it</p></div>
+</div></div>
+</div>
+<a id="function_echopre_r"></a><div class="element clickable function  function_echopre_r" data-toggle="collapse" data-target=".function_echopre_r .collapse">
+<h2>Return formated display for array</h2>
+<pre>echopre_r(mixed $arr) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$arr</h4></div>
+</div></div>
+</div>
+<a id="function_encrypt"></a><div class="element clickable function  function_encrypt" data-toggle="collapse" data-target=".function_encrypt .collapse">
+<h2>encrypt()
+        </h2>
+<pre>encrypt($plain_text) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$plain_text</h4></div>
+</div></div>
+</div>
+<a id="function_execute_wait"></a><div class="element clickable function  function_execute_wait" data-toggle="collapse" data-target=".function_execute_wait .collapse">
+<h2>execute_wait()
+        </h2>
+<pre>execute_wait($path, $exe, $args) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$path</h4></div>
+<div class="subelement argument"><h4>$exe</h4></div>
+<div class="subelement argument"><h4>$args</h4></div>
+</div></div>
+</div>
+<a id="function_generate_seo_link"></a><div class="element clickable function  function_generate_seo_link" data-toggle="collapse" data-target=".function_generate_seo_link .collapse">
+<h2>generate_seo_link()
+        </h2>
+<pre>generate_seo_link($input, $replace, $remove_words, $words_array) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$input</h4></div>
+<div class="subelement argument"><h4>$replace</h4></div>
+<div class="subelement argument"><h4>$remove_words</h4></div>
+<div class="subelement argument"><h4>$words_array</h4></div>
+</div></div>
+</div>
+<a id="function_getNoDays"></a><div class="element clickable function  function_getNoDays" data-toggle="collapse" data-target=".function_getNoDays .collapse">
+<h2>getNoDays()
+        </h2>
+<pre>getNoDays($start, $end) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$start</h4></div>
+<div class="subelement argument"><h4>$end</h4></div>
+</div></div>
+</div>
+<a id="function_get_hostname"></a><div class="element clickable function  function_get_hostname" data-toggle="collapse" data-target=".function_get_hostname .collapse">
+<h2>get_hostname()
+        </h2>
+<pre>get_hostname() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="function_isset_or"></a><div class="element clickable function  function_isset_or" data-toggle="collapse" data-target=".function_isset_or .collapse">
+<h2>Check if isset else return alternate</h2>
+<pre>isset_or(mixed $check, mixed $alternate) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$check</h4></div>
+<div class="subelement argument"><h4>$alternate</h4></div>
+</div></div>
+</div>
+<a id="function_now"></a><div class="element clickable function  function_now" data-toggle="collapse" data-target=".function_now .collapse">
+<h2>Current date formated as database</h2>
+<pre>now() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="function_nowfull"></a><div class="element clickable function  function_nowfull" data-toggle="collapse" data-target=".function_nowfull .collapse">
+<h2>Current date and time formated a database</h2>
+<pre>nowfull() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="function_page_url"></a><div class="element clickable function  function_page_url" data-toggle="collapse" data-target=".function_page_url .collapse">
+<h2>Get current page url</h2>
+<pre>page_url() : String</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>String</code>URL</div>
+</div></div>
+</div>
+<a id="function_parse_date"></a><div class="element clickable function  function_parse_date" data-toggle="collapse" data-target=".function_parse_date .collapse">
+<h2>parse_date()
+        </h2>
+<pre>parse_date($str, $format, $target_format) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$str</h4></div>
+<div class="subelement argument"><h4>$format</h4></div>
+<div class="subelement argument"><h4>$target_format</h4></div>
+</div></div>
+</div>
+<a id="function_remove_words"></a><div class="element clickable function  function_remove_words" data-toggle="collapse" data-target=".function_remove_words .collapse">
+<h2>remove_words()
+        </h2>
+<pre>remove_words($input, $replace, $words_array, $unique_words) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$input</h4></div>
+<div class="subelement argument"><h4>$replace</h4></div>
+<div class="subelement argument"><h4>$words_array</h4></div>
+<div class="subelement argument"><h4>$unique_words</h4></div>
+</div></div>
+</div>
+<a id="function_sat"></a><div class="element clickable function  function_sat" data-toggle="collapse" data-target=".function_sat .collapse">
+<h2>Clean database insertion fields</h2>
+<pre>sat(mixed $string) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$string</h4></div>
+</div></div>
+</div>
+<a id="function_ser"></a><div class="element clickable function  function_ser" data-toggle="collapse" data-target=".function_ser .collapse">
+<h2>Serialize array</h2>
+<pre>ser(mixed $array) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$array</h4></div>
+</div></div>
+</div>
+<a id="function_the_error_handler"></a><div class="element clickable function  function_the_error_handler" data-toggle="collapse" data-target=".function_the_error_handler .collapse">
+<h2>The system error handler</h2>
+<pre>the_error_handler(mixed $errno, mixed $errstr, mixed $errfile, mixed $errline, $errcontext) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$errno</h4></div>
+<div class="subelement argument"><h4>$errstr</h4></div>
+<div class="subelement argument"><h4>$errfile</h4></div>
+<div class="subelement argument"><h4>$errline</h4></div>
+<div class="subelement argument"><h4>$errcontext</h4></div>
+</div></div>
+</div>
+<a id="function_the_exception_handler"></a><div class="element clickable function  function_the_exception_handler" data-toggle="collapse" data-target=".function_the_exception_handler .collapse">
+<h2>The system exception handler</h2>
+<pre>the_exception_handler(mixed $exception) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$exception</h4></div>
+</div></div>
+</div>
+<a id="function_the_register_shutdown"></a><div class="element clickable function  function_the_register_shutdown" data-toggle="collapse" data-target=".function_the_register_shutdown .collapse">
+<h2>the_register_shutdown()
+        </h2>
+<pre>the_register_shutdown() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="function_tr"></a><div class="element clickable function  function_tr" data-toggle="collapse" data-target=".function_tr .collapse">
+<h2>tr()
+        </h2>
+<pre>tr($content, $language_id, $tags) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$content</h4></div>
+<div class="subelement argument"><h4>$language_id</h4></div>
+<div class="subelement argument"><h4>$tags</h4></div>
+</div></div>
+</div>
+<a id="function_unser"></a><div class="element clickable function  function_unser" data-toggle="collapse" data-target=".function_unser .collapse">
+<h2>Unserialize array</h2>
+<pre>unser(mixed $string) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument"><h4>$string</h4></div>
+</div></div>
+</div>
+<h3>
+<i class="icon-custom icon-class"></i> Classes and interfaces</h3>
+<div id="DbRowObjectList" class="element ajax clickable class">
+<h1>DbRowObjectList<a href="../classes/DbRowObjectList.html">¶</a>
+</h1>
+<p class="short_description"></p>
+<div class="details collapse"></div>
+<a href="../classes/DbRowObjectList.html" class="more">« More »</a>
+</div>
+<div id="Form_Field" class="element ajax clickable class">
+<h1>Form_Field<a href="../classes/Form_Field.html">¶</a>
+</h1>
+<p class="short_description"></p>
+<div class="details collapse"></div>
+<a href="../classes/Form_Field.html" class="more">« More »</a>
+</div>
+<div id="Form_Filter" class="element ajax clickable class">
+<h1>Form_Filter<a href="../classes/Form_Filter.html">¶</a>
+</h1>
+<p class="short_description"></p>
+<div class="details collapse"></div>
+<a href="../classes/Form_Filter.html" class="more">« More »</a>
+</div>
+<div id="Form_Filters" class="element ajax clickable class">
+<h1>Form_Filters<a href="../classes/Form_Filters.html">¶</a>
+</h1>
+<p class="short_description"></p>
+<div class="details collapse"></div>
+<a href="../classes/Form_Filters.html" class="more">« More »</a>
+</div>
+<div id="Form_Object" class="element ajax clickable class">
+<h1>Form_Object<a href="../classes/Form_Object.html">¶</a>
+</h1>
+<p class="short_description"></p>
+<div class="details collapse"></div>
+<a href="../classes/Form_Object.html" class="more">« More »</a>
+</div>
+<div id="Form_Rule" class="element ajax clickable class">
+<h1>Form_Rule<a href="../classes/Form_Rule.html">¶</a>
+</h1>
+<p class="short_description"></p>
+<div class="details collapse"></div>
+<a href="../classes/Form_Rule.html" class="more">« More »</a>
+</div>
+<div id="Form_Rules" class="element ajax clickable class">
+<h1>Form_Rules<a href="../classes/Form_Rules.html">¶</a>
+</h1>
+<p class="short_description"></p>
+<div class="details collapse"></div>
+<a href="../classes/Form_Rules.html" class="more">« More »</a>
+</div>
+<div id="SessionHandlerDb" class="element ajax clickable class">
+<h1>SessionHandlerDb<a href="../classes/SessionHandlerDb.html">¶</a>
+</h1>
+<p class="short_description"></p>
+<div class="details collapse"></div>
+<a href="../classes/SessionHandlerDb.html" class="more">« More »</a>
+</div>
+<div id="ValidateMethods" class="element ajax clickable class">
+<h1>ValidateMethods<a href="../classes/ValidateMethods.html">¶</a>
+</h1>
+<p class="short_description"></p>
+<div class="details collapse"></div>
+<a href="../classes/ValidateMethods.html" class="more">« More »</a>
+</div>
+<h3>
+<i class="icon-custom icon-constant"></i> Constants</h3>
+<a id="constant_ALLOWED_REFERRER"> </a><div class="element clickable constant  constant_ALLOWED_REFERRER" data-toggle="collapse" data-target=".constant_ALLOWED_REFERRER .collapse">
+<h2>ALLOWED_REFERRER</h2>
+<pre>ALLOWED_REFERRER </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="constant_BASE_DIR"> </a><div class="element clickable constant  constant_BASE_DIR" data-toggle="collapse" data-target=".constant_BASE_DIR .collapse">
+<h2>BASE_DIR</h2>
+<pre>BASE_DIR </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="constant_DS"> </a><div class="element clickable constant  constant_DS" data-toggle="collapse" data-target=".constant_DS .collapse">
+<h2>System Class File</h2>
+<pre>DS </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="constant_LOG_DOWNLOADS"> </a><div class="element clickable constant  constant_LOG_DOWNLOADS" data-toggle="collapse" data-target=".constant_LOG_DOWNLOADS .collapse">
+<h2>LOG_DOWNLOADS</h2>
+<pre>LOG_DOWNLOADS </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="constant_LOG_FILE"> </a><div class="element clickable constant  constant_LOG_FILE" data-toggle="collapse" data-target=".constant_LOG_FILE .collapse">
+<h2>LOG_FILE</h2>
+<pre>LOG_FILE </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="constant_SYS_VERSION"> </a><div class="element clickable constant  constant_SYS_VERSION" data-toggle="collapse" data-target=".constant_SYS_VERSION .collapse">
+<h2>SYS_VERSION</h2>
+<pre>SYS_VERSION </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+</div>
+</div>
+</div>
+<div class="row"><footer class="span12">
+            Template is built using <a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap 2</a> and icons provided by <a href="http://glyphicons.com/">Glyphicons</a>.<br>
+            Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor 2.1.0
+</a> and<br>
+            generated on 2013-11-29T13:33:40+02:00.<br></footer></div>
+</div>
+</body>
+</html>

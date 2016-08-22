@@ -1,0 +1,528 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+
+/**
+ * PDO Database Manager Class
+ * @example $this-&gt;models-&gt;db
+ * @package WebLauncher\Managers
+ */
+class DbManager {
+
+    var $num_valid_queries = 0;
+    var $num_invalid_queries = 0;
+    var $queries=array();
+    var $trace=false;
+
+    private $db_connection=null;
+    private $dbdb_resourceource=null;
+    private $db_type='';
+    private $db_name='';
+    private $db_server='';
+    private $db_user='';
+    private $db_password='';
+	private $tables_manager='';
+	
+	public function __construct(){
+		$this-&gt;tables_manager=new TablesManager();
+	}
+
+    /**
+     * Attempt to connect the resource based on supplied parameters.
+     *
+     * @return  boolean
+     * @access  public
+     *
+     * @param   string  (optional) Host name (Server name)
+     * @param   string  (optional) User Name
+     * @param   string  (optional) User Password
+     * @param   string  (optional) Database Name
+     */
+    function connect($host='',$user='',$pass='',$dbname='',$db_type='mysql')
+	{
+		$this-&gt;db_server=$host;
+		$this-&gt;db_user=$user;
+		$this-&gt;db_password=$pass;
+		$this-&gt;db_name=$dbname;
+		$this-&gt;db_type=$db_type;
+
+		$dns = $this-&gt;get_dns();
+
+		try {
+		    $this-&gt;db_connection = new PDO($dns, $this-&gt;db_user, $this-&gt;db_password,array(PDO::MYSQL_ATTR_INIT_COMMAND =&gt; 'SET NAMES utf8'));	
+		} catch (PDOException $e) {
+		    trigger_error(get_class($this) .
+                          '::connect() Could not connect to database: ' .
+                          $e-&gt;getMessage(), E_USER_ERROR);
+            return false;
+		}
+		return true;
+    }
+	
+	public function __get($key){
+		if($key=='tables')
+			return $this-&gt;tables_manager;
+		return null;
+	}
+
+    public function get_dns()
+    {
+    	return ($this-&gt;db_type.':dbname='.$this-&gt;db_name.';host='.$this-&gt;db_server.';charset=utf8');
+    }
+
+    public function query($Sql,$args=array())
+    {
+    	$ret=true;
+    	if($this-&gt;trace)
+    	{
+    		$this-&gt;queries[count($this-&gt;queries)]=array();
+    		$this-&gt;queries[count($this-&gt;queries)-1]['query']=$Sql;
+    		$this-&gt;queries[count($this-&gt;queries)-1]['start']=microtime(1);
+    	}
+		try{
+    		$query=$this-&gt;db_connection-&gt;prepare($Sql);
+			$query-&gt;execute($args);
+			if($query-&gt;errorCode() != 0)
+	        {
+	            $error=$query-&gt;errorInfo();
+	        	if($this-&gt;trace)
+	        		$this-&gt;num_invalid_queries++;
+	            trigger_error(
+	                                'Sql Query Error '.' ('.$error[0].','.$error[1].') ' .': ' .
+	                                $error[2].
+	                                ' (SQL: ' . $Sql . ')', E_USER_ERROR);
+	        	$ret=false;
+	        	$this-&gt;db_resource=null;	
+	        }
+	        else
+	        {
+	        	if($this-&gt;trace)
+	        		$this-&gt;num_valid_queries++;
+	        	$ret=true;
+	        	$this-&gt;db_resource=$query;
+	        }
+			unset($query);
+		}
+		catch(Exception $ex){
+			if($this-&gt;trace)
+        		$this-&gt;num_invalid_queries++;
+                trigger_error(get_class($this) .
+                                '-&gt;query() Could not execute: ' .
+                                print_r($this-&gt;db_connection-&gt;errorInfo(),true) .
+                                ' (SQL: ' . $Sql . ')',E_USER_ERROR);
+        	$ret=false;
+        	$this-&gt;db_resource=null;
+		}
+        
+        if($this-&gt;trace)
+    	{
+    		$this-&gt;queries[count($this-&gt;queries)-1]['duration']=microtime(1)-$this-&gt;queries[count($this-&gt;queries)-1]['start'];
+    	}
+        return $ret;
+    }
+
+    /**
+     * Starts a transaction in the current session.
+     *
+     * @return  void
+     * @access  public
+     */
+    function BEGIN() {
+
+        $this-&gt;query('SET AUTOCOMMIT=0');
+        $this-&gt;query('START TRANSACTION');
+
+    }
+
+    /**
+     * Rolls back currently executing transaction
+     *
+     * @return  void
+     * @access  public
+     */
+    function ROLLBACK() {
+
+        $this-&gt;query('ROLLBACK');
+        $this-&gt;query('SET AUTOCOMMIT=1');
+
+    }
+
+    /**
+     * commits currently executing  transaction
+     *
+     * @return  void
+     * @access  public
+     */
+    function COMMIT() {
+
+        $this-&gt;query('COMMIT');
+        $this-&gt;query('SET AUTOCOMMIT=1');
+
+    }
+
+    /**
+     * Returns an array of records from the
+     * current result resource.
+     * Returns empty array if no retrieval
+     *
+     * This method consumes more memory resources
+     * than ReadRecord() but is useful to
+     * get quick record sets for processing
+     *
+     * Optionally, you can supply a SQL
+     * string to short-cut a call to
+     * DB::query
+     *
+     * @return  mixed
+     * @access  public
+     *
+     * @param   string  (optional) SQL to execute
+     */
+    function &amp;getAll($query='',$args=array()) {
+
+        // Look for a SQL string supplied
+        if ($query) {
+            $this-&gt;query($query,$args);
+        }
+
+        $return = array();
+        if (! is_object($this-&gt;db_resource)) {
+            trigger_error(get_class($this) .
+                                '::getAll() : Previous query did not return a valid result!'
+                                , E_USER_ERROR);
+            return $return;
+        }
+        else {
+        	$arr=$this-&gt;db_resource-&gt;fetchAll(PDO::FETCH_ASSOC);
+            return $arr;
+        }
+    }
+
+    /**
+     * Returns an single record array from the
+     * current result resource.
+     * Returns empty array if no retrieval
+     *
+     * Optionally, you can supply a SQL
+     * string to short-cut a call to
+     * DB::query
+     *
+     * @return  mixed
+     * @access  public
+     *
+     * @param   string  (optional) SQL to execute
+    */
+    function &amp;getRow($query,$args=array()) {
+        if(!preg_match('/LIMIT/i',$query)){
+            $query .= ' LIMIT 0,1';
+        }//end if (!preg_match('/LIMIT/',$sql))
+        // Look for a SQL string supplied
+        if ($query) {
+            $this-&gt;query($query,$args);
+        }
+        
+        if (is_null($this-&gt;db_resource)) {
+            $return = array();
+            return $return;
+        }
+        else {
+        	$res=$this-&gt;db_resource-&gt;fetch(PDO::FETCH_ASSOC);
+            return $res;
+        }
+    }
+
+    /**
+     * Returns first data point from
+     * current result resource
+     * or null if no retrieval
+     *
+     * Optionally, you can supply a SQL
+     * string to short-cut a call to
+     * DB::query
+     *
+     * @return  mixed
+     * @access  public
+     *
+     * @param   string  (optional) SQL to execute
+    */
+    function getOne($query,$args=array()) {
+        if(!preg_match('/LIMIT/i',$query)){
+            $query .= ' LIMIT 0,1';
+        }//end if (!preg_match('/LIMIT/',$sql))
+        // Look for a SQL string supplied
+        if ($query) {
+            $this-&gt;query($query,$args);
+        }
+
+        if ($this-&gt;db_resource==null) {
+            return null;
+        }
+        else {
+            $row = $this-&gt;db_resource-&gt;fetch(PDO::FETCH_NUM);
+            return $row[0];
+        }
+    }
+
+    /**
+     * Returns next incremented auto-id (for use on non MYSQL SGBD !!!)
+     *
+     * @return  mixed
+     * @access  public
+    */
+    function nextId() {
+        return NULL;
+    }
+
+
+    /**
+     * Returns last inserted auto-id
+     *
+     * @return  mixed
+     * @access  public
+    */
+    function last_id() {
+        return $this-&gt;db_connection-&gt;lastInsertId();
+    }
+
+    /**
+     * Returns number of rows in resultset
+     *
+     * @return  int
+     * @access  public
+    */
+    function numRows() {
+        return count($this-&gt;db_resource-&gt;fetchAll(PDO::FETCH_ASSOC));
+    }
+
+    /**
+     * Returns total number of rows in resultset
+     *
+     * @return  int
+     * @access  public
+    */
+    function countTotalRows() {
+        $do_sql = 'SELECT FOUND_ROWS() AS total';
+        $res =  $this-&gt;getOne($do_sql);
+        return $res;
+    }
+
+    /**
+     * Returns number of rows affected by DML statement
+     *
+     * @return  int
+     * @access  public
+    */
+    function affectedRows() {
+        return $this-&gt;db_resource-&gt;rowCount();
+    }
+
+    /**
+     * Add slashes to provided string
+     *
+     * @return  mixed
+     * @access  public
+     *
+     * @param   string  String to add slashes
+    */
+    function stripMagicQuotes($var){
+        if(get_magic_quotes_gpc())
+            return stripslashes($var);
+        else
+            return $var;
+    }
+
+    /**
+     * Escape strings scheduled for insert into DB
+     *
+     * @return  mixed
+     * @access  public
+     *
+     * @param   string  String to escape
+    */
+    function escape($value) {
+        $value = $this-&gt;stripMagicQuotes($value);
+        return $this-&gt;mysql_escape_mimic($value);
+    }
+
+    /**
+     * Mimic function for mysql_real_escape_string
+     * @param $inp
+     */
+    function mysql_escape_mimic($inp) {
+	    return substr($this-&gt;db_connection-&gt;quote($inp), 1, -1);
+	}
+
+    /**
+     * Escape strings provided and encapsulate those in '' signs
+     *
+     * @return  mixed
+     * @access  public
+     *
+     * @param   string  String to escape
+    */
+    function stringEscape($Value) {
+        return '\'' . $this-&gt;escape($Value) . '\'';
+    }
+
+    function total_execution_time()
+    {
+    	if($this-&gt;trace)
+    	{
+    		$total=0;
+    		foreach($this-&gt;queries as $v)
+    			if(isset($v['duration']))
+    				$total+=$v['duration'];
+    		return $total;
+    	}
+    	return 0;
+    }
+
+    /**
+     * Returns either 'NULL' or ''$string'' escaped for insert/update
+     *
+     * @return  mixed
+     * @access  public
+     *
+     * @param   string  String to evaluate
+    */
+    function nullOrString($Value) {
+        if (empty($Value)) {
+            return 'NULL';
+        }
+        else {
+            return '\'' . addslashes($Value) . '\'';
+        }
+    }
+
+    /**
+     * Returns either 'NULL' or ''$date'' formatted for insert/update
+     *
+     * @return  mixed
+     * @access  public
+     *
+     * @param   string  String to evaluate
+    */
+    function nullOrDate($Value) {
+        if (empty($Value)) {
+            return 'NULL';
+        }
+        else {
+            return '\'' . date('Y-m-d', strtotime($Value)) . '\'';
+        }
+    }
+
+    /**
+     * Returns either 'NULL' or int cast of value
+     *
+     * @return  mixed
+     * @access  public
+     *
+     * @param   string  String to evaluate
+    */
+    function nullOrInt($Value) {
+        if (empty($Value)) {
+            return 'NULL';
+        }
+        else {
+            return (int) $Value;
+        }
+    }
+
+    /**
+     * Returns either 'NULL' or double cast of value
+     *
+     * @return  mixed
+     * @access  public
+     *
+     * @param   string  String to evaluate
+    */
+    function nullOrDouble($Value) {
+        if (empty($Value)) {
+            return 'NULL';
+        }
+        else {
+            return (double) $Value;
+        }
+    }
+
+    /**
+     * Returns either '0000-00-00' or ''$date'' formatted for insert/update
+     *
+     * @return  mixed
+     * @access  public
+     *
+     * @param   string  String to evaluate
+    */
+    function stringOrDate($Value) {
+        if (empty($Value)) {
+            return '0000-00-00';
+        }
+        else {
+            return '\'' . date('Y-m-d', strtotime($Value)) . '\'';
+        }
+    }
+	
+	function get_slowest_query(){
+		$slowest=array();
+		$min=0;
+		foreach($this-&gt;queries as $v)
+			if($min&lt;$v['duration']){
+				$slowest=$v;
+				$min=$v['duration'];
+			}
+		return $slowest;
+	}
+
+	function disconnect()
+	{
+		$this-&gt;db_connection=null;
+	}
+	
+	function __destroy(){
+		$this-&gt;db_connection=null;
+	}
+}
+?&gt;
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all()
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

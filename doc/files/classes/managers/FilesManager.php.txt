@@ -1,0 +1,360 @@
+<?php
+/**
+ * File Manager Class
+ */
+/**
+ * Files and Uplaods Manager Class
+ * @package WebLauncher\Managers
+ */
+class FilesManager
+{
+	/**
+	 * @var string $folder Folder location
+	 */
+	var $folder;
+	/**
+	 * @var string $last_filename Last file name uploaded
+	 */
+	var $last_filename='';
+	/**
+	 * @var string $last_local_file Last local file uploaded path
+	 */
+	var $last_local_file='';
+	/**
+	 * @var string $last_http_path Last http path to the file uploaded
+	 */
+	var $last_http_path='';
+	/**
+	 * @var array $message Uploade error messages
+	 */
+	var $messages=array(
+		'upload'=>array(
+			'extension_err'=>'Wrong file extension!',
+			'upload_err'=>'File upload not complete!'
+		)
+	);
+	/**
+	 * @var string $http_root Root of site
+	 */
+	var $http_root='';
+	/**
+	 * @var string $local_root Local strorage root
+	 */
+	var $local_root='';
+	/**
+	 * @var bool $valid Flag if upload was valid
+	 */
+	var $valid=false;
+	/**
+	 * @var array $errors Recorded errors
+	 */
+	var $errors=array();
+	
+	/**
+	 * Constructor
+	 * @param string $folder
+	 * @param string $http_root
+	 * @param string $local_root
+	 */
+	public function __construct($folder,$http_root='',$local_root='')
+	{
+		$this->folder=$folder;
+		$this->http_root=$http_root;
+		$this->local_root=$local_root;
+		/*
+		if(count($_FILES))
+			foreach($_FILES as $key=>$file)
+			{
+				try{
+					$path=$this->upload($key,'',base64_encode(microtime(true)).'_'.$file['name']);
+					$path=$this->upload($key,'',base64_encode(microtime(true)).'_1_'.$file['name']);
+				}
+				catch(Exception $ex){
+					$_FILES[$key]['error']=$ex->getMessage();
+					$this->delete($_FILES[$key]['tmp_name']);
+					unset($_FILES[$key]['tmp_name']);
+				}
+				echopre($_FILES);				
+				die;
+			}*/	
+	}
+	
+	/**
+	 * get magic method
+	 * @param string $name
+	 */
+	function __get($name){
+		switch($name){
+			case 'last_file':
+				return $this->last_http_path;
+			break;
+		}
+		return false;
+	}
+	
+	/**
+	 * Save upload to a given folder and newname
+	 * @param string $name Name parameter from $_FILES[$name] to look for the file details
+	 * @param string $folder [optional] Folder where to save file (relative to $this->folder)
+	 * @param string $newname [optional] New name for the file
+	 * @return array Details for the file uploaded (this will be also overwriten on $_FILES[$name])
+	 * @example From page: $this->uploads->save_upload('file','','');
+	 * @deprecated Will be replaced by $this->upload()
+	 */
+	function save_upload($name,$folder='',$newname=''){
+		return $this->upload($name,$folder,$newname);
+	}
+	
+	/**
+	 * Save upload to a given full path folder and newname
+	 * @param string $name Name parameter from $_FILES[$name] to look for the file details
+	 * @param string $folder [optional] Folder where to save file full path
+	 * @param string $newname [optional] New name for the file
+	 * @return array Details for the file uploaded (this will be also overwriten on $_FILES[$name])
+	 * @example From page: $this->uploads->save_upload_full('file','/home/uploads/','');
+	 * @deprecated Will be replaced by $this->upload()
+	 */
+	function save_upload_full($name,$folder='',$newname=''){
+		return $this->upload($name,$folder,$newname,false);
+	}
+	
+	/**
+	 * Cleans the file name for proper storring it in any file system
+	 * @param string $filename Name to clean
+	 * @return string File name cleaned
+	 */
+	function clean_filename($filename){
+		addslashes($filename);
+		str_replace('\'','_',$filename);
+		return $filename;
+	}
+	
+	/**
+	 * Get the local folder where the storring is done
+	 * @param string $folder [optional] Folder to append to $this->folder
+	 * @param bool $append_main_folder [optional] Flag if $this->folder should be appended
+	 * @return string Local folder where to strore files
+	 */
+	function get_local_folder($folder='',$append_main_folder=true){
+		if($append_main_folder)	
+			$folder=$this->local_root.$this->folder.$folder;
+		if(!$folder)
+			$folder=$this->folder;
+		return $folder;
+	}
+	
+	/**
+	 * Get the URL to the folder where the data is stored
+	 * @param string $folder [optional] Folder to append to $this->folder
+	 * @param bool $append_main_folder [optional] Flag if $this->folder should be appended
+	 * @return string Url to the local strorage area
+	 */
+	function get_http_path($folder='',$append_main_folder=true){
+		$http_path=$this->http_root.$folder;
+		if($append_main_folder)
+			$http_path=$this->http_root.$this->folder.$folder;	
+		return $http_path;				
+	}
+	
+	/**
+	 * Uplaod files to the local set storage folder
+	 * @param string $name Name parameter from $_FILES[$name] to look for the file details
+	 * @param string $folder [optional] Folder where to save file (relative to $this->folder)
+	 * @param string $newname [optional] New name for the file
+	 * @param bool $append_main_folder [optional][default=true] Flag if the $this->folder path should be appended 
+	 */
+	function upload($name,$folder='',$newname='',$append_main_folder=true)
+	{		
+		$this->_init();		
+		$file=$_FILES[$name];
+		$local_folder=$this->get_local_folder($folder,$append_main_folder);
+		$http_path=$this->get_http_path($folder,$append_main_folder);
+		if(isset($file['processed']) && $file['processed']){
+			if($this->add_dir($local_folder)){
+				$filename=$file['name'];
+			  	if($newname!='')
+					$filename=$newname;
+				$filename=$this->clean_filename($filename);
+				if(rename($file['tmp_name'], $local_folder.$filename)){
+					$this->last_filename=$filename;
+					$this->last_local_file=$local_folder.$filename;
+					$this->last_http_path=$http_path.$filename;
+					$_FILES[$name]['tmp_name']=$local_folder.$filename;
+					$_FILES[$name]['http_path']=$http_path.$filename;
+					$_FILES[$name]['processed']=true;
+					$this->valid=true;				
+					return $folder.$filename;
+				}
+			}
+		}
+		else{			
+			if($file['error'] == UPLOAD_ERR_OK) {
+			  	if($this->isAllowed($file['name'])) {
+			  		$filename=$file['name'];
+			  		if($newname!='')
+						$filename=$newname;
+					$filename=$this->clean_filename($filename);					
+					if($this->add_dir($local_folder)){
+						if(move_uploaded_file($file['tmp_name'],$local_folder.$filename)){					
+							$this->last_filename=$filename;
+							$this->last_local_file=$local_folder.$filename;
+							$this->last_http_path=$http_path.$filename;
+							$_FILES[$name]['tmp_name']=$local_folder.$filename;
+							$_FILES[$name]['http_path']=$http_path.$filename;
+							$_FILES[$name]['processed']=true;
+							$this->valid=true;				
+							return $local_folder.$filename;
+						}
+					}
+			  	} else {
+			    	throw new Exception($this->messages['upload']['extension_err']);
+				}
+			} else throw new Exception($this->messages['upload']['upload_err']);
+		}
+		return false;
+	}
+	
+	/**
+	 * Init function
+	 */
+	function _init()
+	{
+		$this->valid=false;
+		$this->errors=array();
+	}
+	
+	/**
+	 * Get the content of the uploaded file
+	 * @param string $name Name from $_FILES[$name]
+	 * @return string Content of the uploaded file
+	 */
+	function get_upload_content($name)
+	{
+		if($path=$this->upload($name))
+			return file_get_contents($path);
+		return false;
+	}
+	
+	/**
+	 * Check if a filename is allowed to be uploaded (done by extension)
+	 * @param string $fileName Name of the file
+	 * @return bool True if the file can be uploaded
+	 */
+	function isAllowed($fileName)
+	{
+		global $page;
+		return in_array($this->get_extension($fileName), $page->upload_allowed_extensions);
+	}
+	
+	/**
+	 * Returns the value of $this->valid
+	 */
+	function valid()
+	{
+		return $this->valid;
+	}
+
+	/**
+	 * Get the extension of a file
+	 * @param string $fileName
+	 * @return string The extension
+	 */
+	function get_extension($fileName)
+	{
+		$ext='';
+		if(count($arr=explode('.', $fileName))>1)		
+			$ext=strtolower(end($arr));
+		return $ext;		
+	}
+
+	/**
+	 * Creates a folder that has the permissions to be uplaoded in
+	 * @param string $dir
+	 * @return bool True if folder was created
+	 */
+	function add_dir($dir)
+	{
+		if(!is_dir($dir))
+			if(!mkdir($dir,0777,true))
+				return false;
+		chmod($dir,0777);
+		return true;
+	}
+
+	/**
+	 * Put content into a file
+	 * @param string $path 
+	 * @param string $content
+	 * @return True if file was written
+	 * @deprecated Please use file_put_contents
+	 */
+	function save_file($path,$content='')
+	{
+		if(file_put_contents($path,$content)===FALSE)
+			return false;
+		return true;
+	}
+	
+	/**
+	 * Deletes files and folders from a given path
+	 * @param string $dir File path or folder path to be removed
+	 * @param bool $files_only [optional][default=false] Flag if only files should be removed
+	 *
+	 */
+	function delete($dir,$files_only=false) {
+		if(is_file($dir))
+			return unlink($dir);
+		
+	    $files = glob( $dir . '*', GLOB_MARK );			   
+	    foreach( $files as $file )
+	       	$this->delete($file,$files_only);  
+	    if (!$files_only && is_dir($dir)) rmdir( $dir );  
+	}
+	
+	/**
+	 * Delete folder tree method
+	 * @param string $dir
+	 * @deprecated Please use $this->delete
+	 */
+	function delete_tree($dir){
+		$this->delete($dir);
+	}
+	
+	/**
+	 * Empty folder
+	 * @param string $dir
+	 * @deprecated Please use $this->delete($dir,true) 
+	 */
+	function empty_folder($dir)
+	{
+		$files=$this->file_array($dir);
+		foreach($files as $f)
+			unlink($dir.$f);
+	}
+	
+	/**
+	 * Returns the files at a given path 
+	 * @param string $path 
+	 * @param string $exclude [optional][default=".|.."]
+	 * @param bool $recursive Flag if it should go through subfolders
+	 * @return array Files found at the given path
+	 */
+	function file_array($path, $exclude = ".|..", $recursive = false) 
+	{
+        $path = rtrim($path, "/") . "/";
+        $folder_handle = opendir($path);
+        $exclude_array = explode("|", $exclude);
+        $result = array();
+        while(false !== ($filename = readdir($folder_handle))) {
+            if(!in_array(strtolower($filename), $exclude_array)) {
+                if(is_dir($path . $filename . "/")) {
+                    if($recursive) $result[] = $this->file_array($path, $exclude, true);
+                } else {
+                    $result[] = $filename;
+                }
+            }
+        }
+        return $result;
+    }
+}
+?>

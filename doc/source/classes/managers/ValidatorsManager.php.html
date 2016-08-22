@@ -1,0 +1,526 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+class ValidateMethods
+{
+	/**
+	 * Check required. rule='required|5' - required lenght 5
+	 * @return
+	 * @param object $i - key of the field
+	 * @param object $params[optional] - parameters
+	 */
+	function required($value,$params='')
+	{
+		if($value=='')
+			return false;
+		else
+		if((count($params)&gt;1 &amp;&amp; strlen($value)!=$params[1]))
+			return false;
+		return true;
+	}
+
+	/**
+	 * Check interval string length 'interval|2|5'
+	 * @return
+	 * @param object $i
+	 * @param object $params[optional]
+	 */
+	function interval($value,$params='')
+	{
+		return (strlen($value)&gt;=$params[1] &amp;&amp; strlen($value)&lt;=$params[2]);
+	}
+
+	/**
+	 * Check interval string length 'rangelength|2|5'
+	 * @return
+	 * @param object $i
+	 * @param object $params[optional]
+	 */
+	function rangelength($value,$params='')
+	{
+		return (strlen($value)&gt;=$params[1] &amp;&amp; strlen($value)&lt;=$params[2]);
+	}
+
+	/**
+	 * Check e-mail string
+	 * @return
+	 * @param object $i
+	 */
+	function email($value)
+	{
+		return ($value &amp;&amp; preg_match(&quot;#^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})\$#i&quot;, $value));
+	}
+
+	/**
+	 * Check if its a number 'number'
+	 * @return
+	 * @param object $i
+	 */
+	function number($value)
+	{
+		return $value!='' &amp;&amp; is_numeric($value);
+	}
+
+	/**
+	 * Check it contains only digits 'digits'
+	 * @return
+	 * @param object $i
+	 */
+	function digits($value)
+	{
+		return ($value &amp;&amp; eregi('^[0-9]+$', $value));
+	}
+
+	/**
+	 * Check it contains only digits &quot;digits&quot;
+	 * @return
+	 * @param object $i
+	 */
+	function alpha($value)
+	{
+		return preg_match('#^[a-zA-Z -]+\$#i', $value);
+	}
+
+	/**
+	 * Check valid username &quot;username&quot;
+	 * @return
+	 * @param object $i
+	 */
+	function username($value)
+	{
+		return $value &amp;&amp; preg_match('#^[a-z][\da-z_\.]{4,64}[a-z\d]\$#i', $value);
+	}
+
+    /**
+     * check valid firstname
+     * @return
+     * @param object $value
+     */
+    function firstname($value) {
+    	return preg_match('#^[A-Z][a-z -]{2,64}[a-z]\$#i',$value);
+    }
+
+    /**
+     *  check if contains only caracters
+     * @return
+     * @param object $i
+     */
+    function string($value) {
+    	return is_string($value);
+    }//end function string($i)
+
+	/**
+	 * Check interval numeric &quot;intervalnr|0|100&quot;
+	 * @return
+	 * @param object $i
+	 * @param object $params
+	 */
+	function intervalnr($value,$params)
+	{
+		return (is_numeric($value) &amp;&amp; $value&gt;=$params[1] &amp;&amp; $value&lt;=$params[2]);
+	}
+
+	/**
+	 * Check interval numeric &quot;range|0|100&quot;
+	 * @return
+	 * @param object $i
+	 * @param object $params
+	 */
+	function range($value,$params)
+	{
+		return (is_numeric($value) &amp;&amp; $value&gt;=$params[1] &amp;&amp; $value&lt;=$params[2]);
+	}
+
+	/**
+	 * Check if a valid percent (0-100)
+	 * @return
+	 * @param object $i
+	 */
+	function percent($value)
+	{
+		return ValidateMethods::intervalnr($i,array(0=&gt;'',1=&gt;'0',2=&gt;'100'));
+	}
+
+	/**
+	 * Check if it is at least given min value 'min'
+	 * @return
+	 * @param object $i
+	 */
+	function min($value,$params)
+	{
+		return $value&gt;=$params[1];
+	}
+
+	/**
+	 * Check if it is at most given max value 'max'
+	 * @return
+	 * @param object $i
+	 */
+	function max($value,$params)
+	{
+		return $value&lt;=$params[1];
+	}
+
+	/**
+	 * Check if the length is at least given min value 'minlength'
+	 * @return
+	 * @param object $i
+	 */
+	function minlength($value,$params)
+	{
+		return strlen(trim($value))&gt;=$params[1];
+	}
+
+	/**
+	 * Check if the length is at most given max value 'maxlength'
+	 * @return
+	 * @param object $i
+	 */
+	function maxlength($value,$params)
+	{
+		return strlen(trim($value))&lt;=$params[1];
+	}
+
+	/**
+	 * Check valid url 'url'
+	 * @return
+	 * @param object $i
+	 */
+	function url($value)
+	{
+		return preg_match('#^(https?|ftp):\/\/(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&amp;\'\(\)\*\+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(:\d*)?)(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&amp;\'\(\)\*\+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&amp;\'\(\)\*\+,;=]|:|@)*)*)?)?(\?((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&amp;\'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(\#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&amp;\'\(\)\*\+,;=]|:|@)|\/|\?)*)?$#i', $value);
+	}
+
+	/**
+	 * Compare with other field &quot;compare|[&lt;,=,&gt;]|[other_field,str_value]&quot;
+	 * @return
+	 * @param object $i
+	 * @param object $params
+	 */
+	function compare($value,$params)
+	{
+		$ok=1;
+		switch($params[1])
+		{
+			case '=':
+				if($this-&gt;data[$params[2]])
+				{
+					$ok=($value==$this-&gt;data[$params[2]]?1:0);
+				}
+				else
+				{
+					$ok=($value==$params[2]?1:0);
+				}
+			break;
+			case '&gt;':
+				if($this-&gt;data[$params[2]])
+					$ok=($value&gt;$this-&gt;data[$params[2]]?1:0);
+				else
+					$ok=($value&gt;$params[2]?1:0);
+			break;
+			case '&lt;':
+				if($this-&gt;data[$params[2]])
+					$ok=($value&lt;$this-&gt;data[$params[2]]?1:0);
+				else
+					$ok=($value&lt;$params[2]?1:0);
+			break;
+		}
+		return $ok;
+	}
+
+	/**
+	 * Compare with other field 'comparetxt|[&lt;,=,&gt;]|[str_value]'
+	 * @return
+	 * @param object $i
+	 * @param object $params
+	 */
+	function comparetxt($value,$params)
+	{
+		$ok=1;
+		switch($params[1])
+		{
+			case '=':
+				$ok=($value==$params[2]?1:0);
+			break;
+			case '&gt;':
+				$ok=($value&gt;$params[2]?1:0);
+			break;
+			case '&lt;':
+				$ok=($value&lt;$params[2]?1:0);
+			break;
+		}
+		return $ok;
+	}
+
+
+	function exists($value,$params)
+	{
+		global $dal;
+        global $page;
+        $dal-&gt;import($params[1]);
+		return !$dal-&gt;$params[1]-&gt;exists($params[2],$value);
+	}
+
+	function notexists($value,$params)
+	{
+		return !ValidateMethods::exists($value,$params);
+	}
+
+	function exists_different($value,$params)
+	{
+		return ($params[3]!=$value &amp;&amp; ValidateMethods::exists($value,$params)) || $params[3]==$value;
+	}
+
+	function custom_dal($value,$params)
+	{
+		global $dal;
+		$dal-&gt;import($params[1]);
+		$model=$dal-&gt;$params[1];
+		return call_user_func_array(array($model,$params[2]),array_merge(array($value),array_slice($params,3)));
+	}
+    /**
+     *
+     * @return
+     * @param object $i
+     */
+    function date($value){
+    	return strtotime($value);
+    }//end function date
+
+    /**
+     *
+     * @return
+     * @param object $i
+     */
+    function dateISO($value)
+	{
+		return preg_match('#^\d{4}[\/-]\d{1,2}[\/-]\d{1,2}$#i', $value);
+	}
+
+    /**
+     *
+     * @return
+     * @param object $i
+     * @param object $params[optional]
+     */
+    function dateinterval($value,$params=''){
+    	return strtotime($value)&gt;=strtotime($params[1]);
+    }//end function dateinterval($i)
+
+    /**
+     * check if the data is in past time
+     * @return
+     * @param object $i
+     */
+    function datenow($value){
+    	return strtotime($value) &lt; time();
+    }//end function datenow
+
+	function nowhitespace($value)
+	{
+		return preg_match('#^\S+$#i', $value);
+	}
+
+	function signature($value)
+	{
+		global $page;
+		return isset_or($page-&gt;session['signature'])==$value;
+	}
+
+}
+
+/**
+ * Validation class
+ *
+ * pentru lastname se foloseste 'string'
+ *
+ * rules:
+ * 	'required|[length]'
+ *  'email'
+ *  'compare|[&lt;,=,&gt;]|[field]'
+ *  'comparetxt|[&lt;,=,&gt;]|[text]'
+ *  'interval|[start_length]|[end_length]'
+ *  	similar to 'rangelength|[start_legth]|[end_length]'
+ *  'intervalnr|[start_nr]|[end_nr]'
+ *  	similat to 'range|[start_nr]|[end_nr]'
+ *  'username'
+ *  'number'
+ *  'digits'
+ *  'alpha'
+ *  'percent'
+ *  'exists|dal_module|field'
+ *  'notexists|dal_module|field'
+ *  'firsname'
+ *  'string&quot;
+ *  &quot;date&quot;
+ *  &quot;dateinterval|date1|date2&quot;
+ *  &quot;min|[value]&quot;
+ *  &quot;max|[value]&quot;
+ *  &quot;minlength|[value]&quot;
+ *  &quot;maxlength|[value]&quot;
+ *  &quot;url&quot;
+ * @package WebLauncher\Managers
+ * @deprecated This is replaced by FormsManager, please do not use anymore
+ */
+class ValidatorsManager
+{
+	var $data=array();// data to be processed
+	var $fields=array();// fields to be processed
+	var $errors=array();// errrors generated
+	var $rules=array();// validation rules
+	var $messages=array();// validation messages
+	var $forms=array();// forms to validate
+	var $checked_key=-1; // current checked form key
+	var $current_rule=''; // current checked rule
+
+	/**
+	 * Constructor
+	 * @return
+	 */
+	function __construct($data='')
+	{
+		if($data!='')
+			$this-&gt;data=$data;
+		else
+			$this-&gt;data=$_REQUEST;
+	}
+
+	/**
+	 * Checks the form given by id
+	 * @return
+	 * @param object $form_id
+	 */
+	function check($form_id)
+	{
+		if(count($this-&gt;forms))
+		{
+			foreach($this-&gt;forms as $k=&gt;$v)
+				if($v==$form_id)
+					$this-&gt;checked_key=$k;
+
+			if($this-&gt;checked_key&gt;=0)
+			foreach($this-&gt;fields[$this-&gt;checked_key] as $k=&gt;$v)
+			{
+				foreach($this-&gt;rules[$this-&gt;checked_key][$k] as $r)
+				{
+
+					$vars=explode('|',$r);
+					$this-&gt;current_rule=$r;
+					if(!$this-&gt;validate($r,$this-&gt;field($k)))
+						$this-&gt;add_error($k);
+				}
+			}
+		}
+	}
+
+	/**
+	 * Add new rule for validation
+	 * @return
+	 * @param object $form_id -- id to the form to add rule
+	 * @param object $field -- field to validate
+	 * @param object $rule -- validation rule
+	 * @param object $message[optional] -- display message on error
+	 */
+	function add_rule($form_id,$field,$rule,$message='')
+	{
+		if(!in_array($form_id,$this-&gt;forms))
+			$this-&gt;forms[sha1(base64_encode(microtime()))]=$form_id;
+
+		$form_key=0;
+		foreach($this-&gt;forms as $k=&gt;$v)
+			if($v==$form_id)
+				$form_key=$k;
+
+		if(!isset($this-&gt;fields[$form_key]))
+			$this-&gt;fields[$form_key]=array();
+
+		if(in_array($field,$this-&gt;fields[$form_key]))
+		{
+			$key=0;
+			foreach($this-&gt;fields[$form_key] as $k=&gt;$v)
+				if($v==$field)
+					$key=$k;
+
+			$this-&gt;rules[$form_key][$key][]=$rule;
+			$this-&gt;messages[$form_key][$key][$rule]=$message;
+		}
+		else
+		{
+			$this-&gt;fields[$form_key][]=$field;
+			$this-&gt;rules[$form_key][]=array(0=&gt;$rule);
+			$this-&gt;messages[$form_key][]=array($rule=&gt;$message);
+		}
+	}
+
+	function field($i)
+	{
+		return $this-&gt;data[$this-&gt;field_name($i)];
+	}
+
+	function field_name($i)
+	{
+		return $this-&gt;fields[$this-&gt;checked_key][$i];
+	}
+
+	function message($i)
+	{
+		return $this-&gt;messages[$this-&gt;checked_key][$i][$this-&gt;current_rule];
+	}
+	
+	function add_error($i){
+		$this-&gt;errors[$this-&gt;field_name($i)]=$this-&gt;message($i);
+	}
+	
+	function validate($rule,$value)
+	{
+		$vars=explode('|',$rule);
+		if(count($vars)&lt;=1)
+			return ValidateMethods::$rule($value);
+		else
+			return ValidateMethods::$vars[0]($value,$vars);
+	}
+}
+
+?&gt;</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all()
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

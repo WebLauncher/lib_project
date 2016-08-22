@@ -1,0 +1,129 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/** 
+ * Scripts Manager
+ */
+
+/**
+ * Javascript JQuery Scripts Generator/Manager Class
+ * @package WebLauncher\Managers
+ */
+class ScriptManager
+{
+	/**
+	 * @var string $content
+	 */
+	var $content='';
+	/**
+	 * @var string $after_load
+	 */
+	var $after_load='';
+	/**
+	 * @var array $forms
+	 */
+	var $forms=array();
+	
+	/**
+	 * Constructor
+	 */
+	function __construct()
+	{
+	}
+	
+	/**
+	 * Get generated script
+	 */
+	function get_script()
+	{
+		$this-&gt;content='jQuery(document).ready(function() {
+			'.$this-&gt;after_load.$this-&gt;process_validators().'
+		});';
+
+		return $this-&gt;content;
+	}
+	
+	/**
+	 * Get validators script
+	 */
+	function process_validators()
+	{
+		$content='';
+		foreach($this-&gt;forms as $form)
+		{
+			$content.=$form-&gt;get_script();
+		}
+		return $content;
+	}
+	
+	/**
+	 * Add javascript validator
+	 * @param string $form_id
+	 * @param string $name
+	 * @param string $rule
+	 * @param string $message
+	 */
+	function add_validator($form_id,$name,$rule,$message)
+	{
+		if(!isset($this-&gt;forms[$form_id]))
+		{
+			$this-&gt;forms[$form_id]=new JsFormValidator($form_id);
+		}
+		$this-&gt;forms[$form_id]-&gt;add_validator($name,$rule,$message);
+		
+		$this-&gt;save();
+	}
+
+	/**
+	 * Save script in session
+	 */
+	function save()
+	{
+		global $page;
+		$page-&gt;session['script']=$this-&gt;get_script();
+	}
+}
+
+?&gt;</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all()
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

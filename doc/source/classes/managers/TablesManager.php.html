@@ -1,0 +1,78 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+	/**
+	 * DB Tables Manager
+	 * @package WebLauncher\Managers
+	 */
+	class TablesManager implements ArrayAccess{
+		public function offsetSet($offset, $value) {
+			global $page;        
+	        $page-&gt;tables-&gt;{$offset} = $value;        
+	    }
+	    public function offsetExists($offset) {
+	    	global $page;
+			if(!isset($page-&gt;tables-&gt;{$offset}))
+				if(strpos($offset,'tbl_')==0) $page-&gt;tables-&gt;{$offset}=substr ($offset , 4 , strlen($offset)-4);
+	        return isset($page-&gt;tables-&gt;{$offset});
+	    }
+	    public function offsetUnset($offset) {
+	    	global $page;
+	        unset($page-&gt;tables-&gt;{$offset});
+	    }
+	    public function offsetGet($offset) {
+	    	global $page;
+	        return isset($page-&gt;tables-&gt;{$offset}) ? $page-&gt;tables-&gt;{$offset} : (strpos($offset,'tbl_')==0 ?substr ($offset , 4 , strlen($offset)-4):null);
+	    }
+		public function __get($name){
+			global $page;
+			return $this[$name];
+		}
+		public function __set($name,$value){
+			$this[$name]=$value;
+		}	
+	}
+?&gt;
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all()
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

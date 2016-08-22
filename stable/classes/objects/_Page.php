@@ -1,0 +1,497 @@
+<?php
+/**
+ * Controller Class
+ */
+
+/**
+ * Page Class - Component/Controller Object to be extended in components
+ *
+ * @package WebLauncher\Objects
+ */
+class _Page
+{
+    /**
+     * @var int Page level index
+     */
+    var $index = -1;
+    /**
+     * @var array Page allowed actions
+     */
+    var $allowed_actions = array();
+    /**
+     * @var array Page blocked actions
+     */
+    var $blocked_actions = array();
+    /**
+     * @var string Current page view
+     */
+    var $view = '';
+    /**
+     * @var string Current template variable name for the page
+     */
+    var $_template_var = 'page_default';
+    /**
+     * @var string Current template file name
+     */
+    var $template_file = '';
+    /**
+     * @var string Current page skin
+     */
+    var $skin = 'default';
+    /**
+     * @var string Current page version
+     */
+    var $version = '';
+    /**
+     * @var string Current controller location
+     */
+    var $_folder = '';
+    /**
+     * @var string Current controller file
+     */
+    var $file = '';
+    /**
+     * @var string Controller cache location
+     */
+    var $_cache = '';
+    /**
+     * @var /Page Controller subpage object
+     */
+    var $subpage = '';
+    /**
+     * @var string Controller Title
+     */
+    var $title = 'not assigned';
+    /**
+     * @var int Execution duration (ms)
+     */
+    var $execution_duration = 0;
+    /**
+     * @var int Execution start microtime
+     */
+    var $execution_start = 0;
+    /**
+     * Execution end microtime
+     */
+    var $execution_end = 0;
+    /**
+     * Template render duration
+     */
+    var $render_duration = 0;
+    /**
+     * Template render start microtime
+     */
+    var $render_start = 0;
+    /**
+     * Template render end microtime
+     */
+    var $render_end = 0;
+    /**
+     * @var \System Access to System Class
+     */
+    var $system = '';
+    /**
+     * @var \ModelsManager Access to ModelsManager Object
+     */
+    var $models = '';
+    /**
+     * @var object Access to Template Engine Object (default: Smarty)
+     */
+    var $template = '';
+    /**
+     * @var \DbManager Access to DbManager Object
+     */
+    var $db = '';
+    /**
+     * @var array Access to current logged in user details
+     */
+    var $user = '';
+    /**
+     * @var array Access to $_SESSION via SessionManager
+     */
+    var $session = '';
+    /**
+     * @var array Access to current generated paths
+     */
+    var $paths = '';
+    /**
+     * @var \FormManager Access to FormsManager Object
+     */
+    var $forms = '';
+    /**
+     * @var bool Flag if cache is enabled or not
+     */
+    var $cache_enabled = false;
+    /**
+     * @var array Current subquery of the controller
+     */
+    var $subquery = array();
+    /**
+     * @var /Page $parent parent component
+     */
+    var $parent = null;
+
+    /**
+     * @var array meta tags access
+     */
+    var $meta_tags = null;
+
+    /**
+     * Constructor
+     * @param string $template_var
+     * @param string $cache
+     * @param string $folder
+     * @param string $file
+     * @param string $view
+     * @param string $skin
+     */
+    function __construct($template_var = 'page', $cache = '', $folder = '', $file = '', $view = '', $skin = 'default')
+    {
+        $this->_template_var = $template_var;
+        $this->_cache = $cache;
+        $this->_folder = $folder;
+        $this->_file = $file;
+        $this->view = $view;
+        $this->skin = $skin;
+
+        global $page;
+        $this->system = &$page;
+        $this->cache = &$this->system->cache;
+        $this->models = &$this->system->models;
+        $this->template = &$this->system->template;
+        $this->db = &$this->models->db;
+        $this->user = &$this->system->user;
+        $this->session = &$_SESSION;
+        $this->paths = &$this->system->paths;
+        $this->forms = &$this->system->validate;
+        $this->files = &$this->system->uploads;
+        $this->meta_tags = &$this->system->meta_tags;
+        if ($this->system->trace)
+            $this->execution_start = microtime(true);
+    }
+
+    /**
+     * On load system method
+     */
+    function _on_load()
+    {
+        if (isset($this->system->actions[0]) && !is_int($this->system->actions[0]) && !in_array($this->system->actions[0], $this->blocked_actions) && !in_array($this->system->actions[0], $this->system->actions_executed)) {
+            $params = array_slice($this->system->actions, 1, count($this->system->actions) - 2);
+            if (method_exists($this, $this->system->request_method . '_action_' . $this->system->actions[0])) {
+                if ($this->_check_view($this->system->actions[0]))
+                    $this->view = $this->system->actions[0];
+                $this->_execute_result(call_user_func_array(array(
+                    $this,
+                    $this->system->request_method . '_action_' . $this->system->actions[0]
+                ), $params));
+                $this->system->actions_executed[] = $this->system->actions[0];
+            } elseif (method_exists($this, 'action_' . $this->system->actions[0])) {
+                if ($this->_check_view($this->system->actions[0]))
+                    $this->view = $this->system->actions[0];
+                $this->_execute_result(call_user_func_array(array(
+                    $this,
+                    'action_' . $this->system->actions[0]
+                ), $params));
+                $this->system->actions_executed[] = $this->system->actions[0];
+            } elseif ($this->system->debug && !in_array($this->system->actions[0], $this->system->actions_executed))
+                $this->system->logger->log('actions', 'Action method: ' . get_class($this) . '->' . $this->system->actions[0] . ' not found!');
+        } else {
+            if (isset($this->system->actions[0]) && in_array($this->system->actions[0], $this->blocked_actions) && !in_array($this->system->actions[0], $this->system->actions_executed)) {
+                if ($this->system->debug)
+                    $this->system->logger->log('error', 'Action "' . $this->system->actions[0] . '" in class "' . get_class($this) . '" not allowed!');
+            } elseif (method_exists($this, 'on_no_action') && !$this->subpage) {
+                $this->_execute_result($this->on_no_action());
+            } elseif (method_exists($this, 'index') && !$this->subpage) {
+                $this->_execute_result($this->index());
+            }
+        }
+
+        if (method_exists($this, 'on_load'))
+            $this->_execute_result($this->on_load());
+
+        $this->assign('p', $this->system->get_page());
+    }
+
+    /**
+     * Execute result returned by page
+     * @param object $result
+     */
+    function _execute_result($result)
+    {
+        if ($result) {
+            if (is_array($result))
+                echo json_encode($result);
+            elseif (is_string($result) || is_numeric($result) || is_object($result))
+                echo $result;
+            die ;
+        }
+    }
+
+    /**
+     * On init system method
+     */
+    function _on_init()
+    {
+        $this->assign('p', $this->system->get_page());
+        if (method_exists($this, 'on_init'))
+            $this->_execute_result($this->on_init());
+        $this->_check_ssl();
+    }
+
+    /**
+     * Check if ssl is needed
+     */
+    function _check_ssl()
+    {
+        if ($this->system->live && $this->system->maintain_ssl && !$this->system->ssl)
+            $this->system->redirect_ssl();
+    }
+
+    /**
+     * Assigns template a variable $var with value $value
+     * @param string|array $var
+     * @param string $value [optional]
+     * @example $this->assign('variable','value');
+     * @example $this->assign(array('variable'=>'value','variable2'=>'value'));
+     */
+    function assign($var, $value = '')
+    {
+        $this->template->assign($var, $value);
+    }
+
+    /**
+     * Redirect page to another link
+     * @param string $url
+     */
+    function redirect($url = '')
+    {
+        $this->system->redirect($url);
+    }
+
+    /**
+     * Add validator to a form id
+     * @param string $form_id
+     * @param string $field Name of the input field
+     * @param string $rule
+     * @param string $message [optional]
+     * @param bool $client [optional]
+     */
+    function add_validator($form_id, $field, $rule, $message = '', $client = true)
+    {
+        $this->system->add_validator($form_id, $field, $rule, $message, $client);
+    }
+
+    /**
+     * Validate form id
+     * @param string $form_id
+     * @return bool True if valid
+     */
+    function validate($form_id)
+    {
+        $this->system->validate_form($form_id);
+        return $this->system->valid;
+    }
+
+    /**
+     * Add message in session for template display
+     * @param string $type ['error','class']
+     * @param string $message
+     */
+    function add_message($type, $message)
+    {
+        $this->system->add_message($type, $message);
+    }
+
+    /**
+     * Show restricted page
+     * @param string $message
+     */
+    function restricted($message)
+    {
+        $this->system->restricted($message);
+    }
+
+    /**
+     * Render system method
+     */
+    function _render()
+    {
+        if (($this->system->check_login && $this->system->logged) || !$this->system->check_login || $this->_template_var == 'page') {
+            if ($this->subpage)
+                $this->subpage->_render();
+            $this->_on_load();
+            if ($this->system->trace) {
+                $this->execution_end = microtime(true);
+                $this->execution_duration = $this->execution_end - $this->execution_start;
+            }
+        }
+    }
+
+    /**
+     * Init system method
+     */
+    function _init()
+    {
+        $this->_on_init();
+        if ($this->subquery && isset($this->subquery[0]) && $this->subquery[0]) {
+            $c_name = strtolower($this->subquery[0]);
+            if ($this->system->import('file', $this->_folder . 'components' . DS . $c_name . DS . $c_name . '.php')) {
+                $class_name = $c_name . '_page';
+                if (class_exists($class_name)) {
+                    $this->subpage = new $class_name('page_component_' . ($this->index + 1), $this->_cache . 'components' . DS . $c_name . DS, $this->_folder . 'components' . DS . $c_name . DS, $c_name . '.php', $c_name, $this->skin);
+                    $this->subpage->subquery = array_slice($this->subquery, 1);
+                    $this->subpage->index = $this->index + 1;
+                } else
+                    $this->system->logger->log('OOP_Warning', 'No "' . $class_name . '" class found in the current module components [$k]!');
+            } elseif (!$this->system->live && $this->system->build_enabled && isset($this->system->actions[0]) && $this->system->actions[0] == 'build') {
+                $build = new BuildManager($this->system->uploads);
+                if (!$build->add($this->_folder . 'components' . DS . $c_name . '/', $c_name)) {
+                    foreach ($build->errors as $e)
+                        $this->system->logger->log('builder_error', $e);
+                }
+                $this->redirect($this->paths['current']);
+            } elseif (!$this->system->live && $this->system->build_enabled && $this->system->build_auto) {
+                $this->redirect($this->paths['current'] . '?a=build');
+            } else {
+                $this->system->call_404();
+            }
+        }
+        if ($this->subpage) {
+            $this->subpage->skin = $this->skin;
+            $this->subpage->parent = &$this;
+            $this->subpage->_init();
+        }
+    }
+
+    /**
+     * Render template system method
+     * @param string $render_type
+     */
+    function _render_template($render_type = 'all')
+    {
+        if (!$this->system->no_cache)
+            TemplatesManager::set_cache($this->cache_enabled);
+        if ($this->system->trace)
+            $this->render_start = microtime(true);
+        switch($this->_template_var) {
+        case 'page' :
+            if ($this->system->restricted)
+                $this->view = 'restricted';
+            break;
+        case 'page_component_0' :
+            if ($this->system->check_login && !$this->system->logged) {
+                $this->_folder = $this->system->paths['root_code'] . $this->system->module;
+                $this->view = 'signin';
+            }
+            break;
+        }
+        if ($this->subpage && $render_type != $this->_template_var)
+            $this->subpage->_render_template($render_type);
+        if ($render_type == 'all' || $render_type == $this->_template_var) {
+            $this->template_file = $this->view . '.tpl';
+            // page content
+            $path = $this->_folder . 'views/';
+            if (!is_dir($this->_folder . 'views/' . $this->skin . '/'))
+                $path = $this->_folder . 'views/' . $this->system->default_skin . '/';
+            elseif (is_dir($this->_folder . 'views/' . $this->skin . '/'))
+                $path = $this->_folder . 'views/' . $this->skin . '/';
+            if ($this->subpage && TemplatesManager::get_template_var($this->subpage->_template_var))
+                $this->template->assign('subpage', TemplatesManager::get_template_var($this->subpage->_template_var));
+            $template_dir = $path;
+            $cache_dir = $this->_cache . 'views' . DS . $this->skin . DS;
+            $this->system->change_template_dir($template_dir);
+            $this->system->fetch_template($this->_template_var, $template_dir . $this->template_file, $cache_dir);
+        }
+
+        if ($this->_template_var == 'page_component_2')
+            $this->template->assign('page_subcomponent', TemplatesManager::get_template_var('page_component_2'));
+        if ($this->_template_var == 'page_component_1')
+            $this->template->assign('page_component', TemplatesManager::get_template_var('page_component_1'));
+        if ($this->_template_var == 'page_component_0')
+            $this->template->assign('page_content', TemplatesManager::get_template_var('page_component_0'));
+
+        if ($this->system->trace) {
+            $this->render_end = microtime(true);
+            $this->render_duration = $this->render_end - $this->render_start;
+        }
+    }
+
+    /**
+     * Block actions
+     * @param array $actions
+     */
+    public function block_actions($actions = '')
+    {
+        if (is_array($actions))
+            $this->blocked_actions = array_merge($this->blocked_actions, $actions);
+        else
+            $this->blocked_actions[] = $actions;
+    }
+
+    /**
+     * Send mail using EmailManager
+     * @param string $template
+     * @param array $params
+     * @return bool
+     */
+    public function mail($template, $params = array())
+    {
+        $message = '';
+        $template_path = '';
+        $params = array_merge($this->system->mail_defaults, $params);
+        if (isset($this->models->email_templates) && $this->models->email_templates->exists_cond("`name`='" . $template . "' ")) {
+            if (method_exists($this->models->email_templates, 'send'))
+                return $this->models->email_templates->send($template, $params);
+            else {
+                $params['template'] = $this->models->email_templates->get_cond("`name`='" . $template . "' ");
+                if ($params['template']) {
+                    $params = array_merge($params['template'], $params);
+                    $template_path = $template_obj['template_path'];
+                }
+            }
+        }
+        if (!$template_path)
+            $template_path = $this->paths['root_code'] . $this->system->module . 'objects' . DS . 'mail_' . $template . '.tpl';
+
+        if (file_exists($template_path)) {
+            $s_t_dir = $this->system->template->template_dir;
+            $s_c_dir = $this->system->template->compile_dir;
+
+            $base_path = isset($params['base_path']) ? $params['base_path'] : $this->paths['root_code'] . $this->system->module . 'objects' . DS . $this->skin . DS;
+            if (!is_dir($base_path))
+                $base_path = isset($params['base_path']) ? $params['base_path'] : $this->paths['root_code'] . $this->system->module . 'objects' . DS;
+            $this->system->change_template_dir($base_path);
+            $this->system->change_cache_dir($this->paths['root_cache'] . $this->system->module . DS . "email" . DS);
+
+            $this->system->template->assign($params);
+            $this->system->template->assign("params", $params);
+
+            $this->system->template->assign("p", $this->system->get_page());
+            $message = $this->system->template->fetch($template_path);
+            //reset smarty dirs
+            $this->system->change_template_dir($s_t_dir);
+            $this->system->change_cache_dir($s_c_dir);
+        }
+        if ($message) {
+            return $this->system->mail->compose($params['email'], $params['subject'], $message, $params['from'], $params['fromname'], $params['reply_to'], $params['reply_name'], isset_or($params['attachments'], array()), isset_or($params['mail_in']), isset_or($params['sender']), isset_or($params['others']))->send();
+        }
+        return false;
+    }
+
+    /**
+     * Check if view is available
+     * @param string $view
+     */
+    private function _check_view($view = '')
+    {
+        // page content
+        $path = $this->_folder;
+        if (!is_dir($this->_folder . 'views/' . $this->skin . '/'))
+            $path = $this->_folder . 'views/' . $this->system->default_skin . '/';
+        else
+            $path = $this->_folder . 'views/' . $this->skin . '/';
+        return file_exists($path . $view . '.tpl');
+    }
+
+}
+?>

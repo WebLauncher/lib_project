@@ -1,0 +1,146 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php 
+	/**
+	 * Base Webservice Extender
+	 */
+	/**
+	 * Model extender with SOAP Webservice functionality
+	 * @ignore
+	 * @package WebLauncher\Objects
+	 */
+	class BaseWebService extends BaseExtender{
+		/**
+		 * @var bool $accept_all_methods
+		 */
+		public $accept_all_methods=true;
+		/**
+		 * @var string $wsdl
+		 */
+		public $wsdl='';
+		/**
+		 * @var array $preset_params
+		 */
+		public $preset_params=array();
+		/**
+		 * @var array $soap_options
+		 */
+		public $soap_options=array();
+		/**
+		 * @var callable $after_call_execute
+		 */
+		public $after_call_execute=null;
+		
+		/**
+		 * @var \SoapClient $_client
+		 */
+		private $_client=null;
+		/**
+		 * @var int $_last_call_start
+		 */
+		private $_last_call_start=null;
+		/**
+		 * @var int $_last_call_end
+		 */
+		private $_last_call_end=null;
+		
+		/**
+		 * Init extender
+		 */
+		public function init(){
+			parent::init();
+			if($this-&gt;wsdl)
+				$this-&gt;_client=new SoapClient($this -&gt; wsdl,$this-&gt;soap_options);
+			else
+				trigger_error('No wsdl provided for model '.get_class($this-&gt;_model));
+		}
+		
+		/**
+		 * Magic method call on webservice
+		 * @param string $name
+		 * @param array $arguments
+		 */
+		function __call($name,$arguments){
+			$params=new stdClass();
+			$params_arr=$this-&gt;preset_params;
+			if(count($arguments)==1)
+				$params_arr=array_merge($params_arr,$arguments[0]);
+			foreach($params_arr as $field=&gt;$value)
+				$params-&gt;$field=$value;
+			
+			return $this-&gt;_call($name,$params);			
+		}
+		
+		/**
+		 * Call webservice methods
+		 * @param string $method
+		 * @param array $params
+		 */
+		private function _call($method, $params)
+		{
+			$response = null;
+			try
+			{
+				$this -&gt; _last_call_start = microtime(true);
+				$response = $this -&gt; _client -&gt; {$method}($params);
+				$this -&gt; _last_call_end = microtime(true);
+				if($this -&gt; after_call_execute &amp;&amp; is_callable($this -&gt; after_call_execute))
+					call_user_func($this -&gt; after_call_execute, $method);
+			} catch(Exception $ex)
+			{
+				trigger_error('Webservice Error: ' . $ex -&gt; getMessage() . '&lt;br&gt;' . $ex);
+			}
+			return $this -&gt; _process_response($response);
+		}
+		
+		/**
+		 * Process response
+		 * @param object $response
+		 */
+		private function _process_response($response){
+			return $response;
+		}
+	}
+?&gt;</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all()
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

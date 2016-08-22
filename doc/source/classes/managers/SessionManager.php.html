@@ -1,0 +1,259 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * Session manager class
+ */
+/**
+ * Session Manager Class
+ * @package WebLauncher\Managers
+ */
+class SessionManager {
+	/**
+	 * @var array $array
+	 */
+	private static $array =array();
+	/**
+	 * @var string $hash
+	 */
+	private static $hash = '';
+	/**
+	 * @var string $cookie_name
+	 */
+	private static $cookie_name = 'default';
+	/**
+	 * @var int $default_offset
+	 */
+	private static $default_offset = 1800;
+	/**
+	 * @var int $remmember_offset
+	 */
+	private static $remmember_offset = 864000;
+	/**
+	 * @var bool $deleted_old
+	 */
+	private static $deleted_old = false;
+	/**
+	 * @var bool $create
+	 */
+	private static $create = false;
+	/**
+	 * @var string $method
+	 */
+	private static $method = 'db';
+	/**
+	 * @var object $handler
+	 */
+	private static $handler=null;
+
+	/**
+	 * Save session
+	 */
+	public static function save() {
+		$func = 'save_' . self::$method;
+		self::$func();
+	}
+
+	/**
+	 * Init session
+	 * @param string $_cookie
+	 * @param int $default_offset
+	 */
+	public static function init($_cookie = 'default',$default_offset=1800) {
+		self::$default_offset=$default_offset;
+		$func = 'init_' . self::$method;
+		self::$func($_cookie);
+	}
+	
+	/**
+	 * Check if session is new
+	 */
+	public static function is_new(){
+		return self::$create;
+	}
+
+	/**
+	 * Save to database
+	 */
+	private static function save_db() {
+		
+	}
+	
+	/**
+	 * Init to database
+	 * @param string $_cookie
+	 */
+	private static function init_db($_cookie = 'default') {
+		session_set_cookie_params(self::$default_offset);
+		if ($_cookie)
+		{
+			if(!isset($_COOKIE[$_cookie]))self::$create=true;
+			self::$cookie_name = $_cookie;
+			self::$handler=new SessionHandlerDb();
+			self::$handler-&gt;set_remmember_time(self::$remmember_offset);
+			session_name(self::$cookie_name);
+			session_set_save_handler(array(self::$handler, 'open'),
+                         array(&amp;self::$handler, 'close'),
+                         array(&amp;self::$handler, 'read'),
+                         array(&amp;self::$handler, 'write'),
+                         array(&amp;self::$handler, 'destroy'),
+                         array(&amp;self::$handler, 'gc'));			
+			
+			@session_start();
+		}
+		if (!isset($_SESSION['expire']) || $_SESSION['expire'] &lt; time()) {
+			session_unset();			
+			if (!isset($_SESSION))
+				session_start();				
+			$_SESSION['_timestamp_created'] = time();
+			$_SESSION['_hash'] = session_id();									
+		}		
+		$offset = self::$default_offset;
+		if (isset($_SESSION['remmember']))
+			$offset = self::$remmember_offset;
+		$_SESSION['expire'] = time() + $offset;	
+		session_set_cookie_params($offset);
+		self::$array = &amp;$_SESSION;		
+	}
+}
+
+/**
+ * Session Db Handler
+ */
+class SessionHandlerDb{
+	/**
+	 * @var bool $create
+	 */
+	private $create=false;
+	/**
+	 * @var int $remmember_offset
+	 */
+	private $remmember_offset;
+	
+	/**
+	 * Open session
+	 */
+	public function open(){
+		return true;
+	}
+	
+	/**
+	 * Close session
+	 */
+	public function close(){
+		return true;
+	}
+	
+	/**
+	 * @param int $remmember_offset
+	 */
+	public function set_remmember_time($remmember_offset){
+		$this-&gt;remmember_offset=$remmember_offset;
+	}
+	
+	/**
+	 * Write session
+	 * @param string $id
+	 * @param string $data
+	 */
+	public function write($id, $data){
+		global $dal;
+		$sql = '';
+		$data=base64_encode(urlencode($data));
+		if (!$this-&gt;create)
+			$sql = 'UPDATE sessions	SET array = &quot;' . $data . '&quot; WHERE hash = &quot;' . $id . '&quot;';
+		else {
+			$sql = 'INSERT INTO sessions (hash, array) VALUES (&quot;' . $id . '&quot;, &quot;' . $data . '&quot;)';
+			$this-&gt;create = false;
+		}
+		$dal -&gt; db -&gt; query($sql);
+	}
+	
+	/**
+	 * Read session
+	 * @param string $id
+	 */
+	public function read($id){
+		global $dal;
+		$row = $dal -&gt; db -&gt; getRow('SELECT * FROM sessions	WHERE hash = &quot;' . $id. '&quot;');
+		if (!isset($row['array'])) {
+			$this-&gt;create=true;
+			return '';
+		} else {
+			return urldecode(base64_decode($row['array']));
+		}
+	}
+	
+	/**
+	 * Garbage collector
+	 * @param object $max
+	 */
+	public function gc($max){
+		global $dal;
+		$sql = 'DELETE FROM sessions WHERE now()-timestamp &gt; ' . $this-&gt;remmember_offset;
+		$dal -&gt; db -&gt; query($sql);	
+		return true;	
+	}
+	
+	/**
+	 * Destroy session
+	 * @param string $id
+	 */
+	public function destroy($id){		
+      	global $dal;
+		$sql = 'DELETE FROM sessions WHERE hash=' . $id;
+		$dal -&gt; db -&gt; query($sql);
+        return TRUE;
+	}	
+	
+	/**
+	 * Destruct session
+	 */
+	function __destruct ()    
+    {
+        @session_write_close();
+    }
+}
+?&gt;</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all()
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

@@ -1,0 +1,2804 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+	/**
+	 * System class
+	 */
+	/**
+	 * 
+	 */
+	
+    define('DS',DIRECTORY_SEPARATOR);
+	define('SYS_VERSION', '2.5.4');
+
+	/**
+	 * System CLass
+	 * @example global $page
+	 * @example In page: $this-&gt;system
+	 * @package WebLauncher\System 
+	 */
+	class System
+	{
+		/**
+		 * @var string $title Page Title
+		 */
+		public $title = 'Title not assigned!';
+		/**
+		 * @var string $doctype Doctype text
+		 */
+		public $doctype='&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Transitional//EN&quot; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd&quot;&gt;';
+		/**
+		 * @var string $html_tag Html tag to use for template
+		 */
+		public $html_tag='&lt;html xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;';
+		/**
+		 * @var string $body_tag Body tag to use for template
+		 */
+		public $body_tag='&lt;body&gt;';
+		/**
+		 * @var string $content_type Content type setting
+		 */
+		public $content_type='text/html; charset=UTF-8';
+		/**
+		 * The setting of the tile in the database
+		 * @var string $title_setting
+		 */
+		public $title_setting = 'general_page_title';
+		/**
+		 * @var flag if page is live
+		 */
+		public $live = false;
+		/**
+		 * @var flag if administrative zone
+		 */
+		public $admin = 0;
+		/**
+		 * @var page query
+		 */
+		public $query = '';
+		/**
+		 * @var page subqueries array
+		 */
+		public $sub_query = array();
+		/**
+		 * @var page content
+		 */
+		public $content = 'home';
+		/**
+		 * @var page components
+		 */
+		public $components = array();
+		/**
+		 * @var page component
+		 */
+		public $component = '';
+		/**
+		 * @var Subcomponents Name
+		 */
+		public $subcomponent = '';
+		/**
+		 * @var page meta tags array
+		 */
+		public $meta_tags = array();
+		/**
+		 * @var page skin
+		 */
+		public $skin = 'default';
+		/**
+		 * @var page default skin
+		 */
+		public $default_skin = 'default';
+		/**
+		 * @var Skins Folder ( default:'skins/' )
+		 */
+		public $skins_folder = 'skins/';
+		/**
+		 * @var skin server path
+		 */
+		public $skin_server_path = '';
+		/**
+		 * @var assets server path
+		 */
+		public $assets_server_path = '';
+		/**
+		 * @var page default module
+		 */
+		public $default_module = 'site/';
+		/**
+		 * @var page module
+		 */
+		public $module = '';
+		/**
+		 * @var current module user type for authentication
+		 */
+		public $module_user_type = '';
+		/**
+		 * @var Modules folder path
+		 */
+		public $modules_folder = 'modules';
+		/**
+		 * @var current actions array
+		 */
+		public $actions = array();
+		/**
+		 * @var Actions executed list
+		 */
+		public $actions_executed = array();
+		/**
+		 * @var current errors array
+		 */
+		public $errors = array();
+
+		/**
+		 * Error log files path e.g. /home/errors/
+		 * @var unknown_type
+		 */
+		public $error_log_path = '';
+
+		/**
+		 * Error log e-mail to send fatal errors
+		 */
+		public $error_log_email = &quot;&quot;;
+
+		/**
+		 * @var current messages array
+		 */
+		public $messages = array();
+		/**
+		 * @var history array
+		 */
+		public $history = array();
+		/**
+		 * @var flag for history active
+		 */
+		public $history_active = true;
+		/**
+		 * @var paths array
+		 */
+		public $paths = array();
+		/**
+		 * @var flag if should connect to database
+		 */
+		public $db_conn_enabled = true;
+		/**
+		 * @var database connection
+		 */
+		public $db_conn;
+		/**
+		 * @var database connections array
+		 */
+		public $db_connections = array();
+		/**
+		 * @var objects array
+		 */
+		public $objects = array();
+		/**
+		 * @var Objects Folder
+		 */
+		public $objects_folder = 'objects';
+		/**
+		 * Check cookies flag
+		 */
+		public $check_cookies = false;
+		/**
+		 * Cookies enabled flag
+		 */
+		public $cookies_enabled = false;
+		/**
+		 * @var session var
+		 */
+		public $session = '';
+		/**
+		 * @var session manager class
+		 */
+		public $session_manager = '';
+		/**
+		 * @var session cookie
+		 */
+		public $session_cookie = 'default_session_cookie';
+		
+		/**
+		 * @var session default timeout
+		 */
+		public $session_timeout = 1800;
+
+		/**
+		 * @var session cookie module
+		 */
+		public $session_cookie_module = '';
+
+		/**
+		 * @var user data array
+		 */
+		public $user = '';
+		/**
+		 * @var trace activation flag [true/false]
+		 */
+		public $trace = false;
+		/**
+		 * @var trace string
+		 */
+		public $trace_page = '';
+		/**
+		 * @var debug activation flag
+		 */
+		public $debug = true;
+		/**
+		 * Database tables
+		 * @var unknown_type
+		 */
+		public $tables = array();
+		/**
+		 * @var database tables
+		 */
+		public $user_types_tables = array();
+		/**
+		 * @var flag if pagination from db is enabled
+		 */
+		public $pagination_enabled = true;
+		/**
+		 * @var pagination array
+		 */
+		public $pagination = array(0 =&gt; 10);
+		/**
+		 * @var current page number
+		 */
+		public $page_no = 1;
+		/**
+		 * @var current page skip number
+		 */
+		public $page_skip = 0;
+		/**
+		 * @var current page offset number
+		 */
+		public $page_offset = 10;
+		/**
+		 * @var current page total rows
+		 */
+		public $no_total_rows = -1;
+		/**
+		 * @var current number of pages
+		 */
+		public $no_pages = 0;
+		/**
+		 * @var page files manager
+		 */
+		public $files_manager;
+		/**
+		 * @var files manager folder
+		 */
+		public $files_folder = 'files/';
+		/**
+		 * @var files manager allowed upload extensions
+		 */
+		public $upload_allowed_extensions = array(
+			'png',
+			'jpeg',
+			'gif',
+			'bmp',
+			'doc',
+			'pdf',
+			'zip',
+			'jpg',
+			'mp4',
+			'wmv',
+			'mpeg',
+			'avi',
+			'3gp',
+			'MP4',
+			'swf',
+			'docx',
+			'ppt',
+			'pptx',
+			'xls',
+			'xlsx'
+		);
+		/**
+		 * @var page restricted flag
+		 */
+		public $restricted = false;
+		/**
+		 * @var page state array
+		 */
+		public $state;
+		/**
+		 * @var check login on page flag
+		 */
+		public $check_login = false;
+		/**
+		 * Custom login messages
+		 * @var unknown_type
+		 */
+		public $login_messages = array(
+			'active' =&gt; 'User is not activated!',
+			'deleted' =&gt; 'User is deleted!',
+			'valid' =&gt; 'User is invalid!',
+			'success' =&gt; 'You are logged in!',
+			'no_user' =&gt; 'The given username does not exist!',
+			'no_pass' =&gt; 'The password you provided is invalid!'
+		);
+		/**
+		 * @var Show/Hide Log-in messages
+		 */
+		public $show_login_messages = true;
+		/**
+		 * @var user authenticated flag
+		 */
+		public $logged = false;
+		/**
+		 * @var validation manager
+		 */
+		public $validate;
+		/**
+		 * @var form valid flag
+		 */
+		public $valid = true;
+		/**
+		 * @var page crypt key
+		 */
+		public $crypt_key = 'default';
+		/**
+		 * @var flag if settings are enabled
+		 */
+		public $settings_enabled = true;
+		/**
+		 * @var page settings array
+		 */
+		public $settings = array();
+		/**
+		 * @var render entire page flag
+		 */
+		public $render_all = true;
+		/**
+		 * @var page multilanguage flag
+		 */
+		public $multi_language = false;
+		/**
+		 * @var index page object
+		 */
+		public $obj_index;
+		/**
+		 * Mail sender type
+		 * @var unknown_type
+		 */
+		public $mail_type = 'mail';
+		/**
+		 * Mail host
+		 * @var unknown_type
+		 */
+		public $mail_host = 'localhost';
+		/**
+		 * SMTP mail user
+		 * @var unknown_type
+		 */
+		public $mail_user = '';
+		/**
+		 * SMTP mail password
+		 * @var unknown_type
+		 */
+		public $mail_password = '';
+		/**
+		 * SMTP Host port
+		 * @var unknown_type
+		 */
+		public $mail_port = 25;
+		/**
+		 * SMTP ssl active
+		 * @var
+		 */
+		public $mail_ssl = false;
+		
+		/**
+		 * E-mail default parameters
+		 */
+		public $mail_defaults=array(
+			'subject'=&gt;'system new e-mail',
+			'from'=&gt;'from@website.com',
+			'fromname'=&gt;'system from name',
+			'reply_to'=&gt;'no-reply@website.com',
+			'reply_name'=&gt;'system reply name',
+			'attachments'=&gt;array(),
+			'mail_in'=&gt;'to',
+			'sender'=&gt;'',
+			'others'=&gt;array()
+		);
+		/**
+		 * @var system version string
+		 */
+		public $sys_version = '';
+		/**
+		 * @var page scripts manager
+		 */
+		public $script_manager = '';
+		/**
+		 * @var New variable for scripts manager
+		 */
+		public $scripts = '';
+		/**
+		 * @var loaded libraries array
+		 */
+		public $loaded_libraries = array();
+		/**
+		 * @var system libraries
+		 */
+		public $libraries = array();
+		/**
+		 * @var libraries_settings
+		 */
+		public $libraries_settings = array();
+		/**
+		 * @var memory used
+		 */
+		public $memory = '';
+		/**
+		 * @var Current page settings
+		 */
+		public $page = array();
+		/**
+		 * @var search engine optimization per page activated
+		 */
+		public $seo_enabled = true;
+		/**
+		 * @var tracking access is on
+		 */
+		public $seo_tracking_enabled = false;
+		/**
+		 * @var traking access mode (all|browser|robot)
+		 */
+		public $seo_tracking_mode = 'all';
+		/**
+		 * @var flag to secure request ( IDS )
+		 */
+		public $secure_request_enabled = false;
+		/**
+		 * @var Log-in Visits Logger ( for statistics )
+		 */
+		public $visits_logs_enabled = false;
+		/**
+		 * System Logger
+		 * @return
+		 */
+		public $logger = '';
+		/**
+		 * Cache enabled
+		 */
+		public $cache_enabled = false;
+		/**
+		 * Cache enabled
+		 */
+		public $no_cache = false;
+		/**
+		 * @var Cache Folder ( default: 'cache/' )
+		 */
+		public $cache_folder = 'cache';
+		/**
+		 * Cache hash for current page caching
+		 */
+		public $cache_hash = '';
+		/**
+		 * @var New variable for files manager
+		 */
+		public $uploads = '';
+
+		/*
+		 * Donwloads Manager
+		 */
+		public $downloads = '';
+		/**
+		 * Download Manager allowed extensions and filetypes
+		 * @var unknown_type
+		 */
+		public $download_allowed_extensions = array();
+		/**
+		 * Function used form downloading file (reaadfile, fpassthru, stream, xsendfile)
+		 * @var unknown_type
+		 */
+		public $download_function = 'readfile';
+		/**
+		 * Template engine
+		 * @var unknown_type
+		 */
+		public $template = '';
+		/**
+		 * DAL Models
+		 * @var unknown_type
+		 */
+		public $models = '';
+		/**
+		 * flag for enabling components builder
+		 * @var unknown_type
+		 */
+		public $build_enabled = false;
+		/**
+		 * flag for enabling components builder auto-build non-existing components
+		 * @var unknown_type
+		 */
+		public $build_auto = false;
+		/**
+		 * List of redirect links e.g. array('test'=&gt;'site/?a=set:test') will redirect
+		 * website.com/test to website.com/site/?a=set:test
+		 * @var unknown_type
+		 */
+		public $redirects = array();
+		/**
+		 * Js files to be loaded
+		 * @var unknown_type
+		 */
+		public $js_files = array();
+		/**
+		 * CSS files to be loaded
+		 * @var unknown_type
+		 */
+		public $css_files = array();
+
+		/**
+		 * If SSL should be maintained
+		 * @var bool $maintain_ssl
+		 */
+		public $maintain_ssl = false;
+
+		/**
+		 * Hostname of the request
+		 * @var string $hostname
+		 */
+		static $hostname = '';
+
+		/**
+		 * Bowser IP
+		 * @var string $bowser_ip
+		 */
+		public $browser_ip = '';
+
+		/**
+		 * Render Type
+		 * @var string $render_type
+		 */
+		public $render_type = 'all';
+
+		/**
+		 * If 404 page is enabled
+		 * @var bool $enable_404
+		 */
+		public $enable_404 = true;
+
+		/**
+		 * Hocks Manager
+		 */
+		public $hocks = null;
+
+		/**
+		 * If script is run from console on from request
+		 */
+		public $console = false;
+
+		/**
+		 * Base url to use for paths when running from console
+		 */
+		public $console_baseurl = '';
+		
+		/**
+		 * Flags if cronjobs from database should be run
+		 */
+		public $console_cronjobs_db_enabled=true;
+		
+		/**
+		 * 
+		 */
+		public $console_cronjobs_db_table=array(
+			'name'=&gt;'x_conf_cronjobs'
+		);
+
+		/**
+		 * The e-mail manager class
+		 */
+		public $mail = null;
+
+		/**
+		 * System error message to display as 500 internal error
+		 */
+		public $system_error = '';
+
+		/**
+		 * System error show flag
+		 */
+		public $system_error_enabled = true;
+		/**
+		 * System config filename
+		 */
+		public $config_file='php.config.php';
+
+		/**
+		 * Constructor
+		 * @return null
+		 */
+		function __construct()
+		{
+		}
+		
+		
+		function __call($name,$args){
+			switch($name){
+				case 'get_meta_tags':
+					return $$this-&gt;meta_tags;
+				break;
+				case 'call_404':
+					$this-&gt;_404();
+				break;
+			}
+		}
+		
+		function __get($name){
+			switch($name){
+				case 'browser':
+					return BrowserInfo::get(isset_or($_SERVER['HTTP_USER_AGENT']));
+				break;
+				case 'browser_ip':
+					return BrowserInfo::get_user_ip();
+				break;
+				case 'server':
+					return ServerInfo::get();
+				break;
+				case 'ispostback':
+					return (isset($_SERVER['REQUEST_METHOD']) &amp;&amp; $_SERVER['REQUEST_METHOD'] == 'POST');
+				break;
+				case 'ajax':
+					return (isset($_SERVER['HTTP_X_REQUESTED_WITH']) &amp;&amp; ($_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest'));
+				break;
+				case 'sys_version':
+					return SYS_VERSION;
+				break;
+				case 'ssl':
+					return isset($_SERVER['HTTPS']);
+				break;
+			}
+		}
+
+		/**
+		 * Import libraries
+		 * @param object $type ( 'dal', 'functions', 'classes')
+		 * @param object $file
+		 * @return
+		 */
+		function import($type, $file)
+		{
+			return in_array($type, array(
+				'dal',
+				'class',
+				'library',
+				'file',
+				'model'
+			)) &amp;&amp; $this -&gt; {&quot;load_&quot;.$type}($file);
+		}
+
+		/**
+		 * Initialisation function
+		 * @return
+		 */
+		function init()
+		{
+			// init autoload
+			$this -&gt; _init_autoload();
+            
+            // init functions
+            $this -&gt; _init_functions();
+            
+            // init configuration
+            $this -&gt; _init_config();
+						
+			// init console
+			$this -&gt; _init_console();
+
+			// init hocks
+			$this -&gt; _init_hocks();
+
+			self::$hostname = self::get_hostname();
+			
+			$this -&gt; hocks -&gt; before_init();
+
+			// init loggers
+			$this -&gt; _init_loggers();
+
+			// init paths
+			$this -&gt; _init_paths();
+
+			// init check system requirements
+			$this -&gt; _init_check();
+
+			// init trace
+			$this -&gt; _init_trace();
+
+			// init image modifier
+			$this -&gt; _init_image_modifier();
+
+			//init redirects
+			$this -&gt; _init_redirects();
+
+			// init module config
+			$this -&gt; _init_module_config();
+
+			// init mailer
+			$this -&gt; _init_mail();
+
+			// connect to database
+			if($this -&gt; db_conn_enabled)
+			{
+				// init DAL
+				$this -&gt; _init_dal();
+				
+				// execute console
+				if($this-&gt;console)
+					ConsoleManager::execute();
+
+				// init minify
+				$this -&gt; _init_minify();
+
+				// pagination
+				$this -&gt; _init_pagination();
+
+				// get settings from db
+				$this -&gt; _init_settings();
+
+				// init session
+				$this -&gt; init_session();
+
+				// check if script file request
+				$this -&gt; _init_js_script();
+
+				// check if signature requested
+				$this -&gt; _init_signature();
+
+				// get user info
+				$this -&gt; _init_user();
+
+				// set language
+				$this -&gt; _init_language();
+
+				// set errors
+				$this -&gt; _init_errors();
+
+				// set messages
+				$this -&gt; _init_messages();
+
+				// secure link request and post
+				$this -&gt; _init_security();
+
+				// save history
+				$this -&gt; _init_history();
+
+				// validate if postback
+				$this -&gt; _init_validation();
+
+				// init uploads
+				$this -&gt; _init_uploads();
+
+				// download manager
+				$this -&gt; _init_downloads();
+
+				// clear state
+				$this -&gt; _init_state();
+
+				// check if authentication requested
+				$this -&gt; _init_authentication();
+
+				// get metas from db
+				$this -&gt; _init_metas();
+
+				// init title
+				$this -&gt; _init_title();
+
+				// apply page settings
+				$this -&gt; _init_page_settings();
+			}
+			// init template manager
+			$this -&gt; _init_template();
+
+			// load objects
+			$this -&gt; _init_objects();
+
+			// init system error
+			$this -&gt; _init_system_error();
+			$this -&gt; hocks -&gt; after_init();
+			$this -&gt; memory -&gt; save('system_after_init');
+		}
+
+		/**
+		 * Autoloader
+		 */
+		function __autoload($name){
+			$results=array();
+			preg_match_all('/[A-Z][^A-Z]*/', $name, $results);
+            $file=__DIR__.'/classes/objects/'.$name.'.php';
+			if(isset($results[0]))
+				if(count($results[0]))
+					$file=__DIR__.'/classes/'.strtolower(array_pop($results[0])).'s/'.$name.'.php';
+			if(file_exists($file))
+				require_once $file;
+            elseif(file_exists(__DIR__.'/classes/objects/'.$name.'.php'))
+                require_once __DIR__.'/classes/objects/'.$name.'.php';                
+		}
+
+		private function _init_autoload(){
+			spl_autoload_register(array($this,'__autoload'));
+		}
+
+		/**
+		 * Init system error
+		 */
+		private function _init_system_error($code = '500', $message = '')
+		{
+			if($this -&gt; system_error_enabled &amp;&amp; ($this -&gt; system_error || $message))
+			{
+				$this -&gt; system_error = $message ? $message : $this -&gt; system_error;
+				$err_file = $this -&gt; paths['root_code'] . $this -&gt; module . 'views/' . $this -&gt; skin . '/' . $code . '.tpl';
+				if(!is_file($err_file))
+				{
+					$err_file = $this -&gt; paths['root_code'] . $this -&gt; default_module . 'views/' . $this -&gt; skin . '/' . $code . '.tpl';
+					$this -&gt; assign('code', $code);
+					$this -&gt; assign('message', $this -&gt; system_error);
+				}
+				$status = $this -&gt; _header_status($code);
+				if(is_file($err_file) &amp;&amp; $this -&gt; template)
+					$this -&gt; template -&gt; display($err_file);
+				else
+					echo '&lt;h1&gt;' . $status . '&lt;/h1&gt;' . $this -&gt; system_error;
+				exit();
+			}
+		}
+
+		public function system_error($code = 505, $message = '')
+		{
+			$this -&gt; _init_system_error($code, $message);
+		}
+
+		/**
+		 * Init mail attribute
+		 */
+		private function _init_mail()
+		{
+			$this -&gt; import('library', 'mail');
+			$this -&gt; mail = new EmailManager();
+		}
+
+		/**
+		 * Init console determination function
+		 */
+		private function _init_console()
+		{
+			$this -&gt; console = defined('PHP_SAPI') &amp;&amp; PHP_SAPI == 'cli';
+			if($this -&gt; console)
+			{
+			    ConsoleManager::$system=&amp;$this;
+                ConsoleManager::init();
+			}
+		}
+
+		/**
+		 * Init Trace function
+		 */
+		private function _init_trace()
+		{
+			TraceManager::init();
+		}
+
+		/**
+		 * Init hock function
+		 */
+		private function _init_hocks()
+		{
+			$this -&gt; hocks = new HocksManager();
+		}
+
+		/**
+		 * Add hock function
+		 */
+		public function add_hock($name, $function)
+		{
+			$this -&gt; hocks -&gt; add($name, $function);
+		}
+
+		/**
+		 * Init confguration function
+		 */
+		private function _init_config()
+		{
+			global $page;
+			if(defined('SYSTEM_CONFIG_FILE'))
+				$this-&gt;config_file=SYSTEM_CONFIG_FILE;
+			// configuration file
+			if(isset($_SERVER[&quot;SCRIPT_FILENAME&quot;]) &amp;&amp; is_file(dirname($_SERVER[&quot;SCRIPT_FILENAME&quot;]) .DS. $this-&gt;config_file))
+				$this-&gt;import('file',dirname($_SERVER[&quot;SCRIPT_FILENAME&quot;]) .DS. $this-&gt;config_file);
+			elseif(defined('SYSTEM_CONFIG_PATH') &amp;&amp; is_file(SYSTEM_CONFIG_PATH . $this-&gt;config_file))
+				$this-&gt;import('file',SYSTEM_CONFIG_PATH . $this-&gt;config_file);
+			if (substr($this-&gt;default_module, -1) !== '/')
+			    $this-&gt;default_module.='/';
+			$this-&gt;_init_debug();
+		}
+
+		/**
+		 * Init functions
+		 */
+		private function _init_functions()
+		{
+			// general functions
+			$this -&gt; import('file', __DIR__.'/functions/system.php');
+		}
+
+		/**
+		 * Init loggers function
+		 */
+		private function _init_loggers()
+		{
+			$this -&gt; logger = new SystemLogger($this -&gt; trace);
+			$this -&gt; memory = new MemoryLogger($this -&gt; trace);
+			$this -&gt; time = new TimeLogger($this -&gt; trace);
+
+			$this -&gt; time -&gt; start('system');
+			$this -&gt; memory -&gt; save('max', ini_get('memory_limit'), '%s');
+			$this -&gt; memory -&gt; save('system_before_init');
+		}
+
+		/**
+		 * Init template function
+		 */
+		private function _init_template()
+		{
+			global $smarty;
+			$this -&gt; import('library', 'Smarty');
+			$smarty = TemplatesManager::get_engine('v2', $this -&gt; paths['root_code'], $this-&gt;paths['root_cache'], $this -&gt; trace, $this -&gt; debug, $this -&gt; cache_enabled);
+			$this -&gt; template = &amp;$smarty;
+			$this -&gt; change_template_dir($this -&gt; paths['root_code']);
+			$this -&gt; change_cache_dir($this -&gt; paths['root_cache']);
+			if(isset_or($_REQUEST['__clear_cache']))
+			{
+				$current_url = str_replace('?__clear_cache=1', '', $this -&gt; paths['current_full']);
+				$current_url = str_replace('&amp;__clear_cache=1', '', $current_url);
+				$this-&gt;cache_hash=base64_encode($current_url);
+				$this-&gt;no_cache=true;
+				TemplatesManager::clear_cache($this-&gt;cache_hash);
+			}
+		}
+
+		/**
+		 * Init DAL function
+		 */
+		private function _init_dal()
+		{
+			global $dal;
+
+			if($this -&gt; admin)
+				$this -&gt; import('class', 'objects.BaseAdmin');
+			else
+				$this -&gt; import('class', 'objects.Base');
+
+			// Data Access Layer
+			$dal = new ModelsManager();
+			$this -&gt; models = &amp;$dal;
+			$this -&gt; models -&gt; db = &amp;$this -&gt; db_conn;
+			$this -&gt; _db_connect();
+		}
+
+		/**
+		 * Init module configuration file
+		 */
+		private function _init_module_config()
+		{
+			// check and import module config.php file
+			if(defined('MODULE_CONFIG_PATH'))
+				$this -&gt; import('file', MODULE_CONFIG_PATH . 'config.php');
+			else
+				$this -&gt; import('file', $this -&gt; paths['root_code'] . $this -&gt; module . 'config.php');
+			$this-&gt;_init_debug();
+			if(!isset($this-&gt;db_connections) || !is_array($this-&gt;db_connections) || !count($this-&gt;db_connections))
+				$this-&gt;db_conn_enabled=false;
+		}
+
+		/**
+		 * Init debug settings
+		 */
+		private function _init_debug()
+		{
+			ini_set('display_errors', $this-&gt;debug?1:0);
+			error_reporting($this-&gt;debug?E_ALL:0);			
+		}
+
+		/**
+		 * Check the requirements of the system if called
+		 */
+		private function _init_check()
+		{
+			if($this -&gt; trace &amp;&amp; $this -&gt; debug &amp;&amp; $this -&gt; content == '_check')
+			{
+				InstallInfo::display();
+				die ;
+			}
+		}
+
+		/**
+		 * Init image modifier
+		 */
+		private function _init_image_modifier()
+		{
+			if($this -&gt; content == 'img_mod')
+			{
+				ini_set('memory_limit', '128M');
+				$this -&gt; load_library(&quot;images&quot;);
+				$path = str_replace($this -&gt; paths['root'], $this -&gt; paths['dir'], $_REQUEST['_file']);
+
+				$this -&gt; import('library', 'image');
+				// get cache path
+				$img_cache = $this -&gt; paths['root_cache'] . 'img_mod/';
+				if(!is_dir($img_cache))
+				{
+					if(!mkdir($img_cache, 0777, true))
+					{
+						$this -&gt; logger -&gt; log('Cache_Write_Error', 'Can not create dir &quot;' . $dir . '&quot; to cache folder!');
+						return false;
+					}
+				}
+				@chmod($img_cache, 0777);
+				$cache_filename = $_REQUEST['name'];
+				$cache_path = $img_cache . $cache_filename;
+				ImageManager::get_resized_image_proportional($path, isset_or($_REQUEST['_width']), isset_or($_REQUEST['_height']), isset_or($_REQUEST['_fit']), $cache_path, false);
+
+				if(isset_or($_REQUEST['_w']))
+				{
+					ImageManager::apply_watermarked($cache_path, $_REQUEST['_w'], isset_or($_REQUEST['_w_left'], 'left'), isset_or($_REQUEST['_w_top'], 'top'));
+				}
+				header('Content-Disposition: inline; filename=&quot;' . $_REQUEST['name'] . '&quot;');
+				ImageManager::output($cache_path);
+				die ;
+			}
+		}
+
+		/**
+		 * Init minify script
+		 */
+		private function _init_minify()
+		{
+			if($this -&gt; content == 'min')
+			{
+				header('Expires: Thu, 4 Oct 2014 20:00:00 GMT');
+				$this -&gt; import('library', 'min');
+				die ;
+			}
+		}
+
+		/**
+		 * Init redirects
+		 */
+		private function _init_redirects()
+		{
+			foreach($this-&gt;redirects as $k =&gt; $v)
+				if($k . '/' == $this -&gt; query || $k == $this -&gt; query)
+					$this -&gt; redirect(str_replace('//', $this -&gt; paths['root'], $v));
+		}
+
+		/**
+		 * Init page title
+		 */
+		private function _init_title()
+		{
+			if(!$this -&gt; ajax)
+				$this -&gt; title = isset($this -&gt; settings[$this -&gt; title_setting]) ? $this -&gt; settings[$this -&gt; title_setting]['value'] : $this -&gt; title;
+		}
+
+		/**
+		 * Init uploads manager
+		 */
+		private function _init_uploads()
+		{
+			$this -&gt; files_manager = new FilesManager($this -&gt; files_folder, $this -&gt; paths['root'], $this -&gt; paths['root_dir']);
+			$this -&gt; uploads = &amp;$this -&gt; files_manager;			
+		}
+
+		/**
+		 * Init downloads manager
+		 */
+		private function _init_downloads()
+		{
+			$this -&gt; downloads = new DownloadManager();
+		}
+
+		/**
+		 * Init mesasges function
+		 */
+		private function _init_messages()
+		{
+			$this -&gt; messages = isset($this -&gt; session['messages']) ? $this -&gt; session['messages'] : '';
+		}
+
+		/**
+		 * Init system paths
+		 * @return unknown_type
+		 */
+		private function _init_paths()
+		{
+			$this_address = ($this -&gt; ssl ? 'https://' : 'http://') . isset_or($_SERVER['HTTP_HOST']);
+			$application_name = dirname(isset_or($_SERVER['SCRIPT_NAME']));
+			$this -&gt; paths['root'] = $this -&gt; console ? $this -&gt; console_baseurl : $this_address . (strlen($application_name) &lt;= 1 ? '' : $application_name) . '/';
+			$this -&gt; assets_server_path = $this -&gt; assets_server_path ? $this -&gt; assets_server_path : $this -&gt; paths['root'] . 'assets/';
+			$this -&gt; paths['root_styles'] = $this -&gt; assets_server_path . 'styles/';
+			$this -&gt; paths['root_images'] = $this -&gt; assets_server_path . 'images/';
+			$this -&gt; paths['root_scripts'] = $this -&gt; assets_server_path . 'scripts/';
+			$this -&gt; paths['root_objects'] = $this -&gt; paths['root'] . $this -&gt; objects_folder;
+			$this -&gt; paths['dir'] = dirname(isset_or($_SERVER['SCRIPT_FILENAME'])) . DS;
+			if($this -&gt; console)
+			{
+				$included = get_included_files();
+				$this -&gt; paths['dir'] = dirname($included[0]) . DS;
+			}
+			$this -&gt; paths['root_dir'] = $this -&gt; paths['dir'];
+			$this -&gt; paths['root_code'] = $this -&gt; paths['dir'] . $this -&gt; modules_folder.DS;
+			$this -&gt; paths['root_cache'] = $this -&gt; paths['dir'] . $this -&gt; cache_folder.DS;
+			$this -&gt; paths['root_objects_inc'] = $this -&gt; paths['dir'] . $this -&gt; objects_folder.DS;
+
+			$this -&gt; error_log_path = $this -&gt; paths['root_dir'];
+
+			// set actions
+			if(isset($_REQUEST['a']))
+			{
+				$action = $_REQUEST['a'];
+				$actions = explode(':', $action);
+				$this -&gt; actions = $actions;
+				$this -&gt; actions['all'] = $action;
+			}
+			elseif($this -&gt; console)
+			{
+				$url = parse_url($this -&gt; query);
+				parse_str(isset_or($url['query']));
+				$action = isset_or($a);
+				$actions = explode(':', $action);
+				$this -&gt; actions = $actions;
+				$this -&gt; actions['all'] = $action;
+			}
+
+			// pages selector
+			$q = isset($_REQUEST['q']) ? $_REQUEST['q'] : $this -&gt; query;
+			if($this -&gt; console)
+			{
+				$url = parse_url($this -&gt; query);
+				$q = $url['path'];
+			}
+			$this -&gt; set_query($q);
+
+			// inexistent file request
+			if(is_dir($this -&gt; subquery[0]))
+				die('Inexistent module requested!');
+
+			// component
+			if(isset($this -&gt; subquery[2]))
+				$this -&gt; component = $this -&gt; subquery[2];
+
+			// subcomponent
+			if(isset($this -&gt; subquery[3]))
+				$this -&gt; subcomponent = $this -&gt; subquery[3];
+
+			// components
+			for($i = 1; $i &lt; count($this -&gt; subquery); $i++)
+				if($this -&gt; subquery[$i])
+					$this -&gt; components[] = $this -&gt; subquery[$i];
+			if(!isset($this -&gt; components[0]))
+				$this -&gt; components[0] = 'home';
+
+			// sub query init
+			$this -&gt; subquery[0] = $this -&gt; module;
+			$this -&gt; subquery[1] = $this -&gt; content;
+
+			// page subpaths
+			$spath = $this -&gt; paths['root'];
+			foreach($this-&gt;subquery as $k =&gt; $v)
+			{
+				if($v)
+				{
+					if($k &gt; 1)
+						$spath .= '/' . $v;
+					else
+						$spath .= $v;
+					$this -&gt; paths['sub_paths'][$k] = $spath;
+					if($this -&gt; paths['sub_paths'][$k][strlen($this -&gt; paths['sub_paths'][$k]) - 1] != '/')
+						$this -&gt; paths['sub_paths'][$k] .= '/';
+				}
+			}
+
+			// current link
+			$this -&gt; paths['current'] = isset_or($this -&gt; paths['sub_paths'][count($this -&gt; paths['sub_paths']) - 1]);
+
+			$this -&gt; paths['current_full'] = page_url();
+			$this -&gt; cache_hash = base64_encode($this -&gt; paths['current_full']);
+			$this -&gt; _init_cache();
+
+			$this -&gt; paths['root_module'] = isset_or($this -&gt; paths['sub_paths'][0]);
+			$this -&gt; paths['root_content'] = $this -&gt; paths['sub_paths'][1];
+			if(isset($this -&gt; paths['sub_paths'][2]))
+				$this -&gt; paths['root_component'] = $this -&gt; paths['sub_paths'][2];
+			if(isset($this -&gt; paths['sub_paths'][3]))
+				$this -&gt; paths['root_subcomponent'] = $this -&gt; paths['sub_paths'][3];
+
+			$this -&gt; init_skin();
+			$this -&gt; render_all = !$this -&gt; ajax;
+			$this -&gt; render_type = $this -&gt; _get_render_type();
+		}
+
+		private function _init_cache()
+		{
+			$this-&gt;no_cache=!$this-&gt;live;
+			if(isset_or($_REQUEST['__nocache']))
+			{
+				$this -&gt; cache_enabled = false;
+				$this -&gt; no_cache = true;
+			}
+		}
+
+		/**
+		 * Init skin
+		 */
+		function init_skin()
+		{
+			// set skins folders
+			if($this -&gt; module != '')
+			{
+				$skin_path = ($this -&gt; skin_server_path) ? $this -&gt; skin_server_path : $this -&gt; paths['root'] . $this -&gt; skins_folder;
+				if(is_dir($this -&gt; paths['root_dir'] . $this -&gt; skins_folder . $this -&gt; skin . '/'))
+				{
+					$this -&gt; add_path('skin_images', $skin_path . $this -&gt; skin . '/' . $this -&gt; module . 'images/');
+					$this -&gt; add_path('skin_scripts', $skin_path . $this -&gt; skin . '/' . $this -&gt; module . 'scripts/');
+					$this -&gt; add_path('skin_styles', $skin_path . $this -&gt; skin . '/' . $this -&gt; module . 'styles/');
+				}
+				else
+				{
+					$this -&gt; add_path('skin_images', $skin_path . $this -&gt; default_skin . '/' . $this -&gt; module . 'images/');
+					$this -&gt; add_path('skin_scripts', $skin_path . $this -&gt; default_skin . '/' . $this -&gt; module . 'scripts/');
+					$this -&gt; add_path('skin_styles', $skin_path . $this -&gt; default_skin . '/' . $this -&gt; module . 'styles/');
+				}
+			}
+			else
+			{
+				$this -&gt; add_path('skin_images', $this -&gt; paths['root_images']);
+				$this -&gt; add_path('skin_scripts', $this -&gt; paths['root_scripts']);
+				$this -&gt; add_path('skin_styles', $this -&gt; paths['root_styles']);
+			}
+		}
+
+		/**
+		 * Get page settings from db
+		 * @return unknown_type
+		 */
+		private function _init_page_settings()
+		{
+			if($this -&gt; seo_enabled &amp;&amp; isset($this -&gt; db_conn -&gt; tables['tbl_x_conf_pages']) &amp;&amp; !$this -&gt; ajax)
+			{
+				$pagepath = $this -&gt; paths['current_full'];
+				$pg = $this -&gt; models -&gt; x_conf_pages -&gt; get_cond('page=&quot;' . $pagepath . '&quot;');
+				if($pg)
+				{
+					$params = array();
+					$pg['views']++;
+					$params['views'] = $pg['views'];
+
+					$this -&gt; models -&gt; x_conf_pages -&gt; update($params, 'id=' . $pg['id']);
+				}
+				else
+				{
+					$params = array();
+					$params['page'] = $pagepath;
+					$params['views'] = 1;
+					$params['active'] = 1;
+					$params['title'] = $this -&gt; title;
+					$params['keywords'] = $this -&gt; get_meta_tag('keywords') ? $this -&gt; get_meta_tag('keywords') : '';
+					$params['description'] = $this -&gt; get_meta_tag('description') ? $this -&gt; get_meta_tag('description') : '';
+
+					$id = $this -&gt; models -&gt; x_conf_pages -&gt; insert($params);
+					$pg = $this -&gt; models -&gt; x_conf_pages -&gt; get($id);
+				}
+				$this -&gt; page = $pg;
+
+				// apply settings
+				$this -&gt; title = str_replace('%title%', $this -&gt; title, $this -&gt; page['title']);
+				$this -&gt; set_meta_tag('keywords', $this -&gt; get_meta_tag('keywords') ? str_replace('%main%', $this -&gt; get_meta_tag('keywords'), $this -&gt; page['keywords']) : $this -&gt; page['keywords']);
+				$this -&gt; set_meta_tag('description', $this -&gt; get_meta_tag('description') ? str_replace('%main%', $this -&gt; get_meta_tag('description'), $this -&gt; page['description']) : $this -&gt; page['description']);
+			}
+		}
+
+		/**
+		 * Save the page settings if not saved
+		 */
+		function save_page_settings()
+		{
+			if($this -&gt; seo_enabled &amp;&amp; $this-&gt;db_conn_enabled &amp;&amp; !$this -&gt; ajax)
+			{
+				$pagepath = $this -&gt; paths['current_full'];
+				$pg = $this -&gt; models -&gt; x_conf_pages -&gt; get_cond('page=&quot;' . $pagepath . '&quot;');
+				if($pg)
+				{
+					$params = array();
+					$pg['views']++;
+					$params['views'] = $pg['views'];
+					$this -&gt; models -&gt; x_conf_pages -&gt; update($params, 'id=' . $pg['id']);
+				}
+				else
+				{
+					$params = array();
+					$params['page'] = $this -&gt; paths['current_full'];
+					$params['views'] = 1;
+					$params['active'] = 1;
+					$params['title'] = $this -&gt; title;
+					$params['keywords'] = $this -&gt; get_meta_tag('keywords') ? $this -&gt; get_meta_tag('keywords') : '';
+					$params['description'] = $this -&gt; get_meta_tag('description') ? $this -&gt; get_meta_tag('description') : '';
+
+					$id = $this -&gt; models -&gt; x_conf_pages -&gt; insert($params);
+				}
+
+				if($this -&gt; seo_tracking_enabled &amp;&amp; isset($this -&gt; db_conn -&gt; tables['tbl_xpages_tracking']))
+				{
+					$params = array();
+					$params['url'] = $pagepath;
+					$params['datetime'] = nowfull();
+					if(($this -&gt; seo_tracking_mode == 'all' || $this -&gt; seo_tracking_mode == 'robot') &amp;&amp; $this -&gt; browser['type'] == 'robot')
+						$params['crawler'] = $this -&gt; browser['browser'];
+					if(($this -&gt; seo_tracking_mode == 'all' || $this -&gt; seo_tracking_mode == 'browser') &amp;&amp; $this -&gt; browser['type'] == 'browser')
+					{
+						$params['browser'] = $this -&gt; browser['browser'];
+						$params['referer_url'] = isset_or($_SERVER[&quot;HTTP_REFERER&quot;]);
+						$params['client_ip'] = $this -&gt; browser_ip;
+						$params['session_hash'] = session_id();
+					}
+					$this -&gt; models -&gt; x_conf_pages_tracking -&gt; insert($params);
+				}
+			}
+		}
+
+		/**
+		 * Init validation PHP/Javascript
+		 * @return unknown_type
+		 */
+		private function _init_validation()
+		{
+			$this -&gt; validate = new FormsManager();
+			$this -&gt; validate -&gt; init();
+		}
+
+		/**
+		 * Display js generated script
+		 * @return unknown_type
+		 */
+		private function _init_js_script()
+		{
+			if(strpos($this -&gt; subquery[1], 'script_file_') !== FALSE)
+			{
+				header('Content-Type: application/javascript');
+				header('Expires: Thu, 4 Oct 2014 20:00:00 GMT');
+				header('Cache-Control: public, max-age=31536000');
+				header('Last-Modified: ' . date('D, j M Y G:i:s T'));
+
+				echo @$this -&gt; session['script'];
+				unset($this -&gt; session['script']);
+				@$this -&gt; save_session();
+
+				exit();
+				die();
+			}
+			// scripts manager
+			$this -&gt; scripts = new ScriptManager();
+		}
+
+		/**
+		 * Get meta tags from db
+		 * @return unknown_type
+		 */
+		private function _init_metas()
+		{
+			if(!$this -&gt; ajax)
+				if(isset($this -&gt; db_conn -&gt; tables['tbl_xmetas']))
+				{
+					$query = 'select `name`,`content` from ' . $this -&gt; db_conn -&gt; tables['tbl_x_conf_metas'] . ' where is_active=1';
+					$metas=$this -&gt; db_conn -&gt; getAll($query);
+					foreach($metas as $v)
+						$this -&gt;set_meta_tag($v['name'], $v['content']);
+				}
+		}
+
+		/**
+		 * Get settings from the database table 'x_conf_sys_settings'
+		 * @return
+		 */
+		private function _init_settings()
+		{
+			if($this -&gt; settings_enabled &amp;&amp; isset($this -&gt; db_conn -&gt; tables['tbl_x_conf_sys_settings']))
+			{
+				$query = 'select * from ' . $this -&gt; db_conn -&gt; tables['tbl_x_conf_sys_settings'];
+				$arr = $this -&gt; db_conn -&gt; getAll($query);
+				$return = array();
+				foreach($arr as $k =&gt; $v)
+				{
+					if($v['type'] == &quot;id&quot;)
+					{
+						$query = &quot;select `&quot; . $v['from_field'] . &quot;` from `&quot; . $v['from_table'] . &quot;` where id=&quot; . $v['value'];
+						$return[$v['name']] = array(
+							&quot;value&quot; =&gt; $this -&gt; db_conn -&gt; getOne($query),
+							&quot;id&quot; =&gt; $v['value']
+						);
+					}
+					else
+						$return[$v['name']] = array(&quot;value&quot; =&gt; $v['value']);
+				}
+				$this -&gt; settings = $return;
+			}
+		}
+
+		/**
+		 * Generates a init_signature image
+		 * @return
+		 */
+		private function _init_signature()
+		{
+			if(isset($this -&gt; actions[0]) &amp;&amp; $this -&gt; actions[0] == 'signature_reset')
+			{
+				unset($this -&gt; session['signature']);
+				$this -&gt; actions[0] = 'signature';
+			}
+			if(isset($this -&gt; actions[0]) &amp;&amp; $this -&gt; actions[0] == 'signature')
+			{
+				$obj = new SignatureManager($this -&gt; session);
+				$obj -&gt; display(5, dirname(__FILE__) . '/font.ttf');
+				$this -&gt; save_session();
+				die ;
+			}
+		}
+
+		/**
+		 * Secures data tranfered from the client
+		 * @return
+		 */
+		private function _init_security()
+		{
+			if($this -&gt; secure_request_enabled)
+			{
+				$this -&gt; import('library', 'ids');
+			}
+		}
+
+		/**
+		 * Inititalize history array
+		 * @return
+		 */
+		private function _init_history()
+		{
+			if($this -&gt; history_active)
+			{
+				$history = '';
+				$history = new HistoryManager($this -&gt; session, $this -&gt; ajax ? '' : $this -&gt; paths['current_full']);
+				$this -&gt; history = $history -&gt; get_history();
+			}
+		}
+
+		/**
+		 * Init current language
+		 * @return unknown_type
+		 */
+		private function _init_language()
+		{
+			if(!isset($this -&gt; session['language_id']))
+			{
+				if($this -&gt; admin)
+				{
+					if(isset($this -&gt; settings['admin_default_language']['id']))
+						$this -&gt; session['language_id'] = $this -&gt; settings['admin_default_language']['id'];
+					else
+						$this -&gt; logger -&gt; log('settings_error', 'Setting field &quot;admin_default_language&quot; not found!');
+				}
+				else
+				{
+					if(isset($this -&gt; settings['default_language_id']['id']))
+						$this -&gt; session['language_id'] = $this -&gt; settings['default_language_id']['id'];
+					else
+						$this -&gt; logger -&gt; log('settings_error', 'Setting field &quot;default_language_id&quot; not found!');
+				}
+			}
+			// check if language change requested
+			if(isset($_REQUEST['language']))
+			{
+				$this -&gt; session['language_id'] = $_REQUEST['language'];
+				$this -&gt; redirect($this -&gt; paths['current']);
+			}
+			// set locale
+			if($this -&gt; multi_language)
+			{
+				$language = $this -&gt; db_conn -&gt; getRow('select * from ' . $this -&gt; db_conn -&gt; tables['tbl_x_conf_languages'] . ' where id=' . $this -&gt; session['language_id']);
+				if(strtolower($this -&gt; browser['os']) == 'windows' &amp;&amp; isset_or($language['locale_win']))
+					setlocale(LC_ALL, $language['locale_win']);
+				elseif(isset_or($language['locale_linux']))
+					setlocale(LC_ALL, $language['locale_linux']);
+			}
+		}
+
+		/**
+		 * Init pagination information
+		 * @return
+		 */
+		private function _init_pagination()
+		{
+			if($this -&gt; pagination_enabled)
+			{
+				$p = isset($_REQUEST['p']) ? $_REQUEST['p'] : 1;
+				$this -&gt; page_no = $p;
+
+				$this -&gt; page_offset = isset($this -&gt; pagination[0]) ? $this -&gt; pagination[0] : 10;
+
+				// calculate page skip
+				if($this -&gt; page_no &gt; 1)
+					$this -&gt; page_skip = ($this -&gt; page_no - 1) * $this -&gt; page_offset;
+			}
+		}
+
+		/**
+		 * Get meta tag by name
+		 * @param $name
+		 * @return unknown_type
+		 */
+		function get_meta_tag($name)
+		{			
+			return isset($this-&gt;meta_tags[$name])?$this-&gt;meta_tags[$name]['content']:'';
+		}
+
+		/**
+		 * Set meta tag by name and value
+		 * @param $name
+		 * @param $content
+		 * @return unknown_type
+		 */
+		function set_meta_tag($name, $content)
+		{			
+			if(isset($this-&gt;meta_tags[$name]))
+				$this -&gt; meta_tags[$name]['content'] = $content;
+			else
+				$this -&gt; meta_tags[$name]=array('name'=&gt;$name,'content'=&gt;$content);
+		}
+
+		/**
+		 * Add js file to be loaded
+		 * @param unknown_type $file
+		 * @param unknown_type $local
+		 * @param unknown_type $type
+		 */
+		function add_js_file($file, $local = true, $type = 'text/javascript')
+		{
+			$file = str_replace(isset_or($this -&gt; paths['skin_scripts']), '{$skin_scripts}', $file);
+			$file = str_replace(isset_or($this -&gt; paths['root_scripts']), '{$root_scripts}', $file);
+			$this -&gt; js_files[$file] = array(
+				'src' =&gt; $file,
+				'local' =&gt; $local,
+				'type' =&gt; $type
+			);
+		}
+
+		/**
+		 * Save in session the current js files
+		 */
+		function save_js_files()
+		{
+			$this -&gt; session['__js_files'] = array();
+			$js_files = $this -&gt; js_files;
+
+			$this -&gt; js_files = array();
+			$group = 0;
+			$module = str_replace('/', '', $this -&gt; module);
+			foreach($js_files as $k =&gt; $v)
+				if(isset_or($v['src']))
+				{
+					if($v['local'])
+					{
+						$this -&gt; session['__js_files'][$group][] = str_replace('{$skin_scripts}', '//skins/' . $this -&gt; skin . '/' . $this -&gt; module . 'scripts/', str_replace('{$root_scripts}', '//assets/scripts/', $v['src']));
+						$this -&gt; add_js_file($this -&gt; paths['root'] . 'min/?g=js_site' . $group . '&amp;module=' . $module . '&amp;ck=' . $this -&gt; session_cookie . '&amp;skin=' . $this -&gt; skin, false);
+					}
+					else
+					{
+						$this -&gt; add_js_file($v['src'], false, $v['type']);
+						$group++;
+					}
+				}
+
+			$this -&gt; save_session();
+			$this -&gt; assign('p', $this -&gt; get_page());
+		}
+
+		/**
+		 * Add css file to be loaded
+		 * @param unknown_type $file
+		 * @param unknown_type $type
+		 * @param unknown_type $media
+		 */
+		function add_css_file($file, $type = 'text/css', $media = 'screen, projection', $browser_cond = '')
+		{
+			$this -&gt; css_files[$file] = array(
+				'href' =&gt; $file,
+				'type' =&gt; $type,
+				'media' =&gt; $media,
+				'browser_cond' =&gt; $browser_cond
+			);
+		}
+
+		/**
+		 * System render
+		 * @return
+		 */
+		function render()
+		{
+			$this -&gt; memory -&gt; save('system_before_render');
+			$this -&gt; hocks -&gt; before_render();
+
+			// load variables
+			$this -&gt; render_variables();
+
+			// load scripts
+			$this -&gt; time -&gt; start('render_scripts');
+			$this -&gt; render_scripts();
+			$this -&gt; time -&gt; end('render_scripts');
+
+			// load templates
+			$this -&gt; time -&gt; start('render_templates');
+			$this -&gt; render_template();
+			$this -&gt; hocks -&gt; after_render();
+
+			// save page settings
+			$this -&gt; save_page_settings();
+
+			// save session
+			$this -&gt; save_session();
+		}
+
+		/**
+		 * Change smarty cache dir
+		 * @param object $dir
+		 * @return
+		 */
+		function change_cache_dir($dir)
+		{
+			if(!is_dir($dir))
+			{
+				if(!mkdir($dir, 0777, true))
+				{
+					$this -&gt; logger -&gt; log('Cache_Write_Error', 'Can not create dir &quot;' . $dir . '&quot; to cache folder!');
+					return false;
+				}
+				@chmod($dir, 0777);
+			}
+			TemplatesManager::set_compile_dir($dir);
+			return true;
+		}
+
+		/**
+		 * Clear all cache for a given url
+		 */
+		function clear_cache($url = '')
+		{
+			if(!$url)
+				$url = $this -&gt; paths['current_full'];
+			if(class_exists('TemplatesManager'))
+				TemplatesManager::clear_cache(base64_encode($url));
+		}
+
+		/**
+		 * Change smarty template dir
+		 * @param $dir
+		 * @return unknown_type
+		 */
+		function change_template_dir($dir)
+		{
+			TemplatesManager::set_template_dir($dir);
+			if(!is_dir(TemplatesManager::get_template_dir()))
+				$this -&gt; logger -&gt; log('Templates_Error', 'Can not find templates directory &quot;' . $dir . '&quot;!');
+		}
+
+		/**
+		 * Fetch template file into variable
+		 * @param $name
+		 * @param $file
+		 * @return unknown_type
+		 */
+		function fetch_template($name, $file, $cache_folder, $return = false)
+		{
+			$this -&gt; change_cache_dir($cache_folder);
+			if(is_file($file))
+			{
+				if($return)
+					return $this -&gt; template -&gt; fetch($file,$this-&gt;cache_hash);
+				else
+					$this -&gt; assign($name, $this -&gt; template -&gt; fetch($file,$this-&gt;cache_hash));
+			}
+			else
+				$this -&gt; logger -&gt; log('Templates_Error', 'Can not fetch template &quot;' . $name . '&quot; from file &quot;' . $file . '&quot;!');
+		}
+
+		/**
+		 * Assign variable to template	 *
+		 * @param $var
+		 * @param $value
+		 */
+		function assign($var, $value=null)
+		{
+			$this -&gt; template -&gt; assign($var, $value);
+		}
+
+		/**
+		 * Render skin
+		 */
+		function render_skin()
+		{
+			$this -&gt; init_skin();
+
+			// set skins folders
+			$this -&gt; assign('skin_images', $this -&gt; paths['skin_images']);
+			$this -&gt; assign('skin_scripts', $this -&gt; paths['skin_scripts']);
+			$this -&gt; assign('skin_styles', $this -&gt; paths['skin_styles']);
+
+			// get skin
+			$skin_folder = $this -&gt; paths['root_dir'] . $this -&gt; skins_folder . $this -&gt; default_skin . '/' . $this -&gt; module;
+			if(is_dir($this -&gt; paths['root_dir'] . $this -&gt; skins_folder . $this -&gt; skin . '/'))
+				$skin_folder = $this -&gt; paths['root_dir'] . $this -&gt; skins_folder . $this -&gt; skin . '/' . $this -&gt; module;
+		}
+
+		/**
+		 * Render all templates
+		 * @return
+		 */
+		function render_template()
+		{
+			$template_folder = $this-&gt;paths['root_dir'];
+			$this -&gt; render_type = $this -&gt; _get_render_type();
+			
+			if($this -&gt; live &amp;&amp; $this -&gt; render_type == 'all')
+				$this -&gt; save_js_files();
+			if(!$this-&gt;no_cache &amp;&amp; (TemplatesManager::is_cached($this-&gt;paths['root_dir'].'index.tpl', $this -&gt; cache_hash) || TemplatesManager::is_cached(__DIR__ . '/objects/system/index.tpl', $this -&gt; cache_hash)))
+			{				
+				header('Content-Type: '.$this-&gt;content_type);
+				TemplatesManager::set_cache(true);
+				if(is_file($template_folder . 'index.tpl'))
+					$this -&gt; template -&gt; display($template_folder . 'index.tpl', $this -&gt; cache_hash);
+				else
+					$this -&gt; template -&gt; display(__DIR__ . '/objects/system/index.tpl', $this -&gt; cache_hash);
+				die;
+			}
+			if(!TemplatesManager::is_cached($template_folder.'index.tpl', $this -&gt; cache_hash))
+			{
+				$this -&gt; render_skin();
+				// change smarty template dir for module
+				
+				if(is_dir($this -&gt; paths['root_code'] . $this -&gt; module . 'views/' . $this -&gt; skin . '/'))
+					$template_folder = $this -&gt; paths['root_code'] . $this -&gt; module . 'views/' . $this -&gt; skin . '/';
+				else
+					$template_folder = $this -&gt; paths['root_code'] . $this -&gt; module . 'views/' . $this -&gt; default_skin . '/';
+
+				$cache_folder = $this -&gt; paths['root_cache'] . $this -&gt; module.'views'.DS.$this-&gt;skin.DS;
+
+				// language bar
+				if($this -&gt; multi_language &amp;&amp; isset($this -&gt; db_conn -&gt; tables['tbl_x_conf_languages']))
+					$this -&gt; assign('languages_arr', $this -&gt; models -&gt; x_conf_languages -&gt; get_all('', '', 'order', '', 'is_active=1'));
+
+				$this -&gt; fetch_template('__noscript', $template_folder . 'noscript.tpl', $cache_folder);
+				$this -&gt; obj_index -&gt; _render_template($this -&gt; render_type);
+
+				// change smarty template and cache dir for main index
+				$template_folder = $this -&gt; paths['root_dir'];
+				$cache_folder = $this -&gt; paths['root_cache'] . '_index/';
+
+				$this -&gt; time -&gt; end('system');
+				$this -&gt; time -&gt; end('render_templates');
+				$this -&gt; memory -&gt; save('system_after_render');
+				if($this -&gt; trace)
+				{
+					TraceManager::generate();
+					$this -&gt; assign('page_trace', $this -&gt; trace_page);
+				}
+
+				// set title
+				$this -&gt; assign('title', $this -&gt; title);
+				$this -&gt; assign('render_type', $this -&gt; render_type);
+				
+				$this -&gt; assign('p', $this -&gt; get_page());
+			}
+			header('Content-Type: '.$this-&gt;content_type);
+			$this -&gt; change_cache_dir($cache_folder);
+			if(is_file($template_folder . 'index.tpl'))
+				$this -&gt; template -&gt; display($template_folder . 'index.tpl', $this -&gt; cache_hash);
+			else
+				$this -&gt; template -&gt; display(__DIR__ . '/templates/system/index.tpl', $this -&gt; cache_hash);
+		}
+
+		private function _get_render_type()
+		{		
+			// check render type
+			if($this -&gt; render_all)
+				return 'all';
+			else
+			{
+				// check if it was changed
+				if($this-&gt;render_type!='all')
+					return $this-&gt;render_type;			
+				if(!count($this -&gt; components))
+					return 'page';
+				else
+					return 'page_component_' . (count($this -&gt; components) - 1);
+			}
+		}
+
+		private function _404()
+		{
+			if($this -&gt; enable_404)
+				$this -&gt; _init_system_error('404', 'The page that you have requested could not be found.');
+		}
+
+		/**
+		 *
+		 * Render scripts
+		 * @return
+		 */
+		function render_scripts()
+		{
+
+			if($this -&gt; admin)
+			{
+				$this -&gt; import('class', 'objects.PageAdmin');
+				$this -&gt; import('library', 'wbl_admin');
+			}
+			else
+				$this -&gt; import('class', 'objects.Page');
+			if($this -&gt; import('file', $this -&gt; paths['root_code'] . $this -&gt; module . 'index.php') &amp;&amp; class_exists('PageIndex'))
+			{
+				$this -&gt; obj_index = new PageIndex('page', $this -&gt; paths['root_cache'] . $this -&gt; module, $this -&gt; paths['root_code'] . $this -&gt; module, 'index.php', 'index', $this -&gt; skin);
+				$this-&gt;obj_index-&gt;subquery=$this-&gt;components;
+			}
+			else
+			{
+				if(!class_exists('PageIndex'))
+					$this -&gt; logger -&gt; log('OOP_Warning', 'No \'PageIndex\' class found for this module!');
+				else
+					$this -&gt; _404();
+			}
+			
+			// check if validation is called
+			if(isset($this -&gt; actions[0]) &amp;&amp; $this -&gt; actions[0] == 'validate')
+			{
+				die($this -&gt; validate -&gt; validate($_POST['rule'], $_POST['value']) ? '1' : '0');
+			}
+
+			// init index
+			if(isset($this -&gt; obj_index))
+				$this -&gt; obj_index -&gt; _init();
+
+			// render index
+			if(!$this -&gt; restricted &amp;&amp; isset($this -&gt; obj_index))
+				$this -&gt; obj_index -&gt; _render();
+			
+			// get database pages number if required
+			if($this -&gt; no_pages == 0 &amp;&amp; $this -&gt; no_total_rows &lt; 0)
+			{
+				$this -&gt; no_total_rows = (is_object($this -&gt; db_conn) ? $this -&gt; db_conn -&gt; countTotalRows() : $this -&gt; no_total_rows);
+				if($this -&gt; no_total_rows &gt; $this -&gt; page_offset &amp;&amp; $this -&gt; no_total_rows &gt;= 0 &amp;&amp; $this -&gt; page_offset)
+				{
+					$this -&gt; no_pages = (int)($this -&gt; no_total_rows / $this -&gt; page_offset) + (($this -&gt; no_total_rows % $this -&gt; page_offset &gt; 0) ? 1 : 0);
+				}
+				else
+				{
+					$this -&gt; no_pages = 0;
+				}
+			}
+			elseif($this -&gt; no_pages == 0 &amp;&amp; $this -&gt; no_total_rows != 0)
+			{
+				$this -&gt; no_pages = (int)($this -&gt; no_total_rows / $this -&gt; page_offset) + (($this -&gt; no_total_rows % $this -&gt; page_offset &gt; 0) ? 1 : 0);
+			}
+			if($this -&gt; ajax &amp;&amp; SessionManager::is_new() &amp;&amp; $this -&gt; check_login)
+				$this -&gt; redirect($this -&gt; paths['root_module']);
+			// page object
+			$this -&gt; assign('p', $this -&gt; get_page());
+		}
+
+		/**
+		 * Render objects
+		 * @return
+		 */
+		private function _init_objects()
+		{
+			// load objects
+			if(is_dir($this -&gt; paths['root_objects_inc']))
+			{
+				$files = scandir($this -&gt; paths['root_objects_inc']);
+				foreach($files as $k =&gt; $v)
+				{
+					if($v != '.' &amp;&amp; $v != '..' &amp;&amp; $v != '')
+					{
+						$this -&gt; objects[$v] = array();
+						$objs = scandir($this -&gt; paths['root_objects_inc'] . $v);
+						foreach($objs as $l =&gt; $o)						
+							if($o != '.' &amp;&amp; $o != '..' &amp;&amp; $o != '' &amp;&amp; is_file($this -&gt; paths['root_objects_inc'] . $v . '/' . $o . '/include.tpl'))							
+								$this -&gt; objects[$v][$o] = $this -&gt; paths['root_objects_inc'] . $v . '/' . $o . '/include.tpl';							
+					}
+				}
+			}
+		}
+
+		/**
+		 * Get validation errors from session
+		 * @return
+		 */
+		private function _init_errors()
+		{
+			if(isset($this -&gt; session['errors']) &amp;&amp; is_array($this -&gt; session['errors']))			
+				foreach($this-&gt;session['errors'] as $e)
+					if(isset($e['field']) &amp;&amp; isset($e['text']))
+						$this -&gt; errors[$e['field']] = $e['text'];			
+		}
+
+		/**
+		 * Initialise session from db
+		 * @return
+		 */
+		function init_session()
+		{
+			// set cookie for module
+			$this -&gt; session_cookie .= ('_' . ($this -&gt; session_cookie_module ? $this -&gt; session_cookie_module : str_replace('/', '', $this -&gt; module)));
+			$this -&gt; hocks -&gt; before_session_init();
+
+			SessionManager::init($this -&gt; session_cookie,$this-&gt;session_timeout);
+			$this -&gt; session = &amp;$_SESSION;
+
+			$this -&gt; _init_check_cookies();
+
+			if(isset($this -&gt; session['state']))
+				$this -&gt; state = $this -&gt; session['state'];
+			$this -&gt; clear_messages();
+			$this -&gt; clear_errors();
+			$this -&gt; messages = isset($this -&gt; session['messages']) ? $this -&gt; session['messages'] : array();
+			$this -&gt; hocks -&gt; after_session_init();
+		}
+
+		/**
+		 * Init check cookie if this is configured as enabled
+		 * @return
+		 */
+		private function _init_check_cookies()
+		{
+			if($this -&gt; check_cookies)
+			{
+				if($this -&gt; actions[0] == '__no_cookies')
+					$this -&gt; system_error = 'Please enable the cookies in your browser and then &lt;a href=&quot;' . base64_decode($_REQUEST['page']) . '&quot;&gt;click here&lt;/a&gt; to go to the page you wanted to access.';
+				elseif($this -&gt; actions[0] == '__check_cookies')
+				{
+					$this -&gt; cookies_enabled = $_SESSION['__check_cookies'] &amp;&amp; $_SESSION['_hash'] = $_REQUEST['hash'];
+					if($this -&gt; cookies_enabled)
+						$this -&gt; redirect(base64_decode($_REQUEST['page']));
+					else
+						$this -&gt; redirect($this -&gt; paths['root_module'] . '?a=__no_cookies&amp;page=' . $_REQUEST['page']);
+				}
+				elseif(!isset($_SESSION['__check_cookies']))
+				{
+					$_SESSION['__check_cookies'] = 1;
+					$this -&gt; redirect($this -&gt; paths['root_module'] . '?a=__check_cookies&amp;hash=' . $_SESSION['_hash'] . '&amp;page=' . base64_encode($this -&gt; paths['current_full']));
+				}
+				else
+					$this -&gt; cookies_enabled = true;
+			}
+		}
+
+		/**
+		 * Puplic function to check if cookies are enable, user will be redirected to a
+		 * link to check if cookies are enabled
+		 */
+		public function check_cookies()
+		{
+			$this -&gt; check_cookies = true;
+			$this -&gt; _init_check_cookies();
+		}
+
+		/**
+		 * Render template variables
+		 * @return
+		 */
+		function render_variables()
+		{
+			$this -&gt; assign('random', md5(time() . rand()));
+			$this -&gt; assign('session', $this -&gt; session);
+			$this -&gt; assign('ssl', $this -&gt; ssl);
+			$this -&gt; assign('root', $this -&gt; paths['root']);
+			$this -&gt; assign('current', $this -&gt; paths['current']);
+			$this -&gt; assign('root_images', $this -&gt; paths['root_images']);
+			$this -&gt; assign('root_styles', $this -&gt; paths['root_styles']);
+			$this -&gt; assign('root_scripts', $this -&gt; paths['root_scripts']);
+			$this -&gt; assign('root_module', $this -&gt; paths['root_module']);
+			$this -&gt; assign('root_content', $this -&gt; paths['root_content']);
+			$this -&gt; assign('root_component', isset_or($this -&gt; paths['root_component']));
+			$this -&gt; assign('root_subcomponent', isset_or($this -&gt; paths['root_subcomponent']));
+
+			// user logged
+			$this -&gt; assign('logged', $this -&gt; logged);
+			// date
+			$this -&gt; assign('date', @getdate());
+			// actions
+			$this -&gt; assign('actions', $this -&gt; actions);
+			// errors
+			$this -&gt; assign('errors', $this -&gt; errors);
+			// history
+			$this -&gt; assign('history', $this -&gt; history);
+			// query
+			$this -&gt; assign('query', $this -&gt; query);
+			// module
+			$this -&gt; assign('module', $this -&gt; module);
+			// messages
+			$this -&gt; assign('messages', $this -&gt; messages);
+
+			// set skins folders
+			$this -&gt; assign('skin_images', $this -&gt; paths['skin_images']);
+			$this -&gt; assign('skin_scripts', $this -&gt; paths['skin_scripts']);
+			$this -&gt; assign('skin_styles', $this -&gt; paths['skin_styles']);
+
+			$this -&gt; assign('__before_skin', '&lt;link rel=&quot;icon&quot; href=&quot;{$root_images}favicon.ico&quot; type=&quot;image/x-icon&quot;/&gt;
+&lt;link rel=&quot;shortcut icon&quot; href=&quot;{$root_images}favicon.ico&quot; type=&quot;image/x-icon&quot;/&gt;
+&lt;script type=&quot;text/javascript&quot;&gt;
+	var root=\'{$root}\';
+	var root_current=\'{$current}\';
+&lt;/script&gt;');
+		}
+
+		/**
+		 * Get db tables
+		 * @return
+		 */
+		private function _db_connect()
+		{
+			if(isset($this -&gt; db_connections[0]))
+			{
+				$this -&gt; db_conn = new DbManager();
+				$this -&gt; db_conn -&gt; trace = $this -&gt; trace;
+				$this -&gt; add_tables();
+				$this -&gt; db_conn -&gt; connect($this -&gt; db_connections[0]['host'], $this -&gt; db_connections[0]['user'], $this -&gt; db_connections[0]['password'], $this -&gt; db_connections[0]['dbname']);
+			}
+		}
+
+		/**
+		 * Set the moduel user type for authentication purpose
+		 * @return
+		 * @param object $type
+		 */
+		function set_module_user_type($type)
+		{
+			$this -&gt; module_user_type = $type;
+			// check user
+			if($this -&gt; module_user_type &amp;&amp; isset($this -&gt; session['user_type']) &amp;&amp; $this -&gt; session['user_type'] != '' &amp;&amp; $this -&gt; session['user_type'] != $this -&gt; module_user_type)			
+				$this -&gt; logout();			
+		}
+
+		/**
+		 * Add a system message
+		 * @return
+		 * @param object $type
+		 * @param object $text
+		 */
+		function add_message($type, $text)
+		{
+			if(@!is_array(@$this -&gt; session['messages']))
+				$this -&gt; session['messages'] = array();
+			$this -&gt; session['messages'][] = array(
+				'type' =&gt; $type,
+				'text' =&gt; $text,
+				'showed' =&gt; 0
+			);
+			$this -&gt; save_session();
+			$this -&gt; messages = $this -&gt; session['messages'];
+
+		}
+
+		/**
+		 * Add a field validation error
+		 * @return
+		 * @param object $field
+		 * @param object $text
+		 */
+		function add_error($field, $text)
+		{
+			if(!isset($this -&gt; session['errors']) || !is_array($this -&gt; session['errors']))
+				$this -&gt; session['errors'] = array();
+			$this -&gt; session['errors'][] = array(
+				'field' =&gt; $field,
+				'text' =&gt; $text,
+				'showed' =&gt; 0
+			);
+			$this -&gt; errors[$field] = $text;
+			$this -&gt; valid = false;
+		}
+
+		/**
+		 * Parse query 'q' url rewrite
+		 * @return
+		 * @param object $query
+		 */
+		function set_query($query)
+		{
+			$this -&gt; query = $query;
+			$pages = explode('/', $query);
+
+			$module = trim($pages[0]);
+			if($module != '' &amp;&amp; is_dir($this -&gt; paths['root_code'] . $module))
+			{
+				$module .= '/';
+			}
+			elseif($module == '')
+			{
+				$module = $this -&gt; default_module;
+			}
+			elseif(($module != '' &amp;&amp; is_dir($this -&gt; paths['root_code'] . $this -&gt; default_module . 'components/' . $module . '/')))
+			{
+				$pages[1] = $module;
+				$module = $this -&gt; default_module;
+			}
+			else
+			{
+				if($module == 'img_mod' || $module == 'min' || $module == '_check')
+				{
+					$pages[1] = $module;
+					if(isset($_REQUEST['module']))
+					{
+						$pages[0] = $_REQUEST['module'];
+						$module = $pages[0] . '/';
+					}
+				}
+				else
+				{
+					$pages[1] = $module;
+					$module = $this -&gt; default_module;
+				}
+			}
+			$this -&gt; module = $module;
+			$pages[0] = $this -&gt; module;
+			if(isset_or($pages[1]))
+				$this -&gt; content = $pages[1];
+			$this -&gt; subquery = $pages;
+		}
+
+		/**
+		 * Add system meta tag
+		 * @return
+		 * @param object $name
+		 * @param object $content
+		 */
+		function add_meta_tag($name, $content)
+		{
+			$this -&gt; meta_tags[$name] = array(
+				'name' =&gt; $name,
+				'content' =&gt; $content
+			);
+		}
+
+		/**
+		 * Add system path
+		 * @return
+		 * @param object $name
+		 * @param object $value
+		 */
+		function add_path($name, $value)
+		{
+			$this -&gt; paths[$name] = $value;
+		}
+
+		/**
+		 * Save current session in db table 'sessions'
+		 * @return
+		 */
+		function save_session()
+		{
+			$_SESSION = $this -&gt; session;
+		}
+
+		/**
+		 * Save current system state
+		 * @return
+		 */
+		function save_state()
+		{
+			if(isset($this -&gt; history[0]))
+				$this -&gt; session['state_link'] = $this -&gt; history[0];
+			else
+				$this -&gt; session['state_link'] = $this -&gt; paths['current_full'];
+
+			$this -&gt; session['state'] = $_REQUEST;
+			$this -&gt; save_session();
+		}
+
+		/**
+		 * Clear current system state
+		 * @return
+		 */
+		private function _init_state()
+		{
+			if(isset($this -&gt; session['state_link']) &amp;&amp; $this -&gt; session['state_link'] != $this -&gt; paths['current_full'])
+			{
+				$this -&gt; session['state'] = '';
+				$this -&gt; session['state_link'] = '';
+				$this -&gt; save_session();
+			}
+		}
+
+		/**
+		 * Authenticate user if required
+		 * @return
+		 */
+		private function _init_authentication()
+		{
+			if(isset($this -&gt; actions[0]))
+			{
+				switch ($this-&gt;actions[0])
+				{
+					case 'login' :
+						$this -&gt; login();
+						break;
+					case 'logout' :
+						$this -&gt; logout();
+						break;
+				}
+			}
+			else
+			{
+				$this -&gt; update_visit_log();
+			}
+		}
+
+		/**
+		 * Get current logged user
+		 * @return
+		 */
+		private function _init_user()
+		{
+			$this -&gt; _init_authenticate();
+			$this -&gt; authenticate -&gt; init_user();
+		}
+
+		/**
+		 * Clear system messages
+		 * @return
+		 */
+		function clear_messages()
+		{
+			if(isset($this -&gt; session['messages']))
+				foreach($this-&gt;session['messages'] as $k =&gt; $v)
+					if($v['showed'] &gt;= 1)
+						array_splice($this -&gt; session['messages'], $k, 1);
+					else
+					if(isset($this -&gt; session['messages'][$k]['showed']))
+						$this -&gt; session['messages'][$k]['showed']++;
+		}
+
+		/**
+		 * Clear system errors
+		 * @return
+		 */
+		function clear_errors()
+		{
+			if(isset($this -&gt; session['errors']))
+			{
+				foreach($this-&gt;session['errors'] as $k =&gt; $v)
+					if($v['showed'] &gt;= 1)
+						array_splice($this -&gt; session['errors'], $k, 1);
+					else
+					if(isset($this -&gt; session['errors'][$k]['showed']))
+						$this -&gt; session['errors'][$k]['showed']++;
+				$this -&gt; _init_errors();
+			}
+		}
+
+		/**
+		 * Get db tables form the global var $app_tables
+		 * @return
+		 */
+		function add_tables()
+		{
+			if(is_array($this -&gt; tables))
+			{
+				$tables = new stdClass();
+				foreach($this-&gt;tables as $k =&gt; $v)
+					$tables -&gt; $k = $v;
+				$this -&gt; tables = $tables;
+			}
+		}
+
+		/**
+		 * Log out current user
+		 * @return
+		 */
+		function logout($goto = '')
+		{
+			$this -&gt; _init_authenticate();
+			$this -&gt; hocks -&gt; before_logout();
+			$this -&gt; authenticate -&gt; logout();
+			$this -&gt; hocks -&gt; after_logout();
+		}
+
+		/**
+		 * Update visit log in db
+		 */
+		function update_visit_log()
+		{
+			$this -&gt; _init_authenticate();
+			$this -&gt; authenticate -&gt; update_visit_log();
+		}
+
+		private function _init_authenticate()
+		{
+			if(!isset($this -&gt; authenticate))
+				$this -&gt; authenticate = new AuthenticationManager();
+			$this -&gt; authenticate -&gt; settings = $this -&gt; user_types_tables;
+			$this -&gt; authenticate -&gt; messages = $this -&gt; login_messages;
+			$this -&gt; authenticate -&gt; show_messages = $this -&gt; show_login_messages;
+			$this -&gt; authenticate -&gt; visits_logs_enabled = $this -&gt; visits_logs_enabled;
+			$this -&gt; authenticate -&gt; module_user_type = $this -&gt; module_user_type;
+		}
+
+		/**
+		 * Login request
+		 * @return
+		 */
+		function login()
+		{
+			$this -&gt; _init_authenticate();
+			$this -&gt; hocks -&gt; before_login();
+			$this -&gt; authenticate -&gt; login();
+			$this -&gt; hocks -&gt; after_login();
+		}
+
+		/**
+		 * Validate a form
+		 * @return
+		 * @param object $form_id
+		 */
+		function validate_form($form_id)
+		{
+			if(isset($this -&gt; validate[$form_id]) &amp;&amp; !$this -&gt; validate[$form_id] -&gt; validate())
+			{
+				$errors = $this -&gt; validate[$form_id] -&gt; get_errors();
+				foreach($errors as $f =&gt; $e)
+				{
+					$this -&gt; add_error($f, $e);
+				}
+				$this -&gt; save_session();
+			}
+		}
+
+		/**
+		 * Add form validator
+		 * @return
+		 * @param object $form_id
+		 * @param object $field
+		 * @param object $rule
+		 * @param object $message[optional]
+		 */
+		function add_validator($form_id, $field, $rule, $message = '', $client = false, $server = true)
+		{
+			if($server)
+			{
+				$hash = $this -&gt; validate -&gt; get_form_hash($form_id);
+				if(!isset($this -&gt; session['validation']))
+					$this -&gt; session['validation'] = array();
+				if(!isset($this -&gt; session['validation'][$hash]))
+					$this -&gt; session['validation'][$hash] = array(
+						'form_id' =&gt; $form_id,
+						'fields' =&gt; array()
+					);
+				$this -&gt; session['validation'][$hash]['fields'][$field]['rules'][$rule] = $message;
+				$this -&gt; validate -&gt; add_rule($form_id, $field, $rule, $message);
+			}
+			if($client)
+			{
+				$this -&gt; scripts -&gt; add_validator($form_id, $field, $rule, $message);
+			}
+			$this -&gt; save_session();
+		}
+
+		/**
+		 * Add form filter
+		 * @return
+		 * @param object $form_id
+		 * @param object $field
+		 * @param object $rule
+		 * @param object $message[optional]
+		 */
+		function add_filter($form_id, $field, $filter, $params = '', $client = false, $server = true)
+		{
+			if($server)
+			{
+				$hash = $this -&gt; validate -&gt; get_form_hash($form_id);
+				if(!isset($this -&gt; session['validation']))
+					$this -&gt; session['validation'] = array();
+				if(!isset($this -&gt; session['validation'][$hash]))
+					$this -&gt; session['validation'][$hash] = array(
+						'form_id' =&gt; $form_id,
+						'fields' =&gt; array()
+					);
+				$this -&gt; session['validation'][$hash]['fields'][$field]['filters'][$filter] = $params;
+				$this -&gt; validate -&gt; add_filter($form_id, $field, $filter, $params);
+			}
+			if($client)
+			{
+				// no client filters yet
+				// $this -&gt; scripts -&gt; add_validator($form_id, $field, $rule, $message);
+			}
+			$this -&gt; save_session();
+		}
+
+		/**
+		 * Redirect system to anothe url
+		 * @return
+		 * @param object $url[optional]
+		 * @param object $action[optional]
+		 * @param object $page[optional]
+		 * @param object $error[optional]
+		 */
+		function redirect($url = '', $action = '', $page = '', $error = '')
+		{
+			$this -&gt; clear_cache($url);
+			if(!$this -&gt; ajax)
+				$this -&gt; save_state();
+			if($url)
+			{
+				if(headers_sent() || $this -&gt; ajax)
+				{
+					echo '&lt;script type=&quot;text/javascript&quot;&gt;location.href=&quot;' . $url . '&quot;;&lt;/script&gt;';
+				}
+				else
+				{
+					ob_start();
+					header('Location: ' . $url);
+					ob_end_flush();
+				}
+			}
+			else
+			{
+				$this -&gt; redirect($this -&gt; paths['current_full']);
+			}
+			exit ;
+		}
+
+		/**
+		 * Redirect system to another ssl url
+		 * @return
+		 * @param object $url[optional]
+		 * @param object $action[optional]
+		 * @param object $page[optional]
+		 * @param object $error[optional]
+		 */
+		function redirect_ssl($url = '', $action = '', $page = '', $error = '')
+		{
+			$this -&gt; clear_cache($url);
+			$this -&gt; save_state();
+
+			if(!$url)
+			{
+				if($_SERVER['SERVER_PORT'] == 443)
+					return true;
+				$url = $this -&gt; paths['current_full'];
+			}
+			$url = str_replace('http:', 'https:', $url);
+			if($url)
+			{
+				if(headers_sent())
+				{
+					echo '&lt;script type=&quot;text/javascript&quot;&gt;location.href=&quot;' . $url . '&quot;;&lt;/script&gt;';
+				}
+				else
+				{
+					header(&quot;HTTP/1.1 301 Moved Permanently&quot;);
+					header('Location: ' . $url);
+				}
+			}
+			exit ;
+		}
+
+		/**
+		 * Redirect system to restricted page
+		 * @return
+		 * @param object $message
+		 */
+		function restricted($message)
+		{
+			$this -&gt; restricted = true;
+			$this -&gt; assign('message', $message);
+		}
+
+		/**
+		 * Get system trace array
+		 * @return
+		 */
+		function get_page()
+		{
+			$arr = array();
+			if($this -&gt; trace)
+				$arr['sys_version'] = $this -&gt; sys_version;
+			$arr['hostname'] = self::$hostname;
+			if($this -&gt; trace)
+				$arr['crypt_key'] = $this -&gt; crypt_key;
+			$arr['title'] = $this -&gt; title;
+			$arr['doctype']=$this-&gt;doctype;
+			$arr['html_tag']=$this-&gt;html_tag;
+			$arr['body_tag']=$this-&gt;body_tag;
+			$arr['content_type']=$this-&gt;content_type;
+			$arr['live'] = $this -&gt; live;
+			$arr['trace'] = $this -&gt; trace;
+			$arr['page'] = $this -&gt; page;
+			$arr['multi_language'] = $this -&gt; multi_language;
+			$arr['meta_tags'] = $this -&gt; meta_tags;
+			$arr['query'] = $this -&gt; query;
+			$arr['subquery'] = $this -&gt; subquery;
+			$arr['skin'] = $this -&gt; skin;
+			$arr['default_skin'] = $this -&gt; default_skin;
+			$arr['module'] = $this -&gt; module;
+			$arr['module_user_type'] = $this -&gt; module_user_type;
+			$arr['content'] = $this -&gt; content;
+			$arr['component'] = $this -&gt; component;
+			$arr['subcomponent'] = $this -&gt; subcomponent;
+			$arr['components'] = $this -&gt; components;
+			$arr['page_no'] = $this -&gt; page_no;
+			$arr['page_skip'] = $this -&gt; page_skip;
+			$arr['page_offset'] = $this -&gt; page_offset;
+			$arr['no_pages'] = $this -&gt; no_pages;
+			$arr['no_total_rows'] = $this -&gt; no_total_rows;
+			$arr['ispostback'] = $this -&gt; ispostback;
+			$arr['pagination'] = $this -&gt; pagination;
+			if($this -&gt; no_pages)
+				for($i = 1; $i &lt;= $this -&gt; no_pages; $i++)
+					$arr['pages'][$i] = $i;
+			$arr['actions'] = $this -&gt; actions;
+			$arr['actions_executed'] = $this -&gt; actions_executed;
+			$arr['errors'] = $this -&gt; errors;
+			$arr['messages'] = $this -&gt; messages;
+			$arr['session_cookie'] = $this -&gt; session_cookie;
+			$arr['session'] = $this -&gt; session;
+			$arr['state'] = $this -&gt; state;
+			$arr['check_login'] = $this -&gt; check_login;
+			$arr['logged'] = $this -&gt; logged;
+			$arr['user'] = $this -&gt; user;
+			$arr['history'] = $this -&gt; history;
+			$arr['server'] = $this -&gt; server;
+			$arr['browser'] = $this -&gt; browser;
+			$arr['paths'] = $this -&gt; paths;
+			$arr['objects'] = $this -&gt; objects;
+			$arr['valid'] = $this -&gt; valid;
+			$arr['settings'] = $this -&gt; settings;
+			if($this-&gt;db_conn_enabled &amp;&amp; is_a($this -&gt; db_conn -&gt; tables, 'TablesManager'))
+			{
+				if($this -&gt; trace)
+				{
+					$arr['dns'] = $this -&gt; db_conn -&gt; get_dns();
+					$arr['db_no_valid_queries'] = $this -&gt; db_conn -&gt; num_valid_queries;
+					$arr['db_no_invalid_queries'] = $this -&gt; db_conn -&gt; num_invalid_queries;
+					$arr['db_queries'] = $this -&gt; db_conn -&gt; queries;
+				}
+				$arr['tables'] = $this -&gt; db_conn -&gt; tables;
+			}
+			$arr['user_types_tables'] = $this -&gt; user_types_tables;
+			$arr['js_files'] = $this -&gt; js_files;
+			$arr['css_files'] = $this -&gt; css_files;
+			$arr['ajax'] = $this -&gt; ajax;
+			return $arr;
+		}
+
+		/**
+		 * loads libraries defined in configuration file
+		 * @return
+		 * @param object $library
+		 */
+		function load_library($library)
+		{
+			if(!isset($this -&gt; loaded_libraries[$library]))
+			{
+				if(!$this -&gt; load_file(dirname(__FILE__) . '/libraries/' . $library . '/import.php'))
+				{
+					$this -&gt; logger -&gt; log('load_library', 'Import file for library &quot;' . $library . '&quot; was not found at: &quot;' . dirname(__FILE__) . '/lib/libraries/' . $library . '/import.php&quot;');
+					return false;
+				}
+				$this -&gt; loaded_libraries[$library] = 1;
+			}
+			return true;
+		}
+
+		/**
+		 * Load class for given model
+		 * @param object $model
+		 * @return
+		 */
+		function load_model($model)
+		{
+			if(!$this -&gt; models -&gt; import($model))
+			{
+				$this -&gt; logger -&gt; log('load_dal', 'File for model &quot;' . $model . '&quot; was not found in any models folders.');
+				return false;
+			}
+			return true;
+		}
+
+		/**
+		 * Load class from php files
+		 * @param object $class
+		 * @return
+		 */
+		function load_class($class)
+		{
+			if(!class_exists($class))
+			{
+				$paths = explode('.', $class);
+				$file_path = $class . '.php';
+				if(count($paths) &gt; 1)
+				{
+					$paths[count($paths) - 1] =  $paths[count($paths) - 1] . '.php';
+					$file_path = implode('/', $paths);
+				}
+				if(!$this -&gt; load_file(dirname(__FILE__) . '/classes/' . $file_path))
+				{
+					$this -&gt; logger -&gt; log('load_class', 'File for class &quot;' . $class . '&quot; was not found at: &quot;' . dirname(__FILE__) . '/lib/classes/' . $file_path . '&quot;');
+					return false;
+				}
+				return true;
+			}
+			return false;
+		}
+
+		/**
+		 * Load a PHP file given.
+		 * @param object $file path to the file
+		 * @return
+		 */
+		function load_file($file)
+		{
+			if(is_file($file))
+			{
+				try
+				{
+					global $page;
+					if($this -&gt; debug)
+						require $file;
+					else
+						include $file;
+					return true;
+				}
+				catch(Exception $ex)
+				{
+					trigger_error('Error loading file &quot;' . $file . '&quot;: ' . $ex -&gt; getMessage());
+				}
+			}
+			$this -&gt; logger -&gt; log('load_file', 'File &quot;' . $file . '&quot; was not found!');
+			return false;
+		}
+
+		/**
+		 * Disconnect from database
+		 */
+		function disconnect()
+		{
+			if(is_object($this -&gt; db_conn))
+				$this -&gt; db_conn -&gt; disconnect();
+		}
+
+		public function __toString()
+		{
+			return 'System - Class';
+		}
+
+		/**
+		 * Returns the hostname of the website
+		 */
+		static function get_hostname()
+		{
+			if(self::$hostname != '')
+				return self::$hostname;
+			self::$hostname = get_hostname();
+			return self::$hostname;
+		}
+
+		private function _header_status($statusCode)
+		{
+			static $status_codes = null;
+
+			if($status_codes === null)
+			{
+				$status_codes = array(
+					100 =&gt; 'Continue',
+					101 =&gt; 'Switching Protocols',
+					102 =&gt; 'Processing',
+					200 =&gt; 'OK',
+					201 =&gt; 'Created',
+					202 =&gt; 'Accepted',
+					203 =&gt; 'Non-Authoritative Information',
+					204 =&gt; 'No Content',
+					205 =&gt; 'Reset Content',
+					206 =&gt; 'Partial Content',
+					207 =&gt; 'Multi-Status',
+					300 =&gt; 'Multiple Choices',
+					301 =&gt; 'Moved Permanently',
+					302 =&gt; 'Found',
+					303 =&gt; 'See Other',
+					304 =&gt; 'Not Modified',
+					305 =&gt; 'Use Proxy',
+					307 =&gt; 'Temporary Redirect',
+					400 =&gt; 'Bad Request',
+					401 =&gt; 'Unauthorized',
+					402 =&gt; 'Payment Required',
+					403 =&gt; 'Forbidden',
+					404 =&gt; 'Not Found',
+					405 =&gt; 'Method Not Allowed',
+					406 =&gt; 'Not Acceptable',
+					407 =&gt; 'Proxy Authentication Required',
+					408 =&gt; 'Request Timeout',
+					409 =&gt; 'Conflict',
+					410 =&gt; 'Gone',
+					411 =&gt; 'Length Required',
+					412 =&gt; 'Precondition Failed',
+					413 =&gt; 'Request Entity Too Large',
+					414 =&gt; 'Request-URI Too Long',
+					415 =&gt; 'Unsupported Media Type',
+					416 =&gt; 'Requested Range Not Satisfiable',
+					417 =&gt; 'Expectation Failed',
+					422 =&gt; 'Unprocessable Entity',
+					423 =&gt; 'Locked',
+					424 =&gt; 'Failed Dependency',
+					426 =&gt; 'Upgrade Required',
+					500 =&gt; 'Internal Server Error',
+					501 =&gt; 'Not Implemented',
+					502 =&gt; 'Bad Gateway',
+					503 =&gt; 'Service Unavailable',
+					504 =&gt; 'Gateway Timeout',
+					505 =&gt; 'HTTP Version Not Supported',
+					506 =&gt; 'Variant Also Negotiates',
+					507 =&gt; 'Insufficient Storage',
+					509 =&gt; 'Bandwidth Limit Exceeded',
+					510 =&gt; 'Not Extended'
+				);
+			}
+
+			if($status_codes[$statusCode] !== null)
+			{
+				$status_string = $statusCode . ' ' . $status_codes[$statusCode];
+				header($_SERVER['SERVER_PROTOCOL'] . ' ' . $status_string, true, $statusCode);
+				return $status_string;
+			}
+			return '';
+		}
+
+	}
+?&gt;</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all()
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

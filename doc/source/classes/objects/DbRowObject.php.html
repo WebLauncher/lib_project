@@ -1,0 +1,148 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * @ignore
+ * @package WebLauncher\Objects
+ */
+class DbRowObject implements ArrayAccess
+{
+	protected $_data=array();
+	protected $_old_data=array();
+	private $_model='';
+
+	function __construct($row=array(),$model='')
+	{
+		$this-&gt;_data=$row;
+		$this-&gt;_old_data=$row;
+		$this-&gt;_model=$model;
+	}
+
+	function offsetExists($field)
+	{
+		return isset($this-&gt;_data[$field]);
+	}
+
+	function offsetGet($field)
+	{
+		return (isset($this[$field])?$this-&gt;_data[$field]:'');
+	}
+
+	function offsetSet($field, $value)
+	{
+		$this-&gt;_data[$field]=$value;
+	}
+	
+	function set($field,$value){
+		$this[$field]=$value;
+		return $this;
+	}
+
+	function offsetUnset($field)
+	{
+		$this[$field]='';
+	}
+
+	function save()
+	{
+		$diff=$this-&gt;_differences();
+		if(count($diff))
+			$this-&gt;_model[$this-&gt;_old_data[$this-&gt;_model-&gt;id_field]]=$diff;
+	}
+
+	private function _differences()
+	{
+		$pars=array();
+		foreach($this-&gt;_data as $k=&gt;$v)
+			if($v!=$this-&gt;_old_data[$k])
+				$pars[$k]=$v;
+		return $pars;
+	}
+}
+
+class DbRowObjectList implements ArrayAccess
+{
+	protected $_data=array();
+	private $_model='';
+
+	function __construct($row=array(),$model='')
+	{
+		$this-&gt;_model=$model;
+		foreach($row as $k=&gt;$v)
+		{
+			$this-&gt;_data[$k]=new DbRowObject($v,$this-&gt;_model);
+		}
+	}
+
+	function offsetExists($key)
+	{
+		return isset($this-&gt;_data[$key]);
+	}
+
+	function offsetGet($key)
+	{
+		return (isset($this[$key])?$this-&gt;_data[$key]:'');
+	}
+
+	function offsetSet($key, $value)
+	{
+		if(!is_a($value,'DbRowObject'))
+			$value=new DbRowObject($value,$this-&gt;_model);
+		$this-&gt;_data[$key]=$value;
+	}
+
+	function offsetUnset($key)
+	{
+		$this[$key]='';
+	}
+
+	function save()
+	{
+		foreach($this-&gt;_data as $v)
+			$v-&gt;save();
+	}
+}
+?&gt;
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all()
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

@@ -1,0 +1,553 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+	/**
+	 * Controller Class
+	 */
+
+	/**
+	 * Page Class - Component/Controller Object to be extended in components
+	 * 
+	 * @package WebLauncher\Objects
+	 */
+	class _Page
+	{
+		/**
+		 * @var int Page level index
+		 */
+		var $index=-1;
+		/**
+		 * @var array Page allowed actions
+		 */
+		var $allowed_actions = array();
+		/**
+		 * @var array Page blocked actions
+		 */
+		var $blocked_actions = array();
+		/**
+		 * @var string Current page view
+		 */
+		var $view = '';
+		/**
+		 * @var string Current template variable name for the page
+		 */
+		var $template_var = 'page_default';
+		/**
+		 * @var string Current template file name
+		 */
+		var $template_file = '';
+		/**
+		 * @var string Current page skin
+		 */
+		var $skin = 'default';
+		/**
+		 * @var string Current page version
+		 */
+		var $version = '';
+		/**
+		 * @var string Current controller location
+		 */
+		var $folder = '';
+		/**
+		 * @var string Current controller file
+		 */
+		var $file = '';
+		/**
+		 * @var string Controller cache location
+		 */
+		var $cache = '';
+		/**
+		 * @var string Controller subpage object
+		 */
+		var $subpage = '';
+		/**
+		 * @var string Controller Title
+		 */
+		var $title = 'not assigned';
+		/**
+		 * @var int Execution duration (ms)
+		 */
+		var $execution_duration = 0;
+		/**
+		 * @var int Execution start microtime
+		 */
+		var $execution_start = 0;
+		/**
+		 * Execution end microtime
+		 */
+		var $execution_end = 0;
+		/**
+		 * Template render duration
+		 */
+		var $render_duration = 0;
+		/**
+		 * Template render start microtime
+		 */
+		var $render_start = 0;
+		/**
+		 * Template render end microtime
+		 */
+		var $render_end = 0;
+		/**
+		 * @var \System Access to System Class
+		 */
+		var $system = '';
+		/**
+		 * @var \ModelsManager Access to ModelsManager Object
+		 */
+		var $models = '';
+		/**
+		 * @var object Access to Template Engine Object (default: Smarty)
+		 */
+		var $template = '';
+		/**
+		 * @var \DbManager Access to DbManager Object
+		 */
+		var $db = '';
+		/**
+		 * @var array Access to current logged in user details
+		 */
+		var $user = '';
+		/**
+		 * @var array Access to $_SESSION via SessionManager
+		 */
+		var $session = '';
+		/**
+		 * @var array Access to current generated paths
+		 */
+		var $paths = '';
+		/**
+		 * @var \FormManager Access to FormsManager Object
+		 */
+		var $forms = '';
+		/**
+		 * @var bool Flag if cache is enabled or not
+		 */
+		var $cache_enabled = false;
+		/**
+		 * @var array Current subquery of the controller
+		 */
+		var $subquery=array();
+		
+		/**
+		 * Constructor
+		 * @param string $template_var 
+		 * @param string $cache
+		 * @param string $folder
+		 * @param string $file
+		 * @param string $view
+		 * @param string $skin
+		 */
+		function __construct($template_var = 'page', $cache = '', $folder = '', $file = '', $view = '', $skin = 'default')
+		{
+			$this -&gt; template_var = $template_var;
+			$this -&gt; cache = $cache;
+			$this -&gt; folder = $folder;
+			$this -&gt; file = $file;
+			$this -&gt; view = $view;
+			$this -&gt; skin = $skin;
+
+			global $page;
+			$this -&gt; system = &amp;$page;
+			$this -&gt; models = &amp;$this -&gt; system -&gt; models;
+			$this -&gt; template = &amp;$this -&gt; system -&gt; template;
+			$this -&gt; db = &amp;$this -&gt; models -&gt; db;
+			$this -&gt; user = &amp;$this -&gt; system -&gt; user;
+			$this -&gt; session = &amp;$_SESSION;
+			$this -&gt; paths = &amp;$this -&gt; system -&gt; paths;
+			$this -&gt; forms = &amp;$this -&gt; system -&gt; validate;
+			$this -&gt; files = &amp;$this -&gt; system -&gt; uploads;
+			if($this -&gt; system -&gt; trace)
+				$this -&gt; execution_start = microtime(true);
+		}
+		
+		/**
+		 * On load system method
+		 */
+		function _on_load()
+		{
+			if(isset($this -&gt; system -&gt; actions[0]) &amp;&amp; !is_int($this -&gt; system -&gt; actions[0]) &amp;&amp; !in_array($this -&gt; system -&gt; actions[0], $this -&gt; blocked_actions) &amp;&amp; !in_array($this -&gt; system -&gt; actions[0], $this -&gt; system -&gt; actions_executed))
+			{
+				$params = array_slice($this -&gt; system -&gt; actions, 1, count($this -&gt; system -&gt; actions) - 2);
+				if(method_exists($this, 'action_' . $this -&gt; system -&gt; actions[0]))
+				{
+					if($this-&gt;_check_view($this -&gt; system -&gt; actions[0]))
+						$this-&gt;view=$this -&gt; system -&gt; actions[0];
+					$this -&gt; _execute_result(call_user_func_array(array(
+						$this,
+						'action_' . $this -&gt; system -&gt; actions[0]
+					), $params));					
+					$this -&gt; system -&gt; actions_executed[] = $this -&gt; system -&gt; actions[0];
+				}
+				elseif($this -&gt; system -&gt; debug &amp;&amp; !in_array($this -&gt; system -&gt; actions[0], $this -&gt; system -&gt; actions_executed))
+					$this -&gt; system -&gt; logger -&gt; log('actions', 'Action method: ' . get_class($this) . '-&gt;' . $this -&gt; system -&gt; actions[0] . ' not found!');
+			}
+			else
+			{
+				if(isset($this -&gt; system -&gt; actions[0]) &amp;&amp; in_array($this -&gt; system -&gt; actions[0], $this -&gt; blocked_actions) &amp;&amp; !in_array($this -&gt; system -&gt; actions[0], $this -&gt; system -&gt; actions_executed))
+				{
+					if($this -&gt; system -&gt; debug)
+						$this -&gt; system -&gt; logger -&gt; log('error', 'Action &quot;' . $this -&gt; system -&gt; actions[0] . '&quot; in class &quot;' . get_class($this) . '&quot; not allowed!');
+				}
+				elseif(method_exists($this, 'on_no_action'))
+					$this -&gt; _execute_result($this -&gt; on_no_action());
+			}
+
+			if(method_exists($this, 'on_load'))
+				$this -&gt; _execute_result($this -&gt; on_load());
+
+			$this -&gt; assign('p', $this -&gt; system -&gt; get_page());
+		}
+		
+		/**
+		 * Execute result returned by page
+		 * @param object $result
+		 */
+		function _execute_result($result)
+		{
+			if($result)
+			{
+				if(is_array($result))
+					echo json_encode($result);
+				elseif(is_string($result) || is_numeric($result) || is_object($result))
+					echo $result;
+				die ;
+			}
+		}
+		
+		/**
+		 * On init system method
+		 */
+		function _on_init()
+		{
+			$this -&gt; assign('p', $this -&gt; system -&gt; get_page());
+			if(method_exists($this, 'on_init'))
+				$this -&gt; _execute_result($this -&gt; on_init());
+			$this -&gt; _check_ssl();			
+		}
+
+		/**
+		 * Check if ssl is needed
+		 */
+		function _check_ssl()
+		{
+			if($this -&gt; system -&gt; live &amp;&amp; $this -&gt; system -&gt; maintain_ssl &amp;&amp; !$this -&gt; system -&gt; ssl)
+				$this -&gt; system -&gt; redirect_ssl();
+		}
+
+		/**
+		 * Assigns template a variable $var with value $value
+		 * @param string|array $var
+		 * @param string $value [optional]
+		 * @example $this-&gt;assign('variable','value'); 
+		 * @example $this-&gt;assign(array('variable'=&gt;'value','variable2'=&gt;'value'));
+		 */
+		function assign($var, $value='')
+		{
+			$this -&gt; template -&gt; assign($var, $value);
+		}
+		
+		/**
+		 * Redirect page to another link
+		 * @param string $url
+		 */
+		function redirect($url = '')
+		{
+			$this -&gt; system -&gt; redirect($url);
+		}
+		
+		/**
+		 * Add validator to a form id
+		 * @param string $form_id
+		 * @param string $field Name of the input field
+		 * @param string $rule 
+		 * @param string $message [optional]
+		 * @param bool $client [optional]
+		 */
+		function add_validator($form_id, $field, $rule, $message = '', $client = true)
+		{
+			$this -&gt; system -&gt; add_validator($form_id, $field, $rule, $message, $client);
+		}
+
+		/**
+		 * Validate form id
+		 * @param string $form_id
+		 * @return bool True if valid
+		 */
+		function validate($form_id)
+		{
+			$this -&gt; system -&gt; validate_form($form_id);
+			return $this -&gt; system -&gt; valid;
+		}
+		
+		/**
+		 * Add message in session for template display
+		 * @param string $type ['error','class']
+		 * @param string $message 
+		 */
+		function add_message($type, $message)
+		{
+			$this -&gt; system -&gt; add_message($type, $message);
+		}
+
+		/**
+		 * Show restricted page
+		 * @param string $message
+		 */
+		function restricted($message)
+		{
+			$this -&gt; system -&gt; restricted($message);
+		}
+		
+		/**
+		 * Render system method
+		 */
+		function _render()
+		{
+			if(($this -&gt; system -&gt; check_login &amp;&amp; $this -&gt; system -&gt; logged) || !$this -&gt; system -&gt; check_login || $this -&gt; template_var == 'page')
+			{
+				if($this -&gt; subpage)
+					$this -&gt; subpage -&gt; _render();
+				$this -&gt; _on_load();
+				if($this -&gt; system -&gt; trace)
+				{
+					$this -&gt; execution_end = microtime(true);
+					$this -&gt; execution_duration = $this -&gt; execution_end - $this -&gt; execution_start;
+				}
+			}
+		}
+		
+		/**
+		 * Init system method
+		 */
+		function _init()
+		{
+			$this -&gt; _on_init();
+			if($this-&gt;subquery &amp;&amp; isset($this-&gt;subquery[0]) &amp;&amp; $this-&gt;subquery[0]){
+				$c_name=strtolower($this-&gt;subquery[0]);
+				if($this -&gt; system -&gt; import('file', $this-&gt;folder . 'components'.DS. $c_name .DS . $c_name . '.php'))
+				{
+					$class_name = $c_name . '_page';
+					if(class_exists($class_name)){
+						$this -&gt; subpage = new $class_name('page_component_' . ($this-&gt;index+1), $this -&gt; cache . 'components'.DS . $c_name . DS, $this-&gt;folder. 'components'.DS . $c_name . DS, $c_name . '.php', $c_name, $this -&gt; skin);
+						$this -&gt; subpage -&gt; subquery=array_slice($this-&gt;subquery,1);
+						$this -&gt; subpage -&gt; index=$this -&gt; index + 1;
+					}
+					else
+						$this -&gt; system -&gt; logger -&gt; log('OOP_Warning', 'No &quot;' . $class_name . '&quot; class found in the current module components [$k]!');
+				}
+				elseif(!$this -&gt; system -&gt; live &amp;&amp; $this -&gt; system -&gt; build_enabled &amp;&amp; isset($this -&gt; system -&gt; actions[0]) &amp;&amp; $this -&gt; system -&gt; actions[0] == 'build')
+				{
+					$build = new BuildManager($this -&gt; system -&gt; uploads);
+					if(!$build -&gt; add($this-&gt;folder. 'components'.DS . $c_name . '/', $c_name))
+					{
+						foreach($build-&gt;errors as $e)
+							$this -&gt; system -&gt; logger -&gt; log('builder_error', $e);
+					}
+					$this -&gt; redirect($this -&gt; paths['current']);
+				}
+				elseif(!$this -&gt; system -&gt; live &amp;&amp; $this -&gt; system -&gt; build_enabled &amp;&amp; $this -&gt; system -&gt; build_auto)
+				{
+					$this -&gt; redirect($this -&gt; paths['current'] . '?a=build');
+				}
+				else				
+				{
+					$this -&gt; system -&gt; call_404();
+				}				
+			}
+			if($this -&gt; subpage)
+			{
+				$this -&gt; subpage -&gt; skin = $this -&gt; skin;
+				$this -&gt; subpage -&gt; _init();
+			}
+		}
+		
+		/**
+		 * Render template system method
+		 * @param string $render_type
+		 */
+		function _render_template($render_type = 'all')
+		{
+			if(!$this -&gt; system -&gt; no_cache)
+				TemplatesManager::set_cache($this -&gt; cache_enabled);
+			if($this -&gt; system -&gt; trace)
+				$this -&gt; render_start = microtime(true);
+			switch($this-&gt;template_var)
+			{
+				case 'page' :
+					if($this -&gt; system -&gt; restricted)
+						$this -&gt; view = 'restricted';
+					break;
+				case 'page_component_0' :
+					if($this -&gt; system -&gt; check_login &amp;&amp; !$this -&gt; system -&gt; logged)
+					{
+						$this -&gt; folder = $this -&gt; system -&gt; paths['root_code'] . $this -&gt; system -&gt; module;
+						$this -&gt; view = 'signin';
+					}
+					break;
+			}
+
+			if($this -&gt; subpage &amp;&amp; $render_type != $this -&gt; template_var)
+				$this -&gt; subpage -&gt; _render_template($render_type);
+			if($render_type == 'all' || $render_type == $this -&gt; template_var)
+			{
+				$this -&gt; template_file = $this -&gt; view . '.tpl';
+				// page content
+				$path = $this -&gt; folder;
+				if(!is_dir($this -&gt; folder . 'views/' . $this -&gt; skin . '/'))
+					$path = $this -&gt; folder . 'views/' . $this -&gt; system -&gt; default_skin . '/';
+				else
+					$path = $this -&gt; folder . 'views/' . $this -&gt; skin . '/';
+				if($this -&gt; subpage &amp;&amp; TemplatesManager::get_template_var($this -&gt; subpage -&gt; template_var))
+					$this -&gt; template -&gt; assign('subpage', TemplatesManager::get_template_var($this -&gt; subpage -&gt; template_var));
+				$template_dir = $path;
+				$cache_dir = $this -&gt; cache . 'views'.DS . $this -&gt; skin . DS;
+				$this -&gt; system -&gt; change_template_dir($template_dir);
+				$this -&gt; system -&gt; fetch_template($this -&gt; template_var, $template_dir . $this -&gt; template_file, $cache_dir);
+			}
+
+			if($this -&gt; template_var == 'page_component_2')
+				$this -&gt; template -&gt; assign('page_subcomponent', TemplatesManager::get_template_var('page_component_2'));
+			if($this -&gt; template_var == 'page_component_1')
+				$this -&gt; template -&gt; assign('page_component', TemplatesManager::get_template_var('page_component_1'));
+			if($this -&gt; template_var == 'page_component_0')
+				$this -&gt; template -&gt; assign('page_content', TemplatesManager::get_template_var('page_component_0'));
+
+			if($this -&gt; system -&gt; trace)
+			{
+				$this -&gt; render_end = microtime(true);
+				$this -&gt; render_duration = $this -&gt; render_end - $this -&gt; render_start;
+			}
+		}
+		
+		/**
+		 * Block actions
+		 * @param array $actions
+		 */
+		public function block_actions($actions = '')
+		{
+			if(is_array($actions))
+				$this -&gt; blocked_actions = array_merge($this -&gt; blocked_actions, $actions);
+			else
+				$this -&gt; blocked_actions[] = $actions;
+		}
+		
+		/**
+		 * Send mail using EmailManager
+		 * @param string $template
+		 * @param array $params 
+		 * @return bool
+		 */
+		public function mail($template,$params=array()){
+			$message='';
+			$template_path='';
+			$params=array_merge($this-&gt;system-&gt;mail_defaults,$params);
+			if(isset($this-&gt;models-&gt;email_templates) &amp;&amp; $this-&gt;models-&gt;email_templates-&gt;exists_cond(&quot;`name`='&quot;.$template.&quot;' &quot;)){
+				if(method_exists($this-&gt;models-&gt;email_templates, 'send'))
+					return $this-&gt;models-&gt;email_templates-&gt;send($template,$params);					
+				else
+				{
+					$params['template']=$this-&gt;models-&gt;email_templates-&gt;get_cond(&quot;`name`='&quot;.$template.&quot;' &quot;);
+					if($params['template']){
+						$params=array_merge($params['template'],$params);
+						$template_path=$template_obj['template_path'];
+					}
+				}
+			}
+			if(!$template_path)
+				$template_path=$this-&gt;paths['root_code'].$this-&gt;system-&gt;module.'objects'.DS.'mail_'.$template.'.tpl';
+
+			if(file_exists($template_path)){
+				$s_t_dir=$this-&gt;system-&gt;template-&gt;template_dir;
+				$s_c_dir=$this-&gt;system-&gt;template-&gt;compile_dir;
+			
+				$base_path=isset($params['base_path'])?$params['base_path']:$this-&gt;paths['root_code'].$this-&gt;system-&gt;module.DS.'objects'.DS.$this-&gt;skin.DS;
+				if(!is_dir($base_path))
+					$base_path=isset($params['base_path'])?$params['base_path']:$this-&gt;paths['root_code'].$this-&gt;system-&gt;module.DS.'objects'.DS;
+				$this-&gt;system-&gt;change_template_dir($base_path);
+				$this-&gt;system-&gt;change_cache_dir($this-&gt;paths['root_cache'].$this-&gt;system-&gt;module.DS.&quot;email&quot;.DS);
+							
+				$this-&gt;system-&gt;template-&gt;assign($params);
+				$this-&gt;system-&gt;template-&gt;assign(&quot;params&quot;,$params);
+				
+				$this-&gt;system-&gt;template-&gt;assign(&quot;p&quot;,$this-&gt;system-&gt;get_page());
+				$message=$this-&gt;system-&gt;template-&gt;fetch($template_path);
+				//reset smarty dirs
+				$this-&gt;system-&gt;change_template_dir($s_t_dir);
+				$this-&gt;system-&gt;change_cache_dir($s_c_dir);
+			}
+			if($message){
+				return $this-&gt;system-&gt;mail-&gt;compose(
+					$params['email'], 
+					$params['subject'], 
+					$message, 
+					$params['from'], 
+					$params['fromname'], 
+					$params['reply_to'], 
+					$params['reply_name'],
+					$params['attachments'], 
+					$params['mail_in'], 
+					$params['sender'], 
+					$params['others']
+				)-&gt;send();
+			}
+			return false;
+		}
+		
+		/**
+		 * Check if view is available
+		 * @param string $view 
+		 */
+		private function _check_view($view=''){
+			// page content
+			$path = $this -&gt; folder;
+			if(!is_dir($this -&gt; folder . 'views/' . $this -&gt; skin . '/'))
+				$path = $this -&gt; folder . 'views/' . $this -&gt; system -&gt; default_skin . '/';
+			else
+				$path = $this -&gt; folder . 'views/' . $this -&gt; skin . '/';
+			return file_exists($path.$view.'.tpl');
+		}
+	}
+?&gt;</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all()
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

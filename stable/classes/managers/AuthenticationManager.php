@@ -1,0 +1,280 @@
+<?php
+	/**
+	 * Authentication Manager Class
+	 */
+	/**
+	 * The manager class for authenticating users
+	 * @example In page: $this->system->authentication
+	 * @package WebLauncher\Managers
+	 */
+	class AuthenticationManager{
+		/**
+		 * @var array $settings Setting for the manager
+		 */
+		var $settings=array();
+		/**
+		 * @var string $username_field Username field in POST
+		 */
+		var $username_field='_username';
+		/**
+		 * @var string $password_field Password field in POST
+		 */
+		var $password_field='_password';
+		/**
+		 * @var string $type_field User type field in POST
+		 */
+		var $type_field='_type';
+		/**
+		 * @var string $remmember_field Remmember field in post
+		 */
+		var $remmember_field='_remmember';
+		/**
+		 * @var array $messages Messages to be returned
+		 */
+		var $messages=array();
+		/**
+		 * @var bool $show_messages If messages should be displayed
+		 */
+		var $show_messages=true;
+		/**
+		 * @var string $redirect_field redirect url field in POST
+		 */
+		var $redirect_field='goto';
+		/**
+		 * @var bool $visits_logs_enabled if visits log is enabled
+		 */
+		var $visits_logs_enabled=false;
+		/**
+		 * @var string $module_user_type Module user type to check
+		 */
+		var $module_user_type='';
+		/**
+		 * @var bool $logged If Logged in
+		 */
+		var $logged=0;
+		
+		/**
+		 * Login user in the system
+		 * @param string|int $user_id Id of the user to log in the system
+		 * @param string $type Type of the user that is configured in configuration file
+		 * This method will redirect to the proper url
+		 */
+		function login($user_id='',$type=''){
+			global $page;
+			
+			$username = isset_or($_REQUEST[$this->username_field]);
+			$password = isset_or($_REQUEST[$this->password_field]);
+			$type = isset_or($_REQUEST[$this->type_field],$type);
+	
+			$this->logged = 0;
+	
+			if (($username != '' && $password != '' || $user_id!='') && $type != '' && (($this->module_user_type!='' && $this->module_user_type==$type) || $this->module_user_type=='')) {
+				$row = '';
+				// get user
+				if($user_id!=''){
+					$query = 'SELECT * FROM ' . $this -> settings[$type]['table'] . ' WHERE id='.$user_id.' LIMIT 1';
+					$row = $page -> db_conn -> getRow($query);
+				}
+				else{
+					if (is_array($this -> settings[$type]['username'])) {
+						foreach ($this->settings[$type]['username'] as $user_field)
+							if (!$row) {
+								$query = 'SELECT * FROM ' . $this -> settings[$type]['table'] . ' WHERE (lower(' . $user_field . ')=lower("' . $username . '")) LIMIT 1';
+								$row = $page -> db_conn -> getRow($query);
+							}
+					} else {
+						$query = 'SELECT * FROM ' . $this -> settings[$type]['table'] . ' WHERE (lower(' . $this -> settings[$type]['username'] . ')=lower("' . $username . '")) LIMIT 1';
+						$row = $page -> db_conn -> getRow($query);
+					}
+				}
+				if ($row) {
+					$this->logged = 1;
+					// check password
+					if ($row[$this -> settings[$type]['password']] != (isset($this -> settings[$type]['crypting']) ? $this -> settings[$type]['crypting'](trim($password)) : trim($password))) {
+						$this->logged = 0;
+						if ($this -> show_messages)
+							$page -> add_message('error', $this -> messages['no_pass']);
+					}
+	
+					// valid field if required
+					if (isset($this -> settings[$type]['valid']) && $this -> settings[$type]['valid'] != '') {
+						if (!$row[$this -> settings[$type]['valid']]) {
+							$this->logged = 0;
+							if ($this -> show_messages)
+								$page -> add_message('error', $this -> messages['valid']);
+						}
+					}
+	
+					// active field if required
+					if (isset($this -> settings[$type]['active']) && $this -> settings[$type]['active'] != '')
+						if (!$row[$this -> settings[$type]['active']]) {
+							$this->logged = 0;
+							if ($this -> show_messages)
+								$page -> add_message('error', $this -> messages['active']);
+						}
+	
+					// deleted field if required
+					if (isset($this -> settings[$type]['deleted']) && $this -> settings[$type]['deleted'] != '') {
+						if ($row[$this -> settings[$type]['deleted']]) {
+							$this->logged = 0;
+							$page -> add_message('error', $this -> messages['deleted']);
+						}
+					}
+	
+					if ($this->logged) {
+						$this->login_user($row['id'],$type,isset($_POST[$this->remmember_field]));						
+						$page -> add_message('success', $this -> messages['success']);
+					}
+				} else {
+					unset($page -> session['user_id']);
+					unset($page -> session['user_type']);
+					unset($page -> session['remmember']);
+					$page -> add_message('error', $this -> messages['no_user']);
+				}
+			}
+	
+			$goto = isset($_POST[$this->redirect_field]) ? $_POST[$this->redirect_field] : '';
+			if ($this->logged == 1) {
+				if ($goto != '')
+					$page -> redirect($goto);
+				else
+					$page -> redirect($page -> paths['current']);
+			} else {
+				$page -> redirect($page -> paths['current'] . '?e=login');
+			}
+		}
+		
+		/**
+		 * Login user in the system without processing request 
+		 * @param int|string $user_id Id of the user
+		 * @param string $type Type od user configured in configuration file
+		 * @param bool $remmember Flag if user should be remmembered for a longer period set in the remmember offset
+		 */
+		function login_user($user_id='',$type='',$remmember=0){
+			global $page;			
+			if(!$type)
+				$type=$page->module_user_type;
+			if ($this -> settings[$type]['lastlogin']) {
+				$query = 'update ' . $this -> settings[$type]['table'] . ' set `' . $this -> settings[$type]['lastlogin'] . '`=NOW() where id=' . $user_id;
+				$page -> db_conn -> query($query);
+			}
+			$page -> session['user_id'] = $user_id;
+			$page -> session['user_type'] = $type;
+						
+			if (isset($page -> session['user_logout']))
+				unset($page -> session['user_logout']);
+			if ($this -> visits_logs_enabled)
+				$this -> start_visit_log($user_id);
+	
+			if ($remmember)
+				$page -> session['remmember'] = 1;
+			else
+				unset($page -> session['remmember']);
+			
+			$this->init_user();
+		}
+		
+		/**
+		 * Logout user
+		 */
+		function logout_user(){
+			global $page;
+			unset($page -> session['user_id']);
+			unset($page -> session['user_type']);
+			unset($page -> session['remmember']);
+			unset($page -> session['temp']);
+			$page -> session['user_logout'] = 1;
+		}
+
+		/**
+		 * Start visit log
+		 * @param string $user_id
+		 */
+		function start_visit_log($user_id){
+			global $page;
+			if (isset($page -> db_conn->tables['tbl_xvisits_logs'])) {
+
+				$params = array();
+				$params['user_id'] = $page -> session['user_id'];
+				$params['user_type'] = $page -> session['user_type'];
+				$params['login_datetime'] = date('Y-m-d H:i:s');
+				$params['refresh_datetime'] = date('Y-m-d H:i:s');
+				$params['duration'] = 0;
+	
+				$page -> session['visit_log_id'] = $page -> models -> xvisits_logs -> insert($params);
+				if(class_exists('LoginLoggerExtension'))
+					LoginLoggerExtension::start_visit_log($page->session['user_id'],$page -> session['visit_log_id']);
+				return $page -> session['visit_log_id'];
+			}
+			return '';
+		}
+		
+		/**
+		 * Update current visit log
+		 */
+		function update_visit_log() {
+			global $page;
+			if ($this -> visits_logs_enabled && isset($page -> db_conn->tables['tbl_xvisits_logs']) && $page -> logged && isset($page -> session['visit_log_id'])) {
+				$obj = $page -> models -> xvisits_logs -> get($page -> session['visit_log_id']);
+				$params = array();
+	
+				$params['refresh_datetime'] = @date('Y-m-d H:i:s');
+				$params['duration'] = @strtotime($params['refresh_datetime']) - @strtotime($obj['login_datetime']);
+	
+				$page -> models -> xvisits_logs -> update($params, 'id=' . $page -> session['visit_log_id']);
+				if(class_exists('LoginLoggerExtension'))
+					LoginLoggerExtension::update_visit_log($page->session['user_id'],$page -> session['visit_log_id']);
+				return $page -> session['visit_log_id'];
+			}
+			return '';
+		}
+		
+		/**
+		 * Logout user by requst and redirect to the given url $goto
+		 * @param string $goto
+		 */
+		function logout($goto = ''){
+			global $page;
+			$this->logout_user();
+			$page -> redirect($goto ? $goto : $page -> paths['current']);
+		}
+
+		/**
+		 * Init user data
+		 */
+		function init_user(){
+			global $page;
+			if(isset($page -> session['user_id']) && $page -> session['user_id'] != '')
+			{
+				$page -> logged = true;
+				$query = 'SELECT * FROM ' . $page -> user_types_tables[$page -> session['user_type']]['table'] . ' WHERE (id=' . $page -> session['user_id'] . ') LIMIT 1';
+				$row = $page -> db_conn -> getRow($query);
+				$page -> user = $row;
+			}
+			else
+				$page -> user = '';
+		}
+		
+		/**
+		 * Get new password generated for the user
+		 * @param string $user_id [optional] Id of the user to generate password
+		 * @param int $length [optional] Length of the generated password
+		 * @param string $password [optional] Custom password you want to update the user 
+		 * @param string $algorithm [optional] The algorithm to use for hashing
+		 * @return string New password
+		 */
+		function new_password($user_id='',$length=6,$password='',$algorithm='md5'){
+			global $page;
+			if(!$password)
+				$password=substr($algorithm(encrypt(microtime())), 0,$length);
+			if(!$user_id)
+				$user_id=isset($page->session['user_id'])?$page->session['user_id']:'';
+			if($user_id)
+			{
+				$query='UPDATE ' . $page -> user_types_tables[$page -> session['user_type']]['table'] . ' SET `'.$this -> settings[$page -> session['user_type']]['password'].'`=('.sat($this -> settings[$page -> session['user_type']]['crypting']?$this -> settings[$page -> session['user_type']]['crypting']($password):$password).') WHERE (`id`=' . $page -> session['user_id'] . ') LIMIT 1';
+				$page -> db_conn -> query($query);
+			}
+			return $password;
+		}
+	} 
+?>

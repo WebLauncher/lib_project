@@ -1,0 +1,151 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * Code generation manager 
+ */
+ 
+/**
+ * Code generation manager 
+ * @package WebLauncher\Managers
+ */
+class BuildManager
+{
+	/**
+	 * @var \FilesManager $files
+	 */
+	var $files='';
+	/**
+	 * @var array $errors
+	 */
+	var $errors=array();
+	
+	/**
+	 * Constructor
+	 * @param \FilesManager $files_manager 
+	 */
+	function __construct(&amp;$files_manager)
+	{
+		$this-&gt;files=&amp;$files_manager;
+	}
+	
+	/**
+	 * Add component to site
+	 * @param string $path
+	 * @param string $component
+	 * @param string $skin 
+	 */
+	function add($path,$component,$skin='default')
+	{
+		if(!$this-&gt;files-&gt;add_dir($path))
+		{
+			$this-&gt;errors[]='Could not add dir:&quot;'.$path.'&quot;!';
+		}
+		if(!$this-&gt;files-&gt;add_dir($path.'components/'))
+		{
+			$this-&gt;errors[]=('Could not add dir:&quot;'.$path.'components/&quot;!');
+		}
+		if(!$this-&gt;files-&gt;add_dir($path.'views/'.$skin.'/'))
+		{
+			$this-&gt;errors[]=('Could not add dir:&quot;'.$path.'views/'.$skin.'/&quot;!');
+		}
+		if(!$this-&gt;files-&gt;save_file($path.'views/'.$skin.'/'.$component.'.tpl',$this-&gt;get_component_view($component)))
+		{
+			$this-&gt;errors[]=('Could not write file:&quot;'.$path.'views/'.$skin.'/'.$component.'.tpl&quot;!');
+		}
+		if(!$this-&gt;files-&gt;save_file($path.$component.'.php',$this-&gt;get_component_class($component)))
+		{
+			$this-&gt;errors[]=('Could not write file:&quot;'.$path.$component.'.php&quot;!');
+		}
+		return count($this-&gt;errors)?false:true;
+	}
+
+	/**
+	 * Get generated code for component class
+	 * @param string $component
+	 */
+	function get_component_class($component)
+	{
+		$class=&quot;&lt;?php\n&quot;;
+		$class.=&quot;/**\n&quot;;
+ 		$class.=&quot;* Class &quot;.$component.&quot;_page\n&quot;;
+ 		$class.=&quot;* @author BuildManager\n&quot;;
+ 		$class.=&quot;*\n&quot;;
+ 		$class.=&quot;*/\n&quot;;
+		$class.=&quot;class &quot;.$component.&quot;_page extends Page\n&quot;;
+		$class.=&quot;{\n&quot;;
+		$class.=&quot;	function on_init()\n&quot;;
+		$class.=&quot;	{\n&quot;;
+		$class.=&quot;	}\n&quot;;
+		$class.=&quot;\n&quot;;
+		$class.=&quot;	function on_no_action()\n&quot;;
+		$class.=&quot;	{\n&quot;;
+		$class.=&quot;	}\n&quot;;
+		$class.=&quot;\n&quot;;
+		$class.=&quot;	function on_load()\n&quot;;
+		$class.=&quot;	{\n&quot;;
+		$class.=&quot;	}\n&quot;;
+		$class.=&quot;}\n&quot;;
+		$class.=&quot;?&gt;&quot;;
+		return $class;
+	}
+	
+	/**
+	 * Get generated component view
+	 * @param string $component 
+	 */
+	function get_component_view($component)
+	{
+		$view=&quot;\n&quot;;
+		$view.=&quot;{if isset_or(\$subpage)}\n&quot;;
+		$view.=&quot;{\$subpage}\n&quot;;
+		$view.=&quot;{else}\n&quot;;
+		$view.=&quot;- to do '&quot;.$component.&quot;' page -\n&quot;;
+		$view.=&quot;{/if}\n&quot;;
+		return $view;
+	}
+}
+
+?&gt;</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all()
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

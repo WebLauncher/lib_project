@@ -1,0 +1,192 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+/**
+ * @package WebLauncher\Managers
+ */
+class ConsoleManager {
+	public static $system = null;
+	private static $date = '';
+	public static $is_cronjob = false;
+	private static $root_dir = '';
+
+	static function init() {
+		if (!isset($_SERVER['argv'][1]))
+			die('Please provide other parameters to execute your command!');
+		else {
+			switch($_SERVER['argv'][1]) {
+				case '--cron' :					
+				break;
+				case '--email' :					
+				break;
+				default :
+					self::$system -&gt; query = $_SERVER['argv'][1];
+			}
+		}
+	}
+
+	static function execute() {
+		switch($_SERVER['argv'][1]) {
+			case '--cron' :
+				$included = get_included_files();
+				self::$root_dir = dirname($included[0]) . DS;
+				self::line(&quot;Executing cronjobs&quot;);
+				if (isset(self::$system -&gt; cronjobs))
+					foreach (self::$system-&gt;cronjobs as $cron)
+						self::cronjob($cron);
+				if(self::$system-&gt;console_cronjobs_db_enabled)
+				{
+					$model=new Base();
+					$model-&gt;table=self::$system-&gt;console_cronjobs_db_table['name'];
+					$jobs=$model-&gt;get_all('','','order','','is_active = 1');
+					foreach($jobs as $k=&gt;$j)
+					{
+						if(self::check_cronjob(array('time'=&gt;implode(' ',array($j['min'],$j['hour'],$j['day_m'],$j['month'],$j['day_w'])))))
+						{
+							$model-&gt;update_field($j['id'],&quot;last_execution_start&quot;,nowfull());
+							$cron=array(
+								'path'=&gt;$j['program'],
+								'external'=&gt;isset($j['external'])?$j['external']:true,
+            					'time'=&gt;implode(' ',array($j['min'],$j['hour'],$j['day_m'],$j['month'],$j['day_w'])),
+            					'name'=&gt;isset($j['description'])?$j['description']:'',
+            					'root'=&gt;self::$root_dir
+							);
+							self::cronjob($cron);
+							$model-&gt;update_field($j['id'],&quot;last_execution_end&quot;,nowfull());
+						}
+					}
+				}
+				die ;
+			break;
+			case '--email' :
+				self::line(&quot;Executing e-mail queue&quot;);
+				die ;
+			break;			
+		}
+	}
+
+	private static function cronjob($cron) {
+		if (self::check_cronjob($cron)) {
+			self::line(&quot;Starting cronjob: &quot; . $cron['description']);
+			self::line(&quot;Executing: &quot; . $cron['path']);
+			if (isset_or($cron['external'])) {
+				self::$system -&gt; load_file((isset($cron['root'])?$cron['root']:'').$cron['path']);
+			} else {
+				self::line('Processing: ' . 'php ' . self::$root_dir . 'index.php ' . $cron['path']);
+				self::line(exec('php ' . self::$root_dir . 'index.php ' . $cron['path']));
+			}
+		}
+	}
+
+	private static function line($message) {
+		echo $message . &quot;\n&quot;;
+	}
+
+	private static function check_cronjob($cron) {
+		$ok = true;
+		$time = isset_or($cron['time']);
+		if (!$time)
+			$time = '* * * * *';
+		$params = explode(' ', $time);
+		if (count($params) != 5)
+			trigger_error('Cronjob ' . print_r($cron, true) . ' time not well defined!');
+		if (!self::$date)
+			self::$date = getdate();
+
+		//check minutes
+		if ($params[0] != &quot;*&quot;) {
+			$mins = explode(&quot;,&quot;, $params[0]);
+			$ok = false;
+			foreach ($mins as $v) {
+				if (trim($v) == self::$date['minutes'])
+					$ok = true;
+			}
+		}
+
+		// check hours
+		if ($params[1] != &quot;*&quot; &amp;&amp; $ok) {
+			$hrs = explode(&quot;,&quot;, $params[1]);
+			$ok = false;
+			foreach ($hrs as $v) {
+				if (trim($v) == self::$date['hours'])
+					$ok = true;
+			}
+		}
+
+		// check month day
+		if ($params[2] != &quot;*&quot; &amp;&amp; $ok) {
+			$ds = explode(&quot;,&quot;, $params[2]);
+			$ok = false;
+			foreach ($ds as $v) {
+				if (trim($v) == self::$date['mday'])
+					$ok = true;
+			}
+		}
+
+		// check month
+		if ($params[3] != &quot;*&quot; &amp;&amp; $ok) {
+			$mn = explode(&quot;,&quot;, $params[3]);
+			$ok = false;
+			foreach ($mn as $v) {
+				if (trim($v) == self::$date['mon'])
+					$ok = true;
+			}
+		}
+
+		// check week day
+		if ($params[4] != &quot;*&quot; &amp;&amp; $ok) {
+			$ds = explode(&quot;,&quot;, $params[4]);
+			$ok = false;
+			foreach ($ds as $v) {
+				if (trim($v) == self::$date['wday'] - 1)
+					$ok = true;
+			}
+		}
+
+		return $ok;
+	}
+}
+?&gt;
+</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all()
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

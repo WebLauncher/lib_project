@@ -1,0 +1,121 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php 
+	/**
+	 * Base Tree Extender
+	 */
+	/**
+	 * Model Extender with Tree functionality
+	 * @ignore
+	 * @package WebLauncher\Objects
+	 */
+	class BaseTree extends BaseExtender{
+		/**
+		 * @var bool $accept_all_methods
+		 */
+		public $accept_all_methods=false;
+		/**
+		 * @var string $parent_id_field
+		 */
+		public $parent_id_field='parent_id';
+		/**
+		 * @var string $children_arr_key
+		 */
+		public $children_arr_key='kids';
+		
+		/**
+		 * Before delete handler
+		 * @param string $id
+		 */
+		function before_delete($id){
+			$children=$this-&gt;get_children($id);
+			foreach($children as $v)
+				$this-&gt;_model-&gt;delete($v[$this-&gt;_model-&gt;id_field]);
+		}
+		
+		/**
+		 * Get children for a node
+		 * @param string $id
+		 * @return array
+		 */
+		function get_children($id){
+			return $this-&gt;_model-&gt;get_all('','','','','`'.$this-&gt;parent_id_field.'`='.sat($id));
+		}
+		
+		/**
+		 * Get path to the given $id
+		 * @param string $id
+		 * @return array
+		 */
+		function get_path($id){
+			if($id!=0)
+			{
+				$row=$this-&gt;_model-&gt;get($id);
+				$arr=array($id=&gt;$id);
+				return array_merge($arr,$this-&gt;get_path($row[$this-&gt;parent_id_field]));
+			}
+			else
+				return array(0);
+		}
+		
+		/**
+		 * Get tree from current $id
+		 * @param string $id
+		 * @return array
+		 */
+		function get_tree($id=0)
+		{
+			$kids=$this-&gt;_model-&gt;get_all('','','','','`'.$this-&gt;parent_id_field.'`='.$id);
+			$arr=array();
+			if(count($kids))
+				foreach($kids as $v)
+				{
+					$v[$this-&gt;children_arr_key]=$this-&gt;get_tree($v[$this-&gt;_model-&gt;id_field]);
+					$arr[]=$v;				
+				}
+			return $arr;
+		}
+	}
+?&gt;</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all()
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

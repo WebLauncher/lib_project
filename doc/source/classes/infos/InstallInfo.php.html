@@ -1,0 +1,107 @@
+<html>
+    <head>
+        <script
+            type="text/javascript"
+            src="../../../js/jquery-1.4.2.min.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shCore.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushJScript.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushPhp.js">
+        </script>
+        <script
+            type="text/javascript"
+            src="../../../syntax_highlighter/scripts/shBrushXml.js">
+        </script>
+        <link
+            href="../../../syntax_highlighter/styles/shCore.css" rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shCoreEclipse.css"
+            rel="stylesheet" type="text/css"
+        />
+        <link
+            href="../../../syntax_highlighter/styles/shThemeWordpress.css"
+            rel="stylesheet" type="text/css"
+        />
+    </head>
+    <body>
+        <pre class="brush: php">&lt;?php
+
+
+/**
+ * @package WebLauncher\Infos
+ */
+class InstallInfo
+{
+	public static function display()
+	{
+		global $page;
+		echo 'Checking PHP and extensions&lt;br/&gt;';
+		echo self::check('PHP version &gt;= 5.3.3: ',phpversion()&gt;'5.3.3');
+		
+		echo self::check('PDO installed: ', extension_loaded('pdo'));
+		
+		echo self::check('GD2 installed: ',extension_loaded('gd') &amp;&amp; function_exists('gd_info'));
+		
+		echo self::check('MCrypt installed: ', (function_exists('mcrypt_decrypt')));
+		
+		echo self::check('SOAP installed: ', extension_loaded('soap'));
+		
+		echo self::check('APC or eAccelerator installed: ', extension_loaded('apc')||extension_loaded('eaccelerator'));
+		
+		echo self::check('CURL installed: ', extension_loaded('curl'));
+		
+		echo self::check('Posix installed: ', extension_loaded('posix'));
+		
+		echo self::check('MBstring installed: ', extension_loaded('mbstring'));
+		
+		echo self::check('MBregex installed: ', extension_loaded('mbregex'));
+		
+		echo '&lt;br/&gt;';		
+		echo 'Checking MySQL Database connection and tables&lt;br/&gt;';
+		flush();
+		global $page;
+		$connect=1;
+		try {
+		    $dbh = new PDO('mysql:host='.isset_or($page-&gt;db_connections[0]['host']).';dbname='.isset_or($page-&gt;db_connections[0]['dbname']), isset_or($page-&gt;db_connections[0]['user']), isset_or($page-&gt;db_connections[0]['password']));
+			$dbh-&gt;query('SELECT 1;');
+		    $dbh = null;
+		} catch (PDOException $e) {
+		    $connect=0;
+		}
+		
+		echo self::check('MySql Database connection: ', $connect);
+	}
+	
+	private static function get_success($str){
+		return '&lt;span style=&quot;color:#0f0;&quot;&gt;'.$str.'&lt;/span&gt;';
+	}
+	
+	private static function get_error($str){
+		return '&lt;span style=&quot;color:#f00;&quot;&gt;'.$str.'&lt;/span&gt;';
+	}
+	
+	private static function check($pretext,$condition)
+	{
+		return $pretext.($condition?self::get_success('PASSED'):self::get_error('NOT PASSED')).'&lt;br/&gt;';
+	}
+}
+
+?&gt;</pre>
+        <script type="text/javascript">
+             SyntaxHighlighter.all()
+             jQuery('.gutter div').each(function(key, data){
+                jQuery(data).prepend('<a name="L'+jQuery(data).text()+'"/>');
+             });
+        </script>
+    </body>
+</html>

@@ -1,0 +1,13 @@
+Known issues:
+
+1. built with xvid cvs. seems to work fine, if not i'm interested in what doesn't work. 
+
+2. -flags trell  and -me have been removed.
+use -trellis 1 and -me_method instead.
+
+3. you can use presets under windows but use a full path to the preset,
+-vpre "complete path\whaterver.ffpreset"
+or if the preset file is in the same directory as ffmpeg 
+-vpre "./whaterver.ffpreset"
+e.g
+ffmpeg -i input.avi -vcodec libx264 -vpre "path/libx264-max.ffpreset" out.mp4
