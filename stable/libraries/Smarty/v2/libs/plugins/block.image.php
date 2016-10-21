@@ -56,14 +56,14 @@ function smarty_block_image($params, $content, &$smarty)
 		$path = str_replace($page -> paths['root'], $page -> paths['dir'], $image_path);
 		$img_cache = $page -> paths['root_cache'] . 'img_mod/';		
 		$cache_filename=generate_seo_link($alt).'_'.sha1($path . $width . $height . $fit.$watermark.$watermark_left.$watermark_top) ;
-		$cache_path = $img_cache .$cache_filename . '.png';
+		$cache_path = $img_cache .$cache_filename . '.jpg';
 		if(is_file($cache_path))
-			$image_path=$page->paths['root'].$page->cache_folder.'/img_mod/'.$cache_filename. '.png';
+			$image_path=$page->paths['root'].$page->cache_folder.'/img_mod/'.$cache_filename. '.jpg';
 		else{
 			$image_path=$page->paths['root']."img_mod/?_file=".urlencode($image_path)."&_width=".$width."&_height=".$height.'&_fit='.$fit;
 			if($watermark)
 				$image_path.=('&_w='.urlencode($watermark).'&_w_left='.$watermark_left.'&_w_top='.$watermark_top);
-			$image_path.=('&name='.$cache_filename.'.png');
+			$image_path.=('&name='.$cache_filename.'.jpg');
 		}
 	}
 	else
