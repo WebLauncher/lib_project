@@ -1571,10 +1571,10 @@ class SiteLinkApi
      * be created that will track the previous rate as well as when the future rate is
      * to take effect.
      */
-    public function ScheduleTenantRateChange($iLedgerID, $dcNewRate, $dScheduledChange)
+    public function ScheduleTenantRateChange($LedgerID, $dcNewRate, $dScheduledChange)
     {
         $params = new stdClass();
-        $params->iLedgerID = $iLedgerID;
+        $params->LedgerID = $LedgerID;
         $params->dcNewRate = $dcNewRate;
         $params->dScheduledChange = $dScheduledChange;
         return $this->_call(__FUNCTION__, $params);
