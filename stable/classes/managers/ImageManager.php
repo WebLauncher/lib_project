@@ -55,7 +55,7 @@ class ImageManager
 				$img->saveToFile($cache_path);
 			}
 			if($display)
-				$img->output('png');
+				$img->output('jpg', 90);;
 			$img->destroy();
 			
 		}
