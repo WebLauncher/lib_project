@@ -2821,7 +2821,18 @@ class SiteLinkApi
         $params->UnitID = $UnitID;
         return $this->_call(__FUNCTION__, $params);
     }
-
+    /* 9.35 UnitStatusUpdate
+     * UnitStatusUpdate is used to change the bRentable, bNeedsService and sUnitNote
+     * for a specific unit with matching unit ID.*/
+    public function UnitStatusUpdate($UnitID,$bRentable,$bNeedsService,$sUnitNote)
+    {
+        $params = new stdClass();
+        $params->UnitID = $UnitID;
+        $params->bRentable = $bRentable;
+        $params->bNeedsService = $bNeedsService;
+        $params->sUnitNote = $sUnitNote;
+        return $this->_call(__FUNCTION__, $params);
+    }
 }
 
 ?>
