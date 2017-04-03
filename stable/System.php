@@ -1778,6 +1778,10 @@ class System
             $this->fetch_template('__noscript', $template_folder . 'noscript.tpl', $cache_folder);
             if ($this->ajax && $this->obj_index->view != 'index')
                 $this->render_type = 'page';
+
+            if ($this->ajax && $this->obj_index->view != 'index' && count($this->components)<=1) {
+                $this->render_type = 'page';
+            }
             $this->obj_index->_render_template($this->render_type);
 
             // change smarty template and cache dir for main index
