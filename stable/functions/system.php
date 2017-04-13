@@ -212,7 +212,7 @@ set_error_handler('the_error_handler');
 function the_register_shutdown()
 {
     global $page;
-    session_write_close();
+    @session_write_close();
     # Getting last error
     $error = error_get_last();
     if (isset($page) && $page->debug)

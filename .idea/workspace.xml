@@ -3,7 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="c5aefcd8-ff23-4af0-8a72-8340798aca9e" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/stable/libraries/debug/dBug.php" afterPath="$PROJECT_DIR$/stable/libraries/debug/dBug.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/stable/classes/managers/SessionManager.php" afterPath="$PROJECT_DIR$/stable/classes/managers/SessionManager.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/stable/functions/system.php" afterPath="$PROJECT_DIR$/stable/functions/system.php" />
     </list>
     <ignored path="lib_project.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -24,39 +25,27 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="changes_log.txt" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/changes_log.txt">
+      <file leaf-file-name="system.php" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/stable/functions/system.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="17">
-              <caret line="1" column="28" lean-forward="false" selection-start-line="1" selection-start-column="28" selection-end-line="1" selection-end-column="28" />
-              <folding />
+            <state relative-caret-position="349">
+              <caret line="217" column="37" lean-forward="true" selection-start-line="217" selection-start-column="37" selection-end-line="217" selection-end-column="37" />
+              <folding>
+                <marker date="1492069068407" expanded="true" signature="232:245" ph="..." />
+                <marker date="1492069068407" expanded="true" signature="5797:5838" ph="..." />
+                <marker date="1492069068407" expanded="true" signature="6571:6583" ph="..." />
+                <marker date="1492069068407" expanded="true" signature="6952:6983" ph="..." />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="dBug.php" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/stable/libraries/debug/dBug.php">
+      <file leaf-file-name="SessionManager.php" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/stable/classes/managers/SessionManager.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="306">
-              <caret line="63" column="24" lean-forward="false" selection-start-line="63" selection-start-column="24" selection-end-line="63" selection-end-column="24" />
-              <folding>
-                <marker date="1492064935408" expanded="true" signature="8133:8139" ph=" " />
-                <marker date="1492064935408" expanded="true" signature="13149:14420" ph="..." />
-                <marker date="1492064935408" expanded="true" signature="13154:13203" ph="/*...*/" />
-                <marker date="1492064935408" expanded="true" signature="13240:13401" ph="{...}" />
-                <marker date="1492064935408" expanded="true" signature="13446:13719" ph="{...}" />
-                <marker date="1492064935408" expanded="true" signature="13491:13599" ph="{...}" />
-                <marker date="1492064935408" expanded="true" signature="13605:13713" ph="{...}" />
-                <marker date="1492064935408" expanded="true" signature="13777:13851" ph="{...}" />
-                <marker date="1492064935408" expanded="true" signature="13894:14408" ph="{...}" />
-                <marker date="1492064935408" expanded="true" signature="13968:14158" ph="{...}" />
-                <marker date="1492064935408" expanded="true" signature="14065:14151" ph="{...}" />
-                <marker date="1492064935408" expanded="true" signature="14169:14402" ph="{...}" />
-                <marker date="1492064935408" expanded="true" signature="14267:14395" ph="{...}" />
-                <marker date="1492064935408" expanded="true" signature="14328:14387" ph="{...}" />
-                <marker date="1492064935408" expanded="true" signature="14451:16293" ph="..." />
-                <marker date="1492064935408" expanded="true" signature="14548:14642" ph="{...}" />
-              </folding>
+            <state relative-caret-position="410">
+              <caret line="193" column="24" lean-forward="true" selection-start-line="193" selection-start-column="24" selection-end-line="193" selection-end-column="24" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -72,7 +61,17 @@
       <find>get_en</find>
       <find>init_template</find>
       <find>render_type</find>
+      <find>s</find>
+      <find>sessi</find>
+      <find>sessio</find>
+      <find>session</find>
+      <find>session_</find>
+      <find>session_w</find>
+      <find>session_wr</find>
     </findStrings>
+    <dirStrings>
+      <dir>F:\www\lib_project\stable\functions</dir>
+    </dirStrings>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -83,10 +82,11 @@
         <option value="$PROJECT_DIR$/stable/classes/managers/ImageManager.php" />
         <option value="$PROJECT_DIR$/stable/libraries/Smarty/v2/libs/plugins/block.image.php" />
         <option value="$PROJECT_DIR$/stable/libraries/Smarty/MySmarty.class.php" />
-        <option value="$PROJECT_DIR$/stable/functions/system.php" />
         <option value="$PROJECT_DIR$/stable/System.php" />
         <option value="$PROJECT_DIR$/changes_log.txt" />
         <option value="$PROJECT_DIR$/stable/libraries/debug/dBug.php" />
+        <option value="$PROJECT_DIR$/stable/classes/managers/SessionManager.php" />
+        <option value="$PROJECT_DIR$/stable/functions/system.php" />
       </list>
     </option>
   </component>
@@ -118,7 +118,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -159,7 +158,7 @@
               <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="libraries" />
+              <option name="myItemId" value="classes" />
               <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
             </PATH_ELEMENT>
           </PATH>
@@ -177,16 +176,17 @@
               <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="libraries" />
+              <option name="myItemId" value="classes" />
               <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="debug" />
+              <option name="myItemId" value="managers" />
               <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
             </PATH_ELEMENT>
           </PATH>
         </subPane>
       </pane>
+      <pane id="Scratches" />
       <pane id="Scope" />
     </panes>
   </component>
@@ -308,7 +308,8 @@
       <workItem from="1490691150536" duration="1841000" />
       <workItem from="1491032316210" duration="2304000" />
       <workItem from="1491205514307" duration="603000" />
-      <workItem from="1492063983296" duration="952000" />
+      <workItem from="1492063983296" duration="1222000" />
+      <workItem from="1492068284032" duration="857000" />
     </task>
     <task id="LOCAL-00001" summary="updates">
       <created>1477032892655</created>
@@ -331,25 +332,33 @@
       <option name="project" value="LOCAL" />
       <updated>1492064787328</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="updates smarty v2">
+      <created>1492064945428</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1492064945428</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="15027000" />
+    <option name="totallyTimeSpent" value="16154000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="0" />
+    <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2238806" sideWeight="0.496208" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2260128" sideWeight="0.496208" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="true" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32936078" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.21748401" sideWeight="0.503792" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
@@ -370,7 +379,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="updates" />
     <MESSAGE value="updates smarty v2" />
-    <option name="LAST_COMMIT_MESSAGE" value="updates smarty v2" />
+    <MESSAGE value="updates php 7 support" />
+    <option name="LAST_COMMIT_MESSAGE" value="updates php 7 support" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -524,13 +534,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/stable/classes/managers/SessionManager.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1324">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/stable/classes/managers/EmailManager.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -608,13 +611,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/stable/functions/system.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="357">
-          <caret line="435" column="44" lean-forward="true" selection-start-line="435" selection-start-column="44" selection-end-line="435" selection-end-column="44" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/stable/System.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="408">
@@ -634,14 +630,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/changes_log.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="17">
-          <caret line="1" column="28" lean-forward="false" selection-start-line="1" selection-start-column="28" selection-end-line="1" selection-end-column="28" />
           <folding />
         </state>
       </provider>
@@ -667,6 +655,43 @@
             <marker date="1492064935408" expanded="true" signature="14328:14387" ph="{...}" />
             <marker date="1492064935408" expanded="true" signature="14451:16293" ph="..." />
             <marker date="1492064935408" expanded="true" signature="14548:14642" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/changes_log.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17">
+          <caret line="1" column="28" lean-forward="false" selection-start-line="1" selection-start-column="28" selection-end-line="1" selection-end-column="28" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/phpdoc.dist.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="119">
+          <caret line="7" column="30" lean-forward="true" selection-start-line="7" selection-start-column="30" selection-end-line="7" selection-end-column="30" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/stable/classes/managers/SessionManager.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="410">
+          <caret line="193" column="24" lean-forward="true" selection-start-line="193" selection-start-column="24" selection-end-line="193" selection-end-column="24" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/stable/functions/system.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="349">
+          <caret line="217" column="37" lean-forward="true" selection-start-line="217" selection-start-column="37" selection-end-line="217" selection-end-column="37" />
+          <folding>
+            <marker date="1492069068407" expanded="true" signature="232:245" ph="..." />
+            <marker date="1492069068407" expanded="true" signature="5797:5838" ph="..." />
+            <marker date="1492069068407" expanded="true" signature="6571:6583" ph="..." />
+            <marker date="1492069068407" expanded="true" signature="6952:6983" ph="..." />
           </folding>
         </state>
       </provider>

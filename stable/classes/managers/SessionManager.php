@@ -118,7 +118,7 @@ class SessionManager {
 /**
  * Session Db Handler
  */
-class SessionHandlerDb{
+class SessionHandlerDb implements SessionHandlerInterface{
 	/**
 	 * @var bool $create Create new session
 	 */
@@ -131,7 +131,7 @@ class SessionHandlerDb{
 	/**
 	 * Open session
 	 */
-	public function open(){
+	public function open($savePath, $sessionName){
 		return true;
 	}
 	
@@ -202,15 +202,14 @@ class SessionHandlerDb{
       	global $dal;
 		$sql = 'DELETE FROM sessions WHERE hash=' . $id;
 		$dal -> db -> query($sql);
-        return TRUE;
-	}	
-	
+        return true;
+	}
+
 	/**
 	 * Destruct session
 	 */
-	function __destruct ()    
+	function __destruct ()
     {
         @session_write_close();
     }
 }
-?>
