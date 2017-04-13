@@ -3,12 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="c5aefcd8-ff23-4af0-8a72-8340798aca9e" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/changes_log.txt" afterPath="$PROJECT_DIR$/changes_log.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/stable/libraries/Smarty/v2/libs/Config_File.class.php" afterPath="$PROJECT_DIR$/stable/libraries/Smarty/v2/libs/Config_File.class.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/stable/libraries/Smarty/v2/libs/Smarty.class.php" afterPath="$PROJECT_DIR$/stable/libraries/Smarty/v2/libs/Smarty.class.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/stable/libraries/Smarty/v2/libs/Smarty_Compiler.class.php" afterPath="$PROJECT_DIR$/stable/libraries/Smarty/v2/libs/Smarty_Compiler.class.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/stable/libraries/Smarty/v2/libs/internals/core.assemble_plugin_filepath.php" afterPath="$PROJECT_DIR$/stable/libraries/Smarty/v2/libs/internals/core.assemble_plugin_filepath.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/stable/libraries/Smarty/v2/libs/plugins/function.math.php" afterPath="$PROJECT_DIR$/stable/libraries/Smarty/v2/libs/plugins/function.math.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/stable/libraries/debug/dBug.php" afterPath="$PROJECT_DIR$/stable/libraries/debug/dBug.php" />
     </list>
     <ignored path="lib_project.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -29,12 +24,39 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="changes_log.txt" pinned="false" current-in-tab="true">
+      <file leaf-file-name="changes_log.txt" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/changes_log.txt">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="17">
               <caret line="1" column="28" lean-forward="false" selection-start-line="1" selection-start-column="28" selection-end-line="1" selection-end-column="28" />
               <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="dBug.php" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/stable/libraries/debug/dBug.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="306">
+              <caret line="63" column="24" lean-forward="false" selection-start-line="63" selection-start-column="24" selection-end-line="63" selection-end-column="24" />
+              <folding>
+                <marker date="1492064935408" expanded="true" signature="8133:8139" ph=" " />
+                <marker date="1492064935408" expanded="true" signature="13149:14420" ph="..." />
+                <marker date="1492064935408" expanded="true" signature="13154:13203" ph="/*...*/" />
+                <marker date="1492064935408" expanded="true" signature="13240:13401" ph="{...}" />
+                <marker date="1492064935408" expanded="true" signature="13446:13719" ph="{...}" />
+                <marker date="1492064935408" expanded="true" signature="13491:13599" ph="{...}" />
+                <marker date="1492064935408" expanded="true" signature="13605:13713" ph="{...}" />
+                <marker date="1492064935408" expanded="true" signature="13777:13851" ph="{...}" />
+                <marker date="1492064935408" expanded="true" signature="13894:14408" ph="{...}" />
+                <marker date="1492064935408" expanded="true" signature="13968:14158" ph="{...}" />
+                <marker date="1492064935408" expanded="true" signature="14065:14151" ph="{...}" />
+                <marker date="1492064935408" expanded="true" signature="14169:14402" ph="{...}" />
+                <marker date="1492064935408" expanded="true" signature="14267:14395" ph="{...}" />
+                <marker date="1492064935408" expanded="true" signature="14328:14387" ph="{...}" />
+                <marker date="1492064935408" expanded="true" signature="14451:16293" ph="..." />
+                <marker date="1492064935408" expanded="true" signature="14548:14642" ph="{...}" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -64,6 +86,7 @@
         <option value="$PROJECT_DIR$/stable/functions/system.php" />
         <option value="$PROJECT_DIR$/stable/System.php" />
         <option value="$PROJECT_DIR$/changes_log.txt" />
+        <option value="$PROJECT_DIR$/stable/libraries/debug/dBug.php" />
       </list>
     </option>
   </component>
@@ -105,6 +128,60 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="lib_project" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="lib_project" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="lib_project" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="stable" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="lib_project" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="lib_project" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="stable" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="libraries" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="lib_project" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="lib_project" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="stable" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="libraries" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="debug" />
               <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
             </PATH_ELEMENT>
           </PATH>
@@ -231,7 +308,7 @@
       <workItem from="1490691150536" duration="1841000" />
       <workItem from="1491032316210" duration="2304000" />
       <workItem from="1491205514307" duration="603000" />
-      <workItem from="1492063983296" duration="800000" />
+      <workItem from="1492063983296" duration="952000" />
     </task>
     <task id="LOCAL-00001" summary="updates">
       <created>1477032892655</created>
@@ -247,16 +324,23 @@
       <option name="project" value="LOCAL" />
       <updated>1491204102653</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="updates smarty v2">
+      <created>1492064787328</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1492064787328</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="14875000" />
+    <option name="totallyTimeSpent" value="15027000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="0" />
     <layout>
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2238806" sideWeight="0.496208" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2238806" sideWeight="0.496208" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="true" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -559,6 +643,31 @@
         <state relative-caret-position="17">
           <caret line="1" column="28" lean-forward="false" selection-start-line="1" selection-start-column="28" selection-end-line="1" selection-end-column="28" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/stable/libraries/debug/dBug.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="306">
+          <caret line="63" column="24" lean-forward="false" selection-start-line="63" selection-start-column="24" selection-end-line="63" selection-end-column="24" />
+          <folding>
+            <marker date="1492064935408" expanded="true" signature="8133:8139" ph=" " />
+            <marker date="1492064935408" expanded="true" signature="13149:14420" ph="..." />
+            <marker date="1492064935408" expanded="true" signature="13154:13203" ph="/*...*/" />
+            <marker date="1492064935408" expanded="true" signature="13240:13401" ph="{...}" />
+            <marker date="1492064935408" expanded="true" signature="13446:13719" ph="{...}" />
+            <marker date="1492064935408" expanded="true" signature="13491:13599" ph="{...}" />
+            <marker date="1492064935408" expanded="true" signature="13605:13713" ph="{...}" />
+            <marker date="1492064935408" expanded="true" signature="13777:13851" ph="{...}" />
+            <marker date="1492064935408" expanded="true" signature="13894:14408" ph="{...}" />
+            <marker date="1492064935408" expanded="true" signature="13968:14158" ph="{...}" />
+            <marker date="1492064935408" expanded="true" signature="14065:14151" ph="{...}" />
+            <marker date="1492064935408" expanded="true" signature="14169:14402" ph="{...}" />
+            <marker date="1492064935408" expanded="true" signature="14267:14395" ph="{...}" />
+            <marker date="1492064935408" expanded="true" signature="14328:14387" ph="{...}" />
+            <marker date="1492064935408" expanded="true" signature="14451:16293" ph="..." />
+            <marker date="1492064935408" expanded="true" signature="14548:14642" ph="{...}" />
+          </folding>
         </state>
       </provider>
     </entry>
