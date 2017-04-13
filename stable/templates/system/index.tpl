@@ -30,7 +30,7 @@
 </head>
 {$p.body_tag}
 	{$page_after_start_body|default:''}
-	<noscript>{eval var=$__noscript|default:' '}</noscript>
+	{if isset($__noscript) && $__noscript != ''}<noscript>{eval var=$__noscript|default:' '}</noscript>{/if}
 	{$p.settings.before_page_text.value}
 	
 	{$page_trace}
