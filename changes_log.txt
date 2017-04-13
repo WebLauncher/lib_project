@@ -1,3 +1,5 @@
+2.6.11
+- update Smarty v2 to 2.6.30
 2.6.10
 - added cache library Stash
 	- $this->cache->getItem('test')
