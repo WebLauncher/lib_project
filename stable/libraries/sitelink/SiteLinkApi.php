@@ -2833,6 +2833,45 @@ class SiteLinkApi
         $params->sUnitNote = $sUnitNote;
         return $this->_call(__FUNCTION__, $params);
     }
+    
+    /* 9.36 UnitAdd
+     * UnitAdd is used to Add new units */
+    public function UnitAdd($sUnitName,$UnitTypeID,$dcWidth,$dcLength,$dcStdRate,$dcStdWeeklyRate,$dcStdSecDep,$dcStdLateFee,$iFloor,$bPower,$bClimate,$bInside,$bAlarm,$bCollapsible,$bMobile,$bCorporate,$iEntryLoc,$iDoorType,$bRentable,$iADA,$bExcludeFromWebsite)
+    {
+        $params = new stdClass();
+        $params->sUnitName = $sUnitName;
+        $params->UnitTypeID = $UnitTypeID;
+        $params->dcWidth = $dcWidth;
+        $params->dcLength = $dcLength;
+        $params->dcStdRate = $dcStdRate;
+        $params->dcStdWeeklyRate = $dcStdWeeklyRate;
+        $params->dcStdSecDep = $dcStdSecDep;
+        $params->dcStdLateFee = $dcStdLateFee;
+        $params->iFloor = $iFloor;
+        $params->bPower = $bPower;
+        $params->bClimate = $bClimate;
+        $params->bInside = $bInside;
+        $params->bAlarm = $bAlarm;
+        $params->bCollapsible = $bCollapsible;
+        $params->bMobile = $bMobile;
+        $params->bCorporate = $bCorporate;
+        $params->iEntryLoc = $iEntryLoc;
+        $params->iDoorType = $iDoorType;
+        $params->bRentable = $bRentable;
+        $params->iADA = $iADA;
+        $params->bExcludeFromWebsite = $bExcludeFromWebsite;
+        return $this->_call(__FUNCTION__, $params);
+    }
+    
+    /* 9.37 UnitDelete
+     * UnitDelete is used to Delete Units
+     * for a specific unit with matching unit ID.*/
+    public function UnitDelete($UnitID)
+    {
+        $params = new stdClass();
+        $params->UnitID = $UnitID;
+        return $this->_call(__FUNCTION__, $params);
+    }
 }
 
 ?>
