@@ -341,10 +341,10 @@ function encrypt($plain_text)
     global $page;
     $key = $page->crypt_key;
 
-    $plain_text = trim($plain_text);
-    $iv = substr(md5($key), 0, mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CFB));
-    $c_t = mcrypt_cfb(MCRYPT_RIJNDAEL_256, $key, $plain_text, MCRYPT_ENCRYPT, $iv);
-    return urlencode(base64_encode($c_t));
+    $iv_size = mcrypt_get_iv_size(MCRYPT_BLOWFISH, MCRYPT_MODE_ECB);
+    $iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
+    $encrypted_string = mcrypt_encrypt(MCRYPT_BLOWFISH, $key, utf8_encode($plain_text), MCRYPT_MODE_ECB, $iv);
+    return urlencode(base64_encode($encrypted_string));
 }
 
 /**
@@ -356,9 +356,11 @@ function decrypt($crypted_text)
     global $page;
     $key = $page->crypt_key;
     $crypted_text = base64_decode(urldecode($crypted_text));
-    $iv = substr(md5($key), 0, mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CFB));
-    $p_t = mcrypt_cfb(MCRYPT_RIJNDAEL_256, $key, $crypted_text, MCRYPT_DECRYPT, $iv);
-    return trim($p_t);
+
+    $iv_size = mcrypt_get_iv_size(MCRYPT_BLOWFISH, MCRYPT_MODE_ECB);
+    $iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
+    $decrypted_string = mcrypt_decrypt(MCRYPT_BLOWFISH, $key, $crypted_text, MCRYPT_MODE_ECB, $iv);
+    return trim($decrypted_string);
 }
 
 /**
