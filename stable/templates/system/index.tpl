@@ -8,6 +8,8 @@
 <meta name="{$tag.name}" content="{$tag.content}" />
 {/foreach}
 
+{$page_after_meta_tags|default:''}
+
 <title>{tr tags="titles"}{$p.title}{/tr}</title>
 
 {eval var=$__before_skin}
