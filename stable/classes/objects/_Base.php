@@ -167,7 +167,7 @@ class _Base implements ArrayAccess {
 	 * Before delete method
 	 * @param object $id
 	 */
-	private function _before_delete($id) {
+	private function _before_delete(&$id) {
 		$obj = $this -> get($id);
 		// maintain order
 		if (isset($obj[$this -> order_field]) && $obj[$this -> order_field] >= 0)
@@ -175,12 +175,13 @@ class _Base implements ArrayAccess {
 		$this -> before_delete($id);
 	}
 
-	/**
-	 * Before delete public method
-	 * @param string $id
-	 */
-	public function before_delete($id = '') {
-	}
+    /**
+     * Before delete public method
+     * @param string $id
+     */
+    public function before_delete(&$id)
+    {
+    }
 
 	/**
 	 * After delete method
@@ -482,22 +483,24 @@ class _Base implements ArrayAccess {
 		}
 	}
 
-	/**
-	 * Before update callback private method
-	 * @param array $params
-	 * @param object $cond
-	 */
-	private function _before_update($params, $cond) {
-		$this -> before_update($params, $cond);
-	}
+    /**
+     * Before update callback private method
+     * @param array $params
+     * @param object $cond
+     */
+    private function _before_update(&$params, &$cond)
+    {
+        $this->before_update($params, $cond);
+    }
 
-	/**
-	 * Before update callback public method
-	 * @param array $params
-	 * @param object $cond
-	 */
-	public function before_update($params, $cond) {
-	}
+    /**
+     * Before update callback public method
+     * @param array $params
+     * @param object $cond
+     */
+    public function before_update(&$params, &$cond)
+    {
+    }
 
 	/**
 	 * After update callback private method

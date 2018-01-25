@@ -1,3 +1,5 @@
+2.6.12
+- fixed: model not allowing changes to parameters in before_insert, before_delete, before_update
 2.6.11
 - update Smarty v2 to 2.6.30
 2.6.10
