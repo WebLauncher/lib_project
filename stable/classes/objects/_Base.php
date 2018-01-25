@@ -403,20 +403,22 @@ class _Base implements ArrayAccess {
 		return '';
 	}
 
-	/**
-	 * Before insert callback private method
-	 * @param object $params
-	 */
-	private function _before_insert($params) {
-		$this -> before_insert($params);
-	}
+    /**
+     * Before insert callback private method
+     * @param array $params
+     */
+    private function _before_insert(&$params)
+    {
+        $this->before_insert($params);
+    }
 
-	/**
-	 * Before insert callback public method
-	 * @param object $params
-	 */
-	public function before_insert($params = '') {
-	}
+    /**
+     * Before insert callback public method
+     * @param array $params
+     */
+    public function before_insert(&$params)
+    {
+    }
 
 	/**
 	 * After insert callback private method
